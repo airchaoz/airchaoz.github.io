@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.airchaoz.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="由于项目需要使用CMake，对CMake一窍不通的我开始一边查资料一边写CMake。不得不说，CMake的中文资料真的不多，CMake有大量的变量和函数，很容易看的一头雾水。在看了很多的资料后，建议有时间直接看官方的文档进行学习。这里记录一些我写的CMake脚本和注解，提供给入门新手学习。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CMake快速上手">
+<meta property="og:url" content="http://www.airchaoz.top/2023/01/18/CMake%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/index.html">
+<meta property="og:site_name" content="echo&#39;s blog">
+<meta property="og:description" content="由于项目需要使用CMake，对CMake一窍不通的我开始一边查资料一边写CMake。不得不说，CMake的中文资料真的不多，CMake有大量的变量和函数，很容易看的一头雾水。在看了很多的资料后，建议有时间直接看官方的文档进行学习。这里记录一些我写的CMake脚本和注解，提供给入门新手学习。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-01-18T04:43:34.000Z">
+<meta property="article:modified_time" content="2024-03-26T14:23:53.672Z">
+<meta property="article:author" content="echo">
+<meta property="article:tag" content="CMake">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://www.airchaoz.top/2023/01/18/CMake%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CMake快速上手 | echo's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">echo's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">文字是思考的过程</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.airchaoz.top/2023/01/18/CMake%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="echo">
+      <meta itemprop="description" content="文字是思考的过程">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="echo's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CMake快速上手
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-01-18 12:43:34" itemprop="dateCreated datePublished" datetime="2023-01-18T12:43:34+08:00">2023-01-18</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>由于项目需要使用CMake，对CMake一窍不通的我开始一边查资料一边写CMake。不得不说，CMake的中文资料真的不多，CMake有大量的变量和函数，很容易看的一头雾水。<br>在看了很多的资料后，建议有时间直接看官方的文档进行学习。<br>这里记录一些我写的CMake脚本和注解，提供给入门新手学习。</p>
+<span id="more"></span>
+
+<h1 id="脚本说明-项目信息"><a href="#脚本说明-项目信息" class="headerlink" title="脚本说明&amp;项目信息"></a>脚本说明&amp;项目信息</h1><p>CMake文件开头都会设置支持的CMake最小版本号、项目名称和项目使用的语言。不同的cmake版本，使用起来也会略有差异。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 设置cmake最小版本号</span><br><span class="line"><span class="built_in">cmake_minimum_required</span>(VERSION <span class="number">3.13</span>)</span><br><span class="line"># 设置项目名称和项目使用的语言</span><br><span class="line"><span class="built_in">project</span>(sysumoc-test LANGUAGES CXX)</span><br></pre></td></tr></table></figure>
+
+<h1 id="设置变量"><a href="#设置变量" class="headerlink" title="设置变量"></a>设置变量</h1><p>CMake设置变量使用关键字<code>set</code>设置，比如我们可以设置项目使用的c++标准。项目使用的是c++11，所以我们设置<code>CMAKE_CXX_STANDARD</code>变量为11。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># set the C++ standard</span></span><br><span class="line"><span class="built_in">set</span>(CMAKE_CXX_STANDARD <span class="number">11</span>)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_CXX_STANDARD_REQUIRED ON)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_CXX_EXTENSIONS OFF)</span><br></pre></td></tr></table></figure>
+
+<p>CMake有大量的变量，这些变量与编译密切相关。但是直接从文档中学习这些变量并不是聪明的事，建议阅读其他人写的CMake文件，掌握一些常见的变量，下面是我整理的常见的变量。</p>
+<h2 id="常见变量"><a href="#常见变量" class="headerlink" title="常见变量"></a>常见变量</h2><ul>
+<li><code>CMAKE_CXX_STANDARD</code> 显式声明程序使用c++11进行编译，也可以设置compiler flag来指定c++版本；</li>
+<li><code>CMAKE_CXX_STANDARD_REQUIRED</code> 设置指定的C++编译器版本是必须的，如果不设置，或者为OFF，则指定版本不可用时，会使用上一版本。如果设置为ON，不满足条件时会停止构建项目；</li>
+<li><code>CMAKE_CXX_EXTENSIONS</code> 如果值为ON，则会使用更加通用的参数，比如使用std&#x3D;c++14 而不是-std&#x3D;gnu++14；</li>
+<li><code>CMAKE_ARCHIVE_OUTPUT_DIRECTORY</code> 静态库的存放目录；</li>
+<li><code>CMAKE_LIBRARY_OUTPUT_DIRECTORY</code> 动态库的存放目录；</li>
+<li><code>CMAKE_RUNTIME_OUTPUT_DIRECTORY</code> 可执行文件的存放目录；</li>
+<li><code>CMAKE_BINARY_DIR</code> 一般情况下可以认为就是工程的顶层目录；</li>
+<li><code>CMAKE_SOURCE_DIR</code> 一般情况下可以认为就是工程的顶层目录；</li>
+<li><code>CMAKE_CURRENT_SOURCE_DIR</code> CMakeLists.txt文件所在的路径；</li>
+</ul>
+<h1 id="打印信息"><a href="#打印信息" class="headerlink" title="打印信息"></a>打印信息</h1><p>打印信息是一个调试CMake脚本的好方法，尤其是我们对一些路径或文件的变量不确定时。可以使用以下语句来打印变量和信息</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">message</span>([&lt;mode&gt;] <span class="string">&quot;message text&quot;</span> ...)</span><br></pre></td></tr></table></figure>
+
+<p>信息的类型有：<code>STATUS</code>、<code>DEPRECATION</code>、<code>AUTHOR_WARNING</code>、<code>WARNING</code>等可选，具体可以查阅文档</p>
+<h1 id="使用三方库"><a href="#使用三方库" class="headerlink" title="使用三方库"></a>使用三方库</h1><p>第三方库有很多种，一种是被广泛使用的官方库，例如MPI。对于这种库，我们可以使用<code>find_package</code>命令来进行查找，例如下面代码:</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># CMake 最低版本号要求</span></span><br><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.11</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 项目信息</span></span><br><span class="line"><span class="keyword">project</span>(Demo1)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出MPI路径</span></span><br><span class="line"><span class="keyword">message</span>(STATUS <span class="string">&quot;MPI_INCLUDE_PATH = $&#123;MPI_INCLUDE_PATH&#125;&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查找MPI库路径</span></span><br><span class="line"><span class="keyword">find_package</span>(MPI REQUIRED)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出MPI路径</span></span><br><span class="line"><span class="keyword">message</span>(STATUS <span class="string">&quot;MPI_FOUND = $&#123;MPI_FOUND&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">message</span>(STATUS <span class="string">&quot;MPI_INCLUDE_PATH = $&#123;MPI_INCLUDE_PATH&#125;&quot;</span>)</span><br><span class="line"><span class="keyword">message</span>(STATUS <span class="string">&quot;MPI_LIBRARIES = $&#123;MPI_LIBRARIES&#125;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p> 输出结果为:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-- MPI_INCLUDE_PATH =</span><br><span class="line">-- MPI_FOUND = TRUE</span><br><span class="line">-- MPI_INCLUDE_PATH = /usr/include/mpich</span><br><span class="line">-- MPI_LIBRARIES = /usr/lib/x86_64-linux-gnu/libmpichcxx.so;/usr/lib/x86_64-linux-gnu/libmpich.so</span><br><span class="line">-- Configuring done</span><br><span class="line">-- Generating done</span><br><span class="line">-- Build files have been written to: ...</span><br></pre></td></tr></table></figure>
+
+<p><code>find_package</code>命令可以从系统中查找指定第三方库，指定<code>REQUIRED</code>后，如果没有找到库则会报错。查找的结果会保存在变量中。</p>
+<ul>
+<li><code>&lt;package&gt;_FOUND</code>保存是否找到库</li>
+<li><code>&lt;package&gt;_INCLUDE_PATH</code>头文件所在的路径</li>
+<li><code>&lt;package&gt;_LIBRARIES</code>库文件所在的路径</li>
+</ul>
+<p>找到库后便可以进行链接操作</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置头文件路径，相当与gcc中的-I</span></span><br><span class="line"><span class="keyword">include_directories</span>(<span class="variable">$&#123;MPI_INCLUDE_PATH&#125;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置库文件路径，相当与gcc中的-L</span></span><br><span class="line"><span class="keyword">link_directories</span>(<span class="variable">$&#123;MPI_LIBRARIES&#125;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置链接的库，相当于gcc中的-l</span></span><br><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;MPI_LIBRARIES&#125;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>注意：链接库需要在生成可执行文件后。</p>
+<h1 id="设置编译选项"><a href="#设置编译选项" class="headerlink" title="设置编译选项"></a>设置编译选项</h1><p>在cmake脚本中，设置编译选项（配置编译器）有如下三种方法：</p>
+<p>1、<code>add_compile_options</code>命令</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_compile_options</span>(-Wall -Werror -Wstrict-prototypes -Wmissing-prototypes)</span><br></pre></td></tr></table></figure>
+
+<p>2、<code>add_definitions</code>命令</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ADD_DEFINITIONS</span>(<span class="string">&quot;-Wall -Werror -Wstrict-prototypes -Wmissing-prototypes)</span></span><br></pre></td></tr></table></figure>
+
+<p>3、<code>set</code>命令修改<code>CMAKE_CXX_FLAGS</code>或<code>CMAKE_C_FLAGS</code></p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(CMAKE_C_FLAGS <span class="string">&quot;-Wall -Werror -Wstrict-prototypes -Wmissing-prototypes)</span></span><br></pre></td></tr></table></figure>
+
+<p>使用这三种方式在有的情况下效果是一样的，但请注意它们还是有区别的：<br><code>add_compile_options</code>命令和<code>add_definitions</code>添加的编译选项是针对所有编译器的(包括c和c++编译器)，而set命令设置<code>CMAKE_C_FLAGS</code>或<code>CMAKE_CXX_FLAGS</code>变量则是分别只针对c和c++编译器的。</p>
+<h1 id="生成可执行文件"><a href="#生成可执行文件" class="headerlink" title="生成可执行文件"></a>生成可执行文件</h1><p>使用<code>add_executable</code>命令可以生成可执行文件。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_executable</span>(main src/main.cpp)</span><br></pre></td></tr></table></figure>
+
+<h1 id="CMake编译MPI程序"><a href="#CMake编译MPI程序" class="headerlink" title="CMake编译MPI程序"></a>CMake编译MPI程序</h1><p>main.cpp文件如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;bits/stdc++.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;mpi.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> **argv)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">MPI_Init</span>(&amp;argc, &amp;argv);</span><br><span class="line">  <span class="type">int</span> rank;</span><br><span class="line">  <span class="type">int</span> size;</span><br><span class="line">  <span class="built_in">MPI_Comm_rank</span>(MPI_COMM_WORLD, &amp;rank);</span><br><span class="line">  <span class="built_in">MPI_Comm_size</span>(MPI_COMM_WORLD, &amp;size);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;hello world from rank %d of %d\n&quot;</span>, rank, size);</span><br><span class="line">  <span class="built_in">MPI_Finalize</span>();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>CMakeLists.txt文件如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"># CMake 最低版本号要求</span><br><span class="line"><span class="built_in">cmake_minimum_required</span> (VERSION <span class="number">3.17</span>)</span><br><span class="line"></span><br><span class="line"># 项目名和信息</span><br><span class="line"><span class="built_in">project</span> (mpi_hello LANGUAGES CXX)</span><br><span class="line"></span><br><span class="line"># 查找MPI库路径</span><br><span class="line"><span class="built_in">find_package</span>(MPI REQUIRED)</span><br><span class="line"></span><br><span class="line"># 设置编译参数</span><br><span class="line"><span class="built_in">add_compile_options</span>(-Wall -O3)</span><br><span class="line"></span><br><span class="line"># 设置头文件路径，相当与gcc中的-<span class="function">I</span></span><br><span class="line"><span class="function"><span class="title">include_directories</span><span class="params">(SYSTEM $&#123;MPI_INCLUDE_PATH&#125;)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"># 生成可执行文件</span></span><br><span class="line"><span class="function"><span class="title">add_executable</span><span class="params">(main main.cpp)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"># 设置链接的库，相当于gcc中的-l</span></span><br><span class="line"><span class="function"><span class="title">target_link_libraries</span><span class="params">(main $&#123;MPI_LIBRARIES&#125;)</span></span></span><br></pre></td></tr></table></figure>
+
+<p>输入<code>cmake .</code>命令生成makefile文件，<code>make</code>命令编程程序。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mpiexec -n 4 ./main <span class="comment"># 运行程序</span></span><br><span class="line"><span class="comment"># 运行结果如下</span></span><br><span class="line">hello world from rank 0 of 4</span><br><span class="line">hello world from rank 3 of 4</span><br><span class="line">hello world from rank 1 of 4</span><br><span class="line">hello world from rank 2 of 4</span><br></pre></td></tr></table></figure>
+
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a target="_blank" rel="noopener" href="https://cmake.org/documentation/">CMake官方文档</a><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xianghang123/p/3556425.html">博客：cmake 常用变量和常用环境变量查表手册</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CMake/" rel="tag"># CMake</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/01/13/Qt%E7%A8%8B%E5%BA%8F%E4%B8%8A%E6%89%8B%E6%9E%84%E5%BB%BA/" rel="prev" title="Qt程序上手构建">
+      <i class="fa fa-chevron-left"></i> Qt程序上手构建
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/04/16/gperftools%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/" rel="next" title="gperftools快速上手">
+      gperftools快速上手 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%84%9A%E6%9C%AC%E8%AF%B4%E6%98%8E-%E9%A1%B9%E7%9B%AE%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">脚本说明&amp;项目信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%8F%98%E9%87%8F"><span class="nav-number">2.</span> <span class="nav-text">设置变量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E5%8F%98%E9%87%8F"><span class="nav-number">2.1.</span> <span class="nav-text">常见变量</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%89%93%E5%8D%B0%E4%BF%A1%E6%81%AF"><span class="nav-number">3.</span> <span class="nav-text">打印信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E4%B8%89%E6%96%B9%E5%BA%93"><span class="nav-number">4.</span> <span class="nav-text">使用三方库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9"><span class="nav-number">5.</span> <span class="nav-text">设置编译选项</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%96%87%E4%BB%B6"><span class="nav-number">6.</span> <span class="nav-text">生成可执行文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CMake%E7%BC%96%E8%AF%91MPI%E7%A8%8B%E5%BA%8F"><span class="nav-number">7.</span> <span class="nav-text">CMake编译MPI程序</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">echo</p>
+  <div class="site-description" itemprop="description">文字是思考的过程</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">echo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

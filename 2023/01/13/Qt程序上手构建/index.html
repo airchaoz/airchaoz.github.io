@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.airchaoz.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一个QT程序可以分为前端和后端，前端就是程序的界面。界面一般由Qt Design程序以可视化的形式生成，通过拖拽布置组件、并为组件设置属性和设置信号和函数槽。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qt程序上手构建">
+<meta property="og:url" content="http://www.airchaoz.top/2023/01/13/Qt%E7%A8%8B%E5%BA%8F%E4%B8%8A%E6%89%8B%E6%9E%84%E5%BB%BA/index.html">
+<meta property="og:site_name" content="echo&#39;s blog">
+<meta property="og:description" content="一个QT程序可以分为前端和后端，前端就是程序的界面。界面一般由Qt Design程序以可视化的形式生成，通过拖拽布置组件、并为组件设置属性和设置信号和函数槽。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202403262226832.png">
+<meta property="article:published_time" content="2023-01-13T04:25:11.000Z">
+<meta property="article:modified_time" content="2024-03-26T14:28:25.030Z">
+<meta property="article:author" content="echo">
+<meta property="article:tag" content="Qt">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202403262226832.png">
+
+<link rel="canonical" href="http://www.airchaoz.top/2023/01/13/Qt%E7%A8%8B%E5%BA%8F%E4%B8%8A%E6%89%8B%E6%9E%84%E5%BB%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Qt程序上手构建 | echo's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">echo's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">文字是思考的过程</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.airchaoz.top/2023/01/13/Qt%E7%A8%8B%E5%BA%8F%E4%B8%8A%E6%89%8B%E6%9E%84%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="echo">
+      <meta itemprop="description" content="文字是思考的过程">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="echo's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Qt程序上手构建
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-01-13 12:25:11" itemprop="dateCreated datePublished" datetime="2023-01-13T12:25:11+08:00">2023-01-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一个QT程序可以分为前端和后端，前端就是程序的界面。界面一般由Qt Design程序以可视化的形式生成，通过拖拽布置组件、并为组件设置属性和设置信号和函数槽。</p>
+<span id="more"></span>
+<h1 id="界面头文件的生成"><a href="#界面头文件的生成" class="headerlink" title="界面头文件的生成"></a>界面头文件的生成</h1><p><img src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202403262226832.png"></p>
+<p>Qt Design生成的界面文件后缀为<code>ui</code>，是一种xml文件，我们可以使用<code>uic</code>程序转换为<code>c++</code>编程语言所需要的<code>.h</code>头文件。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uic hello.ui -o ui_hello.h</span><br></pre></td></tr></table></figure>
+
+<h1 id="界面头文件的使用"><a href="#界面头文件的使用" class="headerlink" title="界面头文件的使用"></a>界面头文件的使用</h1><p>查看生成的UI文件</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/********************************************************************************</span></span><br><span class="line"><span class="comment">** Form generated from reading UI file &#x27;hello.ui&#x27;</span></span><br><span class="line"><span class="comment">**</span></span><br><span class="line"><span class="comment">** Created by: Qt User Interface Compiler version 5.9.0</span></span><br><span class="line"><span class="comment">**</span></span><br><span class="line"><span class="comment">** WARNING! All changes made in this file will be lost when recompiling UI file!</span></span><br><span class="line"><span class="comment">********************************************************************************/</span></span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> UI_HELLO_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> UI_HELLO_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtCore/QVariant&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtWidgets/QAction&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtWidgets/QApplication&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtWidgets/QButtonGroup&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtWidgets/QHeaderView&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtWidgets/QLabel&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtWidgets/QWidget&gt;</span></span></span><br><span class="line">QT_BEGIN_NAMESPACE</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Ui_Form</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    QLabel *label;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">setupUi</span><span class="params">(QWidget *Form)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (Form-&gt;<span class="built_in">objectName</span>().<span class="built_in">isEmpty</span>())</span><br><span class="line">            Form-&gt;<span class="built_in">setObjectName</span>(<span class="built_in">QStringLiteral</span>(<span class="string">&quot;Form&quot;</span>));</span><br><span class="line">        Form-&gt;<span class="built_in">resize</span>(<span class="number">427</span>, <span class="number">244</span>);</span><br><span class="line">        label = <span class="keyword">new</span> <span class="built_in">QLabel</span>(Form);</span><br><span class="line">        label-&gt;<span class="built_in">setObjectName</span>(<span class="built_in">QStringLiteral</span>(<span class="string">&quot;label&quot;</span>));</span><br><span class="line">        label-&gt;<span class="built_in">setGeometry</span>(<span class="built_in">QRect</span>(<span class="number">10</span>, <span class="number">10</span>, <span class="number">200</span>, <span class="number">40</span>));</span><br><span class="line">        <span class="built_in">retranslateUi</span>(Form);</span><br><span class="line">        QMetaObject::<span class="built_in">connectSlotsByName</span>(Form);</span><br><span class="line">    &#125; <span class="comment">// setupUi</span></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">retranslateUi</span><span class="params">(QWidget *Form)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Form-&gt;<span class="built_in">setWindowTitle</span>(QApplication::<span class="built_in">translate</span>(<span class="string">&quot;Form&quot;</span>, <span class="string">&quot;Form&quot;</span>, Q_NULLPTR));</span><br><span class="line">        label-&gt;<span class="built_in">setText</span>(QApplication::<span class="built_in">translate</span>(<span class="string">&quot;Form&quot;</span>, <span class="string">&quot;C\350\257\255\350\250\200\344\270\255\346\226\207\347\275\221&quot;</span>, Q_NULLPTR));</span><br><span class="line">    &#125; <span class="comment">// retranslateUi</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">namespace</span> Ui &#123;</span><br><span class="line">    <span class="keyword">class</span> <span class="title class_">Form</span>: <span class="keyword">public</span> Ui_Form &#123;&#125;;</span><br><span class="line">&#125; <span class="comment">// namespace Ui</span></span><br><span class="line">QT_END_NAMESPACE</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// UI_HELLO_H</span></span></span><br></pre></td></tr></table></figure>
+
+<p>代码开头的注释提醒开发者不要手动修改该头文件，因为<code>uic</code>工具下次自动生成<code>.h</code> 文件时，会把旧的代码全清掉，然后生成新的代码内容。</p>
+<p><code>QT_BEGIN_NAMESPACE</code>和 <code>QT_END_NAMESPACE</code>这两个宏标示中间的代码是包含在名字空间里的，就是一个提示作用，没有实际意义。</p>
+<p>第一个类是全局范围定义的Ui_Form类，里面首先定义了一个label指针，注意这个指针名称就是之前设计师里显示的objectName。</p>
+<p>接着定义了一个 setupUi 函数，这个是最关键的生成图形界面的函数，它接收一个 QWidget 对象的指针，然后为这个 QWidget 对象设置窗口界面和控件。</p>
+<p>还有一个 retranslateUi 函数，是专门用于支持多国语言翻译的，主窗口和标签控件的字符串都在这重新翻译一下，如果有多国语言支持的翻译文件，界面的多国语言显示就通过该函数实现。</p>
+<p>接下来定义了一个叫 Ui 的名字空间，空间里定义了一个类 Form ，简单地从 Ui_Form 类继承一下，并没有添加额外的代码。使用 Ui 名字空间的好处就是避免名称冲突，所以正常都不会直接使用 Ui_Form 类，而是用名字空间里的 Ui::Form 类。</p>
+<p>准确地说，它们通过 setupUi 函数，辅助该函数参数里的窗口对象（QWidget *Form）构建图形界面，它们帮助别的窗口类对象构建图形界面，仅此而已。当然，在 setupUi 函数里新建的控件指针，如 label，是 Ui_Form 或Ui::Form 类里的成员变量，代码里需要通过这个类的成员变量来操控相应的控件。</p>
+<p>如果要在项目里面使用 ui 文件（其实是 ui_*.h），通常有三种方式：直接使用方式、多重继承使用方式和成员变量使用方式。本节讲述前两种使用方式，而以后 Qt Creator 自动生成的代码就是成员变量使用方式，本节就不重复了。</p>
+<h1 id="直接使用-ui-文件"><a href="#直接使用-ui-文件" class="headerlink" title="直接使用 .ui 文件"></a>直接使用 .ui 文件</h1><p>直接使用 .ui 文件的原理非常简单，创建一个 QWidget 类对象和 Ui::Form 类对象，调用 Ui::Form 对象的 setupUi 函数设置一下主窗体，然后显示就行了。我们在 D:\QtDemo\ 文件夹里新建一个 main.cpp，然后编辑代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtWidgets/QApplication&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtWidgets/QWidget&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;ui_hello.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">QApplication <span class="title">a</span><span class="params">(argc, argv)</span></span>;</span><br><span class="line">    QWidget *w = <span class="keyword">new</span> <span class="built_in">QWidget</span>();  <span class="comment">//主窗口</span></span><br><span class="line">    Ui::Form createUi;  <span class="comment">//createUi并不是一个真正的窗口</span></span><br><span class="line">    createUi.<span class="built_in">setupUi</span>(w);  <span class="comment">//createUi是创建GUI的工具</span></span><br><span class="line">    w-&gt;<span class="built_in">show</span>();  <span class="comment">//w是真正的窗口</span></span><br><span class="line">    <span class="keyword">return</span> a.<span class="built_in">exec</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>main.cpp 包含了三个头文件 QApplication、QWidget 和 前面用 uic 生成的 ui_hello.h，由于 ui_hello.h 不包含 Q_OBJECT 宏，是不需要用元对象编译器 moc 处理的。</p>
+<p>main 函数里第一行是图形界面程序入口对象，第二行创建了一个 QWidget 类对象 w（w 其实是一个指向对象的指针）作为程序的主窗口，w 自己并没有创建控件或设置窗口属性。</p>
+<p>第三行语句：</p>
+<p>Ui::Form createUi;</p>
+<p>创建了 Ui::Form 类的对象 createUi ，这个对象自己不是一个窗口，它可以为别的窗口对象设置图形界面。</p>
+<p>第四行语句：</p>
+<p>createUi.setupUi(w);</p>
+<p>调用了 createUi 对象的 setupUi 函数，该函数接收一个窗体对象指针，这里是 w。setupUi 函数里面的代码会为 w 创建内部的控件，设置窗体大小等等。</p>
+<p>剩下的两行代码是显示主界面，并进入事件处理循环，直到退出。</p>
+<h1 id="多重继承法使用-ui-文件"><a href="#多重继承法使用-ui-文件" class="headerlink" title="多重继承法使用 .ui 文件"></a>多重继承法使用 .ui 文件</h1><p>上面的代码非常简单，除了 uic 生成的 ui_hello.h 和手动编写的 main.cpp，就没其他的代码文件了。主界面是 QWidget 类的对象，然后该对象比较简单，没有自己的代码。</p>
+<p>如果要丰富一下主界面的窗口类，那就需要使用从 QWidget 类继承的方式并加上 Ui::Form 类的代码。C++ 如果要同时使用两个类的代码，有两种方式：</p>
+<ul>
+<li>一种是多重继承的方式，同时用 QWidget 和 Ui::Form 类作为基类；</li>
+<li>还有一种是使用成员变量，将 Ui::Form 类的对象作为 QWidget 派生类的成员变量，这种也叫单一继承方式，它的基类只有 QWidget。</li>
+</ul>
+<p>本小节介绍多重继承方式，而以后的代码都用 QtCreator 自动生成的单一继承方式（Ui::Form 的对象作为成员变量）。</p>
+<p>将前面做好的 hello.ui 和 ui_hello.h 复制到 D:\QtDemo 文件夹，然后再新建三个代码文件，分别是 hellouiwidget.h、hellouiwidget.cpp 和 main.cpp ，每个文件的内容如下。</p>
+<ol>
+<li>hellouiwidget.h 代码内容</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtWidgets/QWidget&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtWidgets/QLabel&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;ui_hello.h&quot;</span></span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">HelloUIWidget</span> : <span class="keyword">public</span> QWidget, <span class="keyword">public</span> Ui::Form</span><br><span class="line">&#123;</span><br><span class="line">    Q_OBJECT</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">HelloUIWidget</span><span class="params">(QWidget *parent = <span class="number">0</span>)</span></span>;</span><br><span class="line">    ~<span class="built_in">HelloUIWidget</span>();</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">AdjustLabel</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>hellouiwidget.h 包含了三个头文件 QWidget、QLabel 和 使用 uic 生成的 ui_hello.h ，里面定义了一个类 HelloUIWidget 。HelloUIWidget 从 QWidget、Ui::Form 两个基类继承而来，都是 public 继承方式。由于基类有一个是 Qt 窗口类 QWidget，所以在类定义开始处必须加入 Q_OBJECT 宏，用于声明元对象系统。</p>
+<p>该类定义了两个公开类型（public）的函数，即构造函数和析构函数。</p>
+<p>最后一个是我们自己编写的保护类型（protected）的函数 AdjustLabel，用于调整 label 标签对象的显示效果。使用多重继承或成员变量的方式就容易丰富窗口类的功能，我们在 HelloUIWidget  里添加了 AdjustLabel 函数，当然还可以添加更多的函数。</p>
+<ol start="2">
+<li>hellouiwidget.cpp 文件内容：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;hellouiwidget.h&quot;</span></span></span><br><span class="line">HelloUIWidget::<span class="built_in">HelloUIWidget</span>(QWidget *parent) : <span class="built_in">QWidget</span>(parent)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">setupUi</span>(<span class="keyword">this</span>);  <span class="comment">//必须先调用setupUi 函数</span></span><br><span class="line">    <span class="comment">//<span class="doctag">TODO:</span></span></span><br><span class="line">    <span class="built_in">AdjustLabel</span>();</span><br><span class="line">&#125;</span><br><span class="line">HelloUIWidget::~<span class="built_in">HelloUIWidget</span>()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//无需手动删除 Label 组件和 widget 组件，它们会被 Qt 自动删除</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">HelloUIWidget::AdjustLabel</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    label-&gt;<span class="built_in">setText</span>(<span class="string">&quot;新宝库&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 HelloUIWidget 构造函数定义处，它使用输入参数 parent 初始化了基类 QWidget，另一个基类 Ui::Form 因为它构造函数不需要参数，就没必要手动编写初始化代码，C++ 编译器自己会先构造好基类。</p>
+<p>HelloUIWidget 从基类 Ui::Form 继承了 setupUi 函数，所以可直接调用该函数为自己窗口（this）构建图形界面。在构建好图形界面的控件之后，我们再调用自己编写的 AdjustLabel 函数修改标签控件显示效果。</p>
+<p>第二个函数是 HelloUIWidget 类的析构函数，里面没有实际代码。仔细观察 ui_hello.h 代码可以发现 label 指针保存的对象是用 new 创建的，而这里我们没有手动 delete 它，因为在 Qt 主窗口关闭时，这些控件会随着主窗口全会被自动销毁，对于控件对象可以不用手动编写 delete 代码。</p>
+<p>第三个函数是 AdjustLabel ，这个函数里对 label 指针保存的对象进行处理，label 指针成员变量也是从基类 Ui::Form 继承而来的。AdjustLabel 里面第一句代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">label-&gt;<span class="built_in">setText</span>(<span class="string">&quot;新宝库&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>是设置标签控件显示的文本。</p>
+<ol start="3">
+<li>main.cpp 文件内容：</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;QtWidgets/QApplication&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;hellouiwidget.h&quot;</span></span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">QApplication <span class="title">a</span><span class="params">(argc, argv)</span></span>;</span><br><span class="line">    HelloUIWidget *w = <span class="keyword">new</span> <span class="built_in">HelloUIWidget</span>();</span><br><span class="line">    w-&gt;<span class="built_in">show</span>();</span><br><span class="line">    <span class="keyword">return</span> a.<span class="built_in">exec</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码内容比较简单，main 函数里第一句创建图形程序的入口对象，第二句创建主界面窗口对象，第三句显示主界面窗口，最后一句进入事件循环直到退出为止。窗口对象会在主窗口关闭时自动销毁，所以没有 手动加 delete 代码。</p>
+<p>代码分析完了，接下来就是编译生成目标程序了。</p>
+<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p><a target="_blank" rel="noopener" href="https://www.xinbaoku.com/archive/Eva5fxIz.html">博客:Qt.ui文件的使用</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Qt/" rel="tag"># Qt</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/12/22/OpenMP%E5%92%8CMPI%E6%B7%B7%E5%90%88%E5%B9%B6%E8%A1%8C%E7%9A%84%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" rel="prev" title="OpenMP和MPI混合并行的环境配置">
+      <i class="fa fa-chevron-left"></i> OpenMP和MPI混合并行的环境配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/01/18/CMake%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/" rel="next" title="CMake快速上手">
+      CMake快速上手 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%95%8C%E9%9D%A2%E5%A4%B4%E6%96%87%E4%BB%B6%E7%9A%84%E7%94%9F%E6%88%90"><span class="nav-number">1.</span> <span class="nav-text">界面头文件的生成</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%95%8C%E9%9D%A2%E5%A4%B4%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">界面头文件的使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8-ui-%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">直接使用 .ui 文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%9A%E9%87%8D%E7%BB%A7%E6%89%BF%E6%B3%95%E4%BD%BF%E7%94%A8-ui-%E6%96%87%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">多重继承法使用 .ui 文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">echo</p>
+  <div class="site-description" itemprop="description">文字是思考的过程</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">echo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

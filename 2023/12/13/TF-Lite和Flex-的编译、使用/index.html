@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.airchaoz.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="当谈到深度学习和机器学习框架时，必定绕不开Tensorflow。作为一个备受欢迎的开源工具，它被广泛用于构建、训练和部署机器学习模型。TensorFlow 由 Google 开发，并于2015年首次发布，它的目标是提供一个灵活、可扩展且易于使用的框架，使研究人员和工程师能够快速开发和部署深度学习模型。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TF Lite和Flex 的编译、使用">
+<meta property="og:url" content="http://www.airchaoz.top/2023/12/13/TF-Lite%E5%92%8CFlex-%E7%9A%84%E7%BC%96%E8%AF%91%E3%80%81%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="echo&#39;s blog">
+<meta property="og:description" content="当谈到深度学习和机器学习框架时，必定绕不开Tensorflow。作为一个备受欢迎的开源工具，它被广泛用于构建、训练和部署机器学习模型。TensorFlow 由 Google 开发，并于2015年首次发布，它的目标是提供一个灵活、可扩展且易于使用的框架，使研究人员和工程师能够快速开发和部署深度学习模型。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202401131559459.png">
+<meta property="og:image" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202401131601190.png">
+<meta property="og:image" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202401131601432.png">
+<meta property="og:image" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202403262257900.png">
+<meta property="article:published_time" content="2023-12-13T13:55:01.000Z">
+<meta property="article:modified_time" content="2024-03-26T14:59:08.221Z">
+<meta property="article:author" content="echo">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202401131559459.png">
+
+<link rel="canonical" href="http://www.airchaoz.top/2023/12/13/TF-Lite%E5%92%8CFlex-%E7%9A%84%E7%BC%96%E8%AF%91%E3%80%81%E4%BD%BF%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>TF Lite和Flex 的编译、使用 | echo's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">echo's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">文字是思考的过程</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.airchaoz.top/2023/12/13/TF-Lite%E5%92%8CFlex-%E7%9A%84%E7%BC%96%E8%AF%91%E3%80%81%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="echo">
+      <meta itemprop="description" content="文字是思考的过程">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="echo's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TF Lite和Flex 的编译、使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-13 21:55:01" itemprop="dateCreated datePublished" datetime="2023-12-13T21:55:01+08:00">2023-12-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>当谈到深度学习和机器学习框架时，必定绕不开Tensorflow。作为一个备受欢迎的开源工具，它被广泛用于构建、训练和部署机器学习模型。TensorFlow 由 Google 开发，并于2015年首次发布，它的目标是提供一个灵活、可扩展且易于使用的框架，使研究人员和工程师能够快速开发和部署深度学习模型。</p>
+<span id="more"></span>
+
+<p><img src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202401131559459.png"></p>
+<p>对于移动和嵌入式设备，TensorFlow 提供了 TensorFlow Lite。它是 TensorFlow 的一个轻量级版本，专门设计用于在移动设备、物联网设备和嵌入式系统等资源受限的环境中运行机器学习模型。它的目标是在保持模型性能的同时，提供更小的模型尺寸和更快的推理速度，以满足移动和嵌入式应用的需求。以下是 TensorFlow Lite 的一些关键特点和用途：</p>
+<ol>
+<li><strong>轻量级</strong>：TFLite 通过使用量化技术、模型剪枝和模型蒸馏等方法，将深度学习模型的大小大幅减小，以适应资源有限的设备。这有助于减少模型的存储空间和内存占用。</li>
+<li><strong>快速推理</strong>：TFLite 针对嵌入式设备进行了优化，以实现快速的推理速度。这对于实时应用和响应时间敏感的任务非常重要，如图像识别、语音识别和姿态估计等。</li>
+<li><strong>硬件加速支持</strong>：TFLite 支持多种硬件加速器，包括GPU、TPU和边缘设备上的专用加速器。这允许模型在加速硬件上运行，进一步提高了推理速度。</li>
+<li><strong>跨平台兼容性</strong>：TFLite 可以在多个操作系统上运行，包括Android、iOS、Linux和嵌入式操作系统，使其适用于各种移动和嵌入式平台。</li>
+<li><strong>易于集成</strong>：TFLite 提供了针对多种编程语言的 API，包括Python、C++和Java，使开发者能够轻松集成模型到他们的应用中。</li>
+<li><strong>量化和转换工具</strong>：TFLite 提供了用于将训练好的 TensorFlow 模型转换为 TFLite 格式的工具，同时还支持量化，这有助于减小模型的尺寸并提高性能。</li>
+<li><strong>模型兼容性</strong>：TFLite 支持多种类型的模型，包括图像分类、目标检测、自然语言处理和语音处理等。这使得开发者能够在移动和嵌入式设备上部署各种机器学习任务。</li>
+</ol>
+<h1 id="源码下载"><a href="#源码下载" class="headerlink" title="源码下载"></a>源码下载</h1><p>TFLite是Tensorflow的子模块，源码也放在Tensorflow当中，可以直接从Github上下载。Git使用如下命令克隆到本地：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/tensorflow/tensorflow.git</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202401131601190.png"></p>
+<h1 id="程序编译"><a href="#程序编译" class="headerlink" title="程序编译"></a>程序编译</h1><p>Tensorflow的编译不是一件简单的事情，本人踩了很多坑，这里记录一下编译过程，避免后人踩坑。</p>
+<p>Tensorflow提供了CMake和Bazel两种编译途径，<strong>这里强烈推荐使用Bazel编译</strong>，这也是官方推荐。CMake虽然有时也能编译成功，但是维护程度没有Bazel好，更容易编译失败。</p>
+<aside>
+💡 Tensorflow的版本跟Bazel是存在版本对应关系的，官方只会测试少部分指定的版本。
+
+</aside>
+
+<p><img src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202401131601432.png"></p>
+<p>这里强烈建议使用Bazelisk，它能够自动识别编译所需要的Bazel并自动下载切换到对应的版本。使用方法也很简单，从Github上下载Release，重命名成bazel(Windows下是bazel.exe)并添加到环境变量当中即可。</p>
+<h2 id="Windows平台编译"><a href="#Windows平台编译" class="headerlink" title="Windows平台编译"></a>Windows平台编译</h2><h3 id="环境依赖："><a href="#环境依赖：" class="headerlink" title="环境依赖："></a>环境依赖：</h3><ul>
+<li>VC2019：在WIN平台编译需要准备VC编译环境，这里本人使用VC2019，因为Tensorflow使用的C++标准库比较新，使用旧版本VC可能会无法编译。</li>
+<li>Git Bash：编译时需要Bash来执行某些脚本，因为Win本身不支持bash，所以需要借助Git Bash</li>
+<li>Python+Numpy模块</li>
+</ul>
+<h3 id="Lite编译步骤："><a href="#Lite编译步骤：" class="headerlink" title="Lite编译步骤："></a>Lite编译步骤：</h3><aside>
+💡
+**一定要使用CMD！一定要使用CMD！一定要使用CMD！不要使用PowerShell**
+
+</aside>
+
+<p>进入到源码目录，先生成编译配置，选项看自己需要来选。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python .\configure.py</span><br></pre></td></tr></table></figure>
+
+<p>在编译之前设置好编译变量，建议设置好Git Bash路径和VC路径，避免编译找不到这两个。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> BAZEL_SH=D:/Program Files/Git/bin/bash.exe</span><br><span class="line"><span class="built_in">set</span> BAZEL_VC=D:\\Program Files (x86)\\Microsoft Visual Studio\\2019\BuildTools\\VC</span><br></pre></td></tr></table></figure>
+
+<p>编译需要能上外网，否则很多源码无法下载。</p>
+<p>使用以下命令进行编译，-c opt表示编译Release版本，有需要可以改成DEBUG版本。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bazel build -c opt --config=mkl //tensorflow/lite:tensorflowlite</span><br></pre></td></tr></table></figure>
+
+<p>编译好之后在<code>\bazel-out\x64_windows-opt\bin\tensorflow\lite</code>文件下可以找到<code>tensorflowlite.dll</code>和<code>tensorflowlite.dll.if.lib</code>，这就是我们需要的tensorflow动态库文件。</p>
+<h3 id="FLex编译步骤："><a href="#FLex编译步骤：" class="headerlink" title="FLex编译步骤："></a>FLex编译步骤：</h3><p>并不是所有的模型都能转Lite格式，默认的Lite只支持少量的算子，如果想要复杂的算子需要使用Flex委托，官方关于这部分的解释如下</p>
+<p><img src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202403262257900.png" alt="Untitled"></p>
+<p>Flex的编译也是只需要一行命令，但是需要注意的是，编译Flex需要编译Tensorflow的核心库，需要非常久的时间，建议有条件放到多核编译机上编译。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bazel build <span class="literal">-c</span> opt <span class="literal">--config</span>=monolithic tensorflow/lite/delegates/flex:tensorflowlite_flex</span><br></pre></td></tr></table></figure>
+
+<p>编译完成后可以在<code>\bazel-out\x64_windows-opt\bin\tensorflow\lite\delegates\flex</code> 目录里找到<code>tensorflowlite_flex.dll</code>和<code>tensorflowlite_flex.dll.if.lib</code></p>
+<h2 id="Linux平台编译"><a href="#Linux平台编译" class="headerlink" title="Linux平台编译"></a>Linux平台编译</h2><h3 id="环境依赖：-1"><a href="#环境依赖：-1" class="headerlink" title="环境依赖："></a>环境依赖：</h3><ul>
+<li>GCC：建议使用高版本的GCC进行编译，对C++14、17支持的版本最佳</li>
+<li>Python+Numpy模块</li>
+</ul>
+<h3 id="编译步骤："><a href="#编译步骤：" class="headerlink" title="编译步骤："></a>编译步骤：</h3><p>Linux环境下的编译比较简单，先生成编译配置，再编译</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">python .\configure.py</span><br><span class="line">bazel build <span class="literal">-c</span> opt <span class="literal">--config</span>=mkl //tensorflow/lite:tensorflowlite</span><br><span class="line">bazel build <span class="literal">-c</span> opt <span class="literal">--config</span>=monolithic tensorflow/lite/delegates/flex:tensorflowlite_flex</span><br></pre></td></tr></table></figure>
+
+<h1 id="程序调用"><a href="#程序调用" class="headerlink" title="程序调用"></a>程序调用</h1><p>调用需要用到Tensorflow Lite C++ API，通过文档可以查询到api接口及其功能。</p>
+<p><a target="_blank" rel="noopener" href="https://www.tensorflow.org/lite/api_docs/cc">TensorFlow Lite C++ API Reference</a></p>
+<h2 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a><strong>头文件</strong></h2><p>调用需要用到<code>tensorflow</code>和<code>flatbuffers</code>的头文件，<code>tensorflow</code>就使用源码文件夹，<code>flatbuffers</code>的头文件在路径<code>bazel-out\x64_windows-opt\bin\external\flatbuffers\_virtual_includes\flatbuffers</code>中可以找到，Linux在类似的目录。</p>
+<p>调用主要使用这3个头文件</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;tensorflow/lite/interpreter.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;tensorflow/lite/kernels/register.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;tensorflow/lite/model.h&quot;</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="加载模型"><a href="#加载模型" class="headerlink" title="加载模型"></a><strong>加载模型</strong></h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">std::unique_ptr&lt;tflite::FlatBufferModel&gt; model =</span><br><span class="line">    tflite::FlatBufferModel::<span class="built_in">BuildFromFile</span>(<span class="string">&quot;../model/lstm_1mon_5s.tflite&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="创建解释器"><a href="#创建解释器" class="headerlink" title="创建解释器"></a><strong>创建解释器</strong></h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> tflite::ops::builtin::BuiltinOpResolver resolver;</span><br><span class="line"> std::unique_ptr&lt;tflite::Interpreter&gt; interpreter;</span><br><span class="line"> tflite::<span class="built_in">InterpreterBuilder</span>(*model, resolver)(&amp;interpreter);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 分配解释器内存</span></span><br><span class="line"> <span class="keyword">if</span> (interpreter-&gt;<span class="built_in">AllocateTensors</span>() != kTfLiteOk) &#123;</span><br><span class="line">   std::cerr &lt;&lt; <span class="string">&quot;Failed to allocate tensors.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">   <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="输出模型信息"><a href="#输出模型信息" class="headerlink" title="输出模型信息"></a>输出模型信息</h2><p>tflite模型文件包含了推理所需要的尺寸信息，可以将其输出出来便于错误检查。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// 获取输入输出张量</span></span><br><span class="line"> TfLiteTensor* input_tensor = interpreter-&gt;<span class="built_in">input_tensor</span>(<span class="number">0</span>);</span><br><span class="line"> TfLiteTensor* output_tensor = interpreter-&gt;<span class="built_in">output_tensor</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输入数据尺寸</span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> input_tensor_size = input_tensor-&gt;bytes / <span class="built_in">sizeof</span>(<span class="type">float</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="填充推理数据"><a href="#填充推理数据" class="headerlink" title="填充推理数据"></a>填充推理数据</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span>* input_data = interpreter-&gt;<span class="built_in">typed_input_tensor</span>&lt;<span class="type">float</span>&gt;(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; N; ++i) &#123;</span><br><span class="line">	input_data[i] = <span class="number">0.5f</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="运行模型推理"><a href="#运行模型推理" class="headerlink" title="运行模型推理"></a>运行模型推理</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 运行模型</span></span><br><span class="line"><span class="keyword">if</span> (interpreter-&gt;<span class="built_in">Invoke</span>() != kTfLiteOk) &#123;</span><br><span class="line">  std::cerr &lt;&lt; <span class="string">&quot;Failed to invoke interpreter.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取输出数据"><a href="#获取输出数据" class="headerlink" title="获取输出数据"></a>获取输出数据</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取输出数据</span></span><br><span class="line"><span class="type">float</span>* output_data = interpreter-&gt;<span class="built_in">typed_output_tensor</span>&lt;<span class="type">float</span>&gt;(<span class="number">0</span>);</span><br></pre></td></tr></table></figure>
+
+<p>完整的Demo如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unordered_map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;tensorflow/lite/interpreter.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;tensorflow/lite/kernels/register.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;tensorflow/lite/model.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">loadModelAndRunInference</span><span class="params">(<span class="type">const</span> std::string model_path,</span></span></span><br><span class="line"><span class="params"><span class="function">                              <span class="type">const</span> <span class="type">int</span> time_step,</span></span></span><br><span class="line"><span class="params"><span class="function">                              std::vector&lt;std::vector&lt;<span class="type">float</span>&gt;&gt; &amp;indata,</span></span></span><br><span class="line"><span class="params"><span class="function">                              std::vector&lt;<span class="type">float</span>&gt; &amp;outdata)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (!indata.<span class="built_in">size</span>()) &#123;</span><br><span class="line">    std::cerr &lt;&lt; <span class="string">&quot;输入数据不能为空&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (indata[<span class="number">0</span>].<span class="built_in">size</span>() &lt; time_step) &#123;</span><br><span class="line">    std::cerr &lt;&lt; <span class="string">&quot;输入数据量小于样本时间步长&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 加载模型</span></span><br><span class="line">  <span class="keyword">auto</span> model = tflite::FlatBufferModel::<span class="built_in">BuildFromFile</span>(model_path.<span class="built_in">c_str</span>());</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!model) &#123;</span><br><span class="line">    std::cerr &lt;&lt; <span class="string">&quot;Failed to load model.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 创建解释器</span></span><br><span class="line">  tflite::ops::builtin::BuiltinOpResolver resolver;</span><br><span class="line">  std::unique_ptr&lt;tflite::Interpreter&gt; interpreter;</span><br><span class="line">  tflite::<span class="built_in">InterpreterBuilder</span>(*model, resolver)(&amp;interpreter);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!interpreter) &#123;</span><br><span class="line">    std::cerr &lt;&lt; <span class="string">&quot;Failed to construct interpreter.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 分配张量</span></span><br><span class="line">  <span class="keyword">if</span> (interpreter-&gt;<span class="built_in">AllocateTensors</span>() != kTfLiteOk) &#123;</span><br><span class="line">    std::cerr &lt;&lt; <span class="string">&quot;Failed to allocate tensors.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 获取输入输出张量</span></span><br><span class="line">  TfLiteTensor* input_tensor = interpreter-&gt;<span class="built_in">input_tensor</span>(<span class="number">0</span>);</span><br><span class="line">  TfLiteTensor* output_tensor = interpreter-&gt;<span class="built_in">output_tensor</span>(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 填充输入数据</span></span><br><span class="line">  <span class="type">int</span> input_tensor_size = input_tensor-&gt;bytes / <span class="built_in">sizeof</span>(<span class="type">float</span>);</span><br><span class="line">  std::cout &lt;&lt; <span class="string">&quot;输入数据大小为:&quot;</span> &lt;&lt; input_tensor_size &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">  <span class="type">const</span> <span class="type">int</span> vec_num = indata.<span class="built_in">size</span>();</span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> n = <span class="number">0</span>; n &lt; indata[<span class="number">0</span>].<span class="built_in">size</span>() - time_step; n++) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">float</span>* input_data = interpreter-&gt;<span class="built_in">typed_input_tensor</span>&lt;<span class="type">float</span>&gt;(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; time_step; ++i) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; vec_num; ++j) &#123;</span><br><span class="line">        input_data[i*vec_num+j] = indata[j][n+i];</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 运行模型</span></span><br><span class="line">    <span class="keyword">if</span> (interpreter-&gt;<span class="built_in">Invoke</span>() != kTfLiteOk) &#123;</span><br><span class="line">      std::cerr &lt;&lt; <span class="string">&quot;Failed to invoke interpreter.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取输出数据</span></span><br><span class="line">    <span class="type">float</span>* output_data = interpreter-&gt;<span class="built_in">typed_output_tensor</span>&lt;<span class="type">float</span>&gt;(<span class="number">0</span>);</span><br><span class="line">    outdata.<span class="built_in">push_back</span>(*output_data);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="Flex调用"><a href="#Flex调用" class="headerlink" title="Flex调用"></a>Flex调用</h1><p>官方申明，只要链接了共享库，在运行时创建解释器时，就会自动安装必要的 <code>TfLiteDelegate</code>。不需要像其他委托类型通常要求的那样显式安装委托实例。</p>
+<p>在Linux平台中，只需要使用<code>--no-as-needed</code>来强制链接<code>tensorflowlite_flex.so</code>即可，CMake脚本如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cmake_minimum_required</span>(VERSION <span class="number">3.11</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">project</span>(predict)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_CXX_STANDARD <span class="number">11</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">include_directories</span>(</span><br><span class="line">  /home/airchaoz/miniconda3/envs/tflite/lib/python3<span class="number">.8</span>/site-packages/tensorflow/include</span><br><span class="line">  /home/airchaoz/repository/tf_lite/library/lite/include</span><br><span class="line">  /home/airchaoz/repository/tf_lite/tensorflow</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="built_in">add_compile_options</span>(<span class="string">&quot;-g&quot;</span>)</span><br><span class="line"># 添加动态</span><br><span class="line"><span class="built_in">set</span>(LINK_DIR /home/airchaoz/repository/tf_lite/library/lite/lib/)</span><br><span class="line"><span class="built_in">add_executable</span>(predict src/main.cpp )</span><br><span class="line"></span><br><span class="line"><span class="built_in">link_libraries</span>($&#123;LINK_DIR&#125;/libflatbuffers.a)</span><br><span class="line"></span><br><span class="line"><span class="built_in">target_link_libraries</span>(predict $&#123;LINK_DIR&#125;libtensorflowlite.so)</span><br><span class="line"># 强制链接整个库</span><br><span class="line"><span class="built_in">target_link_libraries</span>(predict</span><br><span class="line">  -Wl,--no-as-needed</span><br><span class="line">  $&#123;LINK_DIR&#125;libtensorflowlite_flex.so</span><br><span class="line">  -Wl,--as-needed</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>在Win平台中，找不到强制链接的选项，这里使用手动加载的方式实现</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/08/27/CMake%E8%BF%9B%E9%98%B6/" rel="prev" title="CMake进阶">
+      <i class="fa fa-chevron-left"></i> CMake进阶
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/02/14/GDB-Dashboard%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="next" title="GDB-Dashboard的使用">
+      GDB-Dashboard的使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E4%B8%8B%E8%BD%BD"><span class="nav-number">1.</span> <span class="nav-text">源码下载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E7%BC%96%E8%AF%91"><span class="nav-number">2.</span> <span class="nav-text">程序编译</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Windows%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91"><span class="nav-number">2.1.</span> <span class="nav-text">Windows平台编译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E4%BE%9D%E8%B5%96%EF%BC%9A"><span class="nav-number">2.1.1.</span> <span class="nav-text">环境依赖：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Lite%E7%BC%96%E8%AF%91%E6%AD%A5%E9%AA%A4%EF%BC%9A"><span class="nav-number">2.1.2.</span> <span class="nav-text">Lite编译步骤：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#FLex%E7%BC%96%E8%AF%91%E6%AD%A5%E9%AA%A4%EF%BC%9A"><span class="nav-number">2.1.3.</span> <span class="nav-text">FLex编译步骤：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91"><span class="nav-number">2.2.</span> <span class="nav-text">Linux平台编译</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E4%BE%9D%E8%B5%96%EF%BC%9A-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">环境依赖：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E6%AD%A5%E9%AA%A4%EF%BC%9A"><span class="nav-number">2.2.2.</span> <span class="nav-text">编译步骤：</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E8%B0%83%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">程序调用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%B4%E6%96%87%E4%BB%B6"><span class="nav-number">3.1.</span> <span class="nav-text">头文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.2.</span> <span class="nav-text">加载模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%A7%A3%E9%87%8A%E5%99%A8"><span class="nav-number">3.3.</span> <span class="nav-text">创建解释器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BE%93%E5%87%BA%E6%A8%A1%E5%9E%8B%E4%BF%A1%E6%81%AF"><span class="nav-number">3.4.</span> <span class="nav-text">输出模型信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A1%AB%E5%85%85%E6%8E%A8%E7%90%86%E6%95%B0%E6%8D%AE"><span class="nav-number">3.5.</span> <span class="nav-text">填充推理数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%9E%8B%E6%8E%A8%E7%90%86"><span class="nav-number">3.6.</span> <span class="nav-text">运行模型推理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E8%BE%93%E5%87%BA%E6%95%B0%E6%8D%AE"><span class="nav-number">3.7.</span> <span class="nav-text">获取输出数据</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Flex%E8%B0%83%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">Flex调用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">echo</p>
+  <div class="site-description" itemprop="description">文字是思考的过程</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">echo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
