@@ -28,7 +28,7 @@
 <meta property="og:description" content="C++编写的程序是可以跨平台的，这是因为C++语言本身是一种独立于平台的编程语言。但是不同的操作系统和不同的编译器使用起来会有一些差异，这里记录了C++跨Win&#x2F;Linux平台开发时需要注意的一些要点。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-06-24T14:05:29.000Z">
-<meta property="article:modified_time" content="2024-06-24T14:12:29.595Z">
+<meta property="article:modified_time" content="2024-06-24T14:17:47.609Z">
 <meta property="article:author" content="echo">
 <meta name="twitter:card" content="summary">
 
@@ -223,10 +223,10 @@
 <li><strong>_MSC_FULL_VER</strong>：定义 MSVC 编译器的完整版本号，包含修订号。</li>
 <li><strong>_MSC_BUILD</strong>：定义 MSVC 编译器的内部版本号。</li>
 </ul>
-<h2 id="架构宏"><a href="#架构宏" class="headerlink" title="架构宏"></a>架构宏</h2><p>**<strong>i386</strong>**：在 32 位 x86 架构上定义。</p>
-<p>**<strong>x86_64</strong>**：在 64 位 x86 架构上定义</p>
-<p>**<strong>arm</strong>**：在 32 位 ARM 架构上定义</p>
-<p><strong><strong>aarch64</strong></strong> 或 **<strong>arm64</strong>**：在 64 位 ARM 架构上定义。</p>
+<h2 id="架构宏"><a href="#架构宏" class="headerlink" title="架构宏"></a>架构宏</h2><p>__i386__：在 32 位 x86 架构上定义。</p>
+<p>__x86_64__：在 64 位 x86 架构上定义</p>
+<p>__arm__：在 32 位 ARM 架构上定义</p>
+<p><strong>aarch64</strong> 或 __arm64__：在 64 位 ARM 架构上定义。</p>
 <h2 id="C-版本宏"><a href="#C-版本宏" class="headerlink" title="C++版本宏"></a>C++版本宏</h2><p><strong>__cplusplus</strong>：定义 C++ 标准的版本。不同版本的 C++ 标准有不同的值。例如，C++98 为 <strong>199711L</strong>，C++11 为 <strong>201103L</strong>，C++14 为 <strong>201402L</strong>，C++17 为 <strong>201703L</strong>，C++20 为 <strong>202002L</strong>。</p>
 <h1 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h1><p>本节内容不过多展开文件系统本身，而是总结不同系统文件系统在程序开发时需要注意的事项。</p>
 <h2 id="大小写"><a href="#大小写" class="headerlink" title="大小写"></a>大小写</h2><p>由于历史原因，Win中的文件默认情况下不区分文件名的大小写，而Linux是区分大小写的。为了程序的可移植性，建议在Win系统中编程也注意区分大小写。</p>
