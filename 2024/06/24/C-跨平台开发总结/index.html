@@ -28,7 +28,7 @@
 <meta property="og:description" content="C++编写的程序是可以跨平台的，这是因为C++语言本身是一种独立于平台的编程语言。但是不同的操作系统和不同的编译器使用起来会有一些差异，这里记录了C++跨Win&#x2F;Linux平台开发时需要注意的一些要点。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-06-24T14:05:29.000Z">
-<meta property="article:modified_time" content="2024-06-24T14:10:05.497Z">
+<meta property="article:modified_time" content="2024-06-24T14:12:29.595Z">
 <meta property="article:author" content="echo">
 <meta name="twitter:card" content="summary">
 
@@ -197,25 +197,25 @@
 <li><strong>WIN32</strong>：这个宏与 <strong>_WIN32</strong> 类似，用于兼容性目的，通常不推荐直接使用</li>
 </ul>
 <h3 id="Linux系统宏"><a href="#Linux系统宏" class="headerlink" title="Linux系统宏"></a>Linux系统宏</h3><ul>
-<li>**<strong>linux</strong>**：在所有 Linux 平台上定义。表示程序是在 Linux 系统上编译的。</li>
-<li>**<strong>unix</strong>**：在所有类 Unix 平台上定义，包括 Linux、BSD、Mac OS X 等。表示程序是在 Unix 或类 Unix 系统上编译的。</li>
-<li>**<strong>gnu_linux</strong>**：特指 GNU&#x2F;Linux 系统。大部分情况下与 <strong><strong>linux</strong></strong> 一起定义。</li>
+<li>__linux__：在所有 Linux 平台上定义。表示程序是在 Linux 系统上编译的。</li>
+<li>__unix__：在所有类 Unix 平台上定义，包括 Linux、BSD、Mac OS X 等。表示程序是在 Unix 或类 Unix 系统上编译的。</li>
+<li>__gnu_linux__：特指 GNU&#x2F;Linux 系统。大部分情况下与 <strong>linux</strong> 一起定义。</li>
 </ul>
 <h3 id="MAC系统宏"><a href="#MAC系统宏" class="headerlink" title="MAC系统宏"></a>MAC系统宏</h3><ul>
-<li>**<strong>APPLE</strong>**：在 macOS 和 iOS 平台上定义。表示程序是在 Apple 操作系统上编译的。</li>
-<li>**<strong>MACH</strong>**：在基于 Mach 内核的操作系统上定义，包括 macOS。通常与 <strong><strong>APPLE</strong></strong> 一起定义，用于进一步识别 macOS。</li>
+<li>__APPLE__：在 macOS 和 iOS 平台上定义。表示程序是在 Apple 操作系统上编译的。</li>
+<li>__MACH__：在基于 Mach 内核的操作系统上定义，包括 macOS。通常与 <strong>APPLE</strong> 一起定义，用于进一步识别 macOS。</li>
 </ul>
 <h2 id="编译器宏"><a href="#编译器宏" class="headerlink" title="编译器宏"></a>编译器宏</h2><h3 id="GCC编译器"><a href="#GCC编译器" class="headerlink" title="GCC编译器"></a>GCC编译器</h3><ul>
-<li>**<strong>GNUC</strong>**：定义 GCC 编译器的主版本号。例如，GCC 9.x 会定义 <strong><strong>GNUC</strong></strong> 为 <strong>9</strong>。</li>
-<li>**<strong>GNUC_MINOR</strong>**：定义 GCC 编译器的次版本号。例如，GCC 9.3 会定义 <strong><strong>GNUC_MINOR</strong></strong> 为 <strong>3</strong>。</li>
-<li>**<strong>GNUC_PATCHLEVEL</strong>**：定义 GCC 编译器的修订版本号。例如，GCC 9.3.0 会定义 <strong><strong>GNUC_PATCHLEVEL</strong></strong> 为 <strong>0</strong>。</li>
-<li>**<strong>VERSION</strong>**：定义 GCC 的完整版本字符串。</li>
+<li>__GNUC__：定义 GCC 编译器的主版本号。例如，GCC 9.x 会定义 <strong>GNUC</strong> 为 9。</li>
+<li>__GNUC_MINOR__：定义 GCC 编译器的次版本号。例如，GCC 9.3 会定义 <strong>GNUC_MINOR</strong> 为 3。</li>
+<li>__GNUC_PATCHLEVEL__：定义 GCC 编译器的修订版本号。例如，GCC 9.3.0 会定义 <strong>GNUC_PATCHLEVEL</strong> 为 0。</li>
+<li>__VERSION__：定义 GCC 的完整版本字符串。</li>
 </ul>
-<h3 id="Clang-LLVM编译器"><a href="#Clang-LLVM编译器" class="headerlink" title="Clang&#x2F;LLVM编译器"></a><strong>Clang&#x2F;LLVM编译器</strong></h3><ul>
-<li>**<strong>clang</strong>**：在使用 Clang 编译器时定义。</li>
-<li>**<strong>clang_major</strong>**：定义 Clang 编译器的主版本号。</li>
-<li>**<strong>clang_minor</strong>**：定义 Clang 编译器的次版本号。</li>
-<li>**<strong>clang_patchlevel</strong>**：定义 Clang 编译器的修订版本号。</li>
+<h3 id="Clang-LLVM编译器"><a href="#Clang-LLVM编译器" class="headerlink" title="Clang&#x2F;LLVM编译器"></a>Clang&#x2F;LLVM编译器</h3><ul>
+<li>__clang__：在使用 Clang 编译器时定义。</li>
+<li>__clang_major__：定义 Clang 编译器的主版本号。</li>
+<li>__clang_minor__：定义 Clang 编译器的次版本号。</li>
+<li>__clang_patchlevel__：定义 Clang 编译器的修订版本号。</li>
 </ul>
 <h3 id="MSVC-Microsoft-Visual-C-编译器"><a href="#MSVC-Microsoft-Visual-C-编译器" class="headerlink" title="MSVC (Microsoft Visual C++)编译器"></a><strong>MSVC (Microsoft Visual C++)编译器</strong></h3><p>MSVC 是 Microsoft 的 C++ 编译器，主要用于 Windows 平台的开发。</p>
 <ul>
