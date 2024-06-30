@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.airchaoz.top","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="时间类型可以说是非常常用的类型，在使用的过程中经常感觉掌握的不够全面，这里梳理一下，作为记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="c++时间类型">
+<meta property="og:url" content="http://www.airchaoz.top/2024/06/30/c-%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B/index.html">
+<meta property="og:site_name" content="echo&#39;s blog">
+<meta property="og:description" content="时间类型可以说是非常常用的类型，在使用的过程中经常感觉掌握的不够全面，这里梳理一下，作为记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-06-30T13:30:23.000Z">
+<meta property="article:modified_time" content="2024-06-30T13:31:06.891Z">
+<meta property="article:author" content="echo">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://www.airchaoz.top/2024/06/30/c-%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>c++时间类型 | echo's blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">echo's blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">文字是思考的过程</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://www.airchaoz.top/2024/06/30/c-%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="echo">
+      <meta itemprop="description" content="文字是思考的过程">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="echo's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          c++时间类型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-06-30 21:30:23" itemprop="dateCreated datePublished" datetime="2024-06-30T21:30:23+08:00">2024-06-30</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>时间类型可以说是非常常用的类型，在使用的过程中经常感觉掌握的不够全面，这里梳理一下，作为记录。<span id="more"></span></p>
+<h1 id="C风格时间"><a href="#C风格时间" class="headerlink" title="C风格时间"></a>C风格时间</h1><h2 id="tm结构体"><a href="#tm结构体" class="headerlink" title="tm结构体"></a>tm结构体</h2><p>在C++11之前，标准库中并没有提供专门的时间和日期类型。为了处理时间和日期，开发者通常会C语言提供的时间和类型。现在C++项目基本上都使用了C++11及更高的版本，但是一些古早的代码或者库接口还是能看到C风格的时间。</p>
+<p>为了使用C语言踢狗的日期和时间相关的函数和结构，需要在 C++ 程序中引用 <code>&lt;ctime&gt;</code> 头文件。</p>
+<p>有四个与时间相关的类型：<code>clock_t</code>、<code>time_t</code>、<code>size_t</code> 和 <code>tm</code>。类型 <code>clock_t</code>、<code>size_t</code> 和 <code>time_t</code> 能够把系统时间和日期表示为某种整数。</p>
+<p>结构类型 <code>tm</code> 把日期和时间以 C 结构的形式保存，tm 结构的定义如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">tm</span> &#123;</span><br><span class="line">  <span class="type">int</span> tm_sec;   <span class="comment">// 秒，正常范围从 0 到 59，但允许至 61</span></span><br><span class="line">  <span class="type">int</span> tm_min;   <span class="comment">// 分，范围从 0 到 59</span></span><br><span class="line">  <span class="type">int</span> tm_hour;  <span class="comment">// 小时，范围从 0 到 23</span></span><br><span class="line">  <span class="type">int</span> tm_mday;  <span class="comment">// 一月中的第几天，范围从 1 到 31</span></span><br><span class="line">  <span class="type">int</span> tm_mon;   <span class="comment">// 月，范围从 0 到 11</span></span><br><span class="line">  <span class="type">int</span> tm_year;  <span class="comment">// 自 1900 年起的年数</span></span><br><span class="line">  <span class="type">int</span> tm_wday;  <span class="comment">// 一周中的第几天，范围从 0 到 6，从星期日算起</span></span><br><span class="line">  <span class="type">int</span> tm_yday;  <span class="comment">// 一年中的第几天，范围从 0 到 365，从 1 月 1 日算起</span></span><br><span class="line">  <span class="type">int</span> tm_isdst; <span class="comment">// 夏令时</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h3><p>一些跟C风格时间有关的函数如下：</p>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>函数 &amp; 描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>time_t time(time_t *time);</td>
+<td>该函数返回系统的当前日历时间，自 1970 年 1 月 1 日以来经过的秒数。如果系统没有时间，则返回 -1。</td>
+</tr>
+<tr>
+<td>char *ctime(const time_t *time);</td>
+<td>该返回一个表示当地时间的字符串指针，字符串形式 day month year hours:minutes:seconds year\n\0。</td>
+</tr>
+<tr>
+<td>struct tm *localtime(const time_t *time);</td>
+<td>该函数返回一个指向表示本地时间的 tm 结构的指针。</td>
+</tr>
+<tr>
+<td>clock_t clock(void);</td>
+<td>该函数返回程序执行起（一般为程序的开头），处理器时钟所使用的时间。如果时间不可用，则返回 -1。</td>
+</tr>
+<tr>
+<td>char * asctime ( const struct tm * time );</td>
+<td>该函数返回一个指向字符串的指针，字符串包含了 time 所指向结构中存储的信息，返回形式为：day month date hours:minutes:seconds year\n\0。</td>
+</tr>
+<tr>
+<td>struct tm *gmtime(const time_t *time);</td>
+<td>该函数返回一个指向 time 的指针，time 为 tm 结构，用协调世界时（UTC）也被称为格林尼治标准时间（GMT）表示。</td>
+</tr>
+<tr>
+<td>time_t mktime(struct tm *time);</td>
+<td>该函数返回日历时间，相当于 time 所指向结构中存储的时间。</td>
+</tr>
+<tr>
+<td>double difftime ( time_t time2, time_t time1 );</td>
+<td>该函数返回 time1 和 time2 之间相差的秒数。</td>
+</tr>
+<tr>
+<td>size_t strftime();</td>
+<td>该函数可用于格式化日期和时间为指定的格式。</td>
+</tr>
+</tbody></table>
+<p>格式化成字符串：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">time_t</span> now = <span class="built_in">time</span>(<span class="literal">NULL</span>);</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">tm</span> *tm_now = <span class="built_in">localtime</span>(&amp;now);</span><br><span class="line"><span class="type">char</span> buffer[<span class="number">80</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">strftime</span>(buffer, <span class="built_in">sizeof</span>(buffer), <span class="string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>, tm_now);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;Formatted time: %s\n&quot;</span>, buffer);</span><br></pre></td></tr></table></figure>
+
+<p>C++11之后提供了string格式化函数<code>put_time</code>用法如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iomanip&gt;</span> <span class="comment">// 包含 put_time 的头文件</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;ctime&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sstream&gt;</span> <span class="comment">// 包含 ostringstream 的头文件</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取当前时间</span></span><br><span class="line">    std::<span class="type">time_t</span> now = std::<span class="built_in">time</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    std::tm tm_now = *std::<span class="built_in">localtime</span>(&amp;now);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 使用 ostringstream 和 put_time 格式化时间</span></span><br><span class="line">    std::ostringstream oss;</span><br><span class="line">    oss &lt;&lt; std::<span class="built_in">put_time</span>(&amp;tm_now, <span class="string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>);</span><br><span class="line">    std::string formatted_time = oss.<span class="built_in">str</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 输出格式化的时间</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Formatted time: &quot;</span> &lt;&lt; formatted_time &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>字符串格式化成时间：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">char</span> *time_string = <span class="string">&quot;2023-10-07 14:30:00&quot;</span>;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">tm</span> tm_time;</span><br><span class="line"><span class="type">char</span> *result;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 strptime 将字符串解析为 tm 结构体</span></span><br><span class="line">result = <span class="built_in">strptime</span>(time_string, <span class="string">&quot;%Y-%m-%d %H:%M:%S&quot;</span>, &amp;tm_time);</span><br></pre></td></tr></table></figure>
+
+<h3 id="用例"><a href="#用例" class="headerlink" title="用例"></a>用例</h3><p>用时间类函数给代码片段计时：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;time.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">time_t</span> start, end;</span><br><span class="line">    <span class="type">double</span> elapsed;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">time</span>(&amp;start);  <span class="comment">// 获取开始时间</span></span><br><span class="line">    <span class="comment">// 这里放置需要计时的代码</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100000000</span>; i++) &#123;</span><br><span class="line">        <span class="comment">// 一些耗时操作</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">time</span>(&amp;end);  <span class="comment">// 获取结束时间</span></span><br><span class="line"></span><br><span class="line">    elapsed = <span class="built_in">difftime</span>(end, start);  <span class="comment">// 计算时间差</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Elapsed time: %.2f seconds\n&quot;</span>, elapsed);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方法虽然简单易用，但是实际上这种计时方法只能精确到秒级，如果想要精确到毫秒级需要使用<code>POSIX</code>提供的<code>gettimeofday</code>函数和<code>timeval</code>结构体</p>
+<h2 id="timeval结构体"><a href="#timeval结构体" class="headerlink" title="timeval结构体"></a>timeval结构体</h2><p>timeval结构体非常简单，只由两个成员变量组成</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">timeval</span> &#123;</span></span><br><span class="line">    <span class="type">time_t</span>      tv_sec;     <span class="comment">// 秒</span></span><br><span class="line">    <span class="type">suseconds_t</span> tv_usec;    <span class="comment">// 微秒</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="相关函数-1"><a href="#相关函数-1" class="headerlink" title="相关函数"></a>相关函数</h3><p><code>gettimeofday()</code> 函数是POSIX标准的一部分，用于获取当前时间，精度可以达到微秒级别。以下是 <code>gettimeofday()</code> 函数的详细文档：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/time.h&gt;</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">gettimeofday</span><span class="params">(<span class="keyword">struct</span> timeval *tv, <span class="keyword">struct</span> timezone *tz)</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>tv</code>：指向 <code>struct timeval</code> 类型的指针，用于存储当前时间。</li>
+<li><code>tz</code>：指向 <code>struct timezone</code> 类型的指针，用于存储时区信息。不过，这个参数在现代系统中通常被忽略，应该设置为 <code>NULL</code>。</li>
+<li>成功时返回0，失败时返回-1，并设置 <code>errno</code> 以指示错误类型。</li>
+</ul>
+<h3 id="用例-1"><a href="#用例-1" class="headerlink" title="用例"></a>用例</h3><p>使用下面这段代码可以统计高精度的计时</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span>#<span class="keyword">include</span> <span class="string">&lt;sys/time.h&gt;</span>int main() &#123;</span></span><br><span class="line">    <span class="keyword">struct</span> <span class="title class_">timeval</span> start, end;</span><br><span class="line">    <span class="type">double</span> elapsed;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">gettimeofday</span>(&amp;start, <span class="literal">NULL</span>);  <span class="comment">// 获取开始时间</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 这里放置需要计时的代码</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100000000</span>; i++) &#123;</span><br><span class="line">        <span class="comment">// 一些耗时操作</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">gettimeofday</span>(&amp;end, <span class="literal">NULL</span>);  <span class="comment">// 获取结束时间</span></span><br><span class="line"></span><br><span class="line">    elapsed = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / <span class="number">1000000.0</span>;  <span class="comment">// 计算时间差</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Elapsed time: %.6f seconds\n&quot;</span>, elapsed);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="C-风格时间"><a href="#C-风格时间" class="headerlink" title="C++风格时间"></a>C++风格时间</h1><p>C++11标准引入了<code>&lt;chrono&gt;</code> 库是。它提供了C++版的时间和日期处理函数和数据类型，并且它是跨平台的，在开始时不用考虑平台上的差异，他包含以下内容：</p>
+<ol>
+<li><p><strong>时钟（Clocks）</strong>：</p>
+<ul>
+<li><code>system_clock</code>：表示系统的实时时钟，通常与当前日期和时间相关联。</li>
+<li><code>steady_clock</code>：一个稳定的时钟，不会因为系统时间的调整而改变，适用于测量时间间隔。</li>
+<li><code>high_resolution_clock</code>：系统中具有最高分辨率的时钟，通常是 <code>system_clock</code> 或 <code>steady_clock</code> 的别名。</li>
+</ul>
+<p> 一般来说<code>steady_clock</code>有比<code>system_clock</code>更高的时间精度，具有纳秒级别的时间精度。</p>
+</li>
+<li><p><strong>时间点（Time Points）</strong>：</p>
+<ul>
+<li><p><code>time_point</code>：表示一个特定的时间点，通常与某个时钟相关联，可以选择上面介绍的三种时钟之一。例如：</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::chrono::time_point&lt;std::chrono::system_clock&gt; now = std::chrono::system_clock::<span class="built_in">now</span>();</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p><strong>时间间隔（Durations）</strong>：<br><code>std::chrono::duration</code> 是 C++ 标准库中的一个类模板，用于表示时间间隔。</p>
+ <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> std::chrono &#123;</span><br><span class="line">    <span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">Rep</span>, <span class="keyword">class</span> <span class="title class_">Period</span> = std::ratio&lt;<span class="number">1</span>&gt;&gt;</span><br><span class="line">    <span class="keyword">class</span> duration;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>Rep</code>：表示存储时间值的类型（如 <code>int</code>、<code>long long</code>、<code>double</code> 等）。</li>
+<li><code>Period</code>：表示时间单位，相对于秒的比例（如 <code>std::ratio&lt;1&gt;</code> 表示秒，<code>std::milli</code> 表示毫秒）。</li>
+</ul>
+</li>
+<li><p><strong>时间转换和格式化</strong>：</p>
+<ul>
+<li><p><code>duration_cast</code>：用于在不同的时间单位之间进行转换。例如：</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> milliseconds = std::chrono::<span class="built_in">duration_cast</span>&lt;std::chrono::milliseconds&gt;(elapsed_seconds);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>time_point_cast</code>：用于在不同的时间点类型之间进行转换。例如：</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> tp_ms = std::chrono::<span class="built_in">time_point_cast</span>&lt;std::chrono::milliseconds&gt;(now);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>to_time_t</code>：可以将 <code>system_clock</code> 的时间点转换为 <code>time_t</code> 类型，以便与C风格的日期时间函数交互。例如：</p>
+  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::<span class="type">time_t</span> now_c = std::chrono::system_clock::<span class="built_in">to_time_t</span>(now);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ol>
+<h2 id="用例-2"><a href="#用例-2" class="headerlink" title="用例"></a>用例</h2><p>一段使用<code>chrono</code>统计代码耗时的代码如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;chrono&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 记录开始时间</span></span><br><span class="line">    <span class="keyword">auto</span> start = std::chrono::high_resolution_clock::<span class="built_in">now</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 需要测量的代码块</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000000</span>; ++i) &#123;</span><br><span class="line">        <span class="comment">// 模拟一些耗时操作</span></span><br><span class="line">        std::this_thread::<span class="built_in">sleep_for</span>(std::chrono::<span class="built_in">microseconds</span>(<span class="number">1</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 记录结束时间</span></span><br><span class="line">    <span class="keyword">auto</span> end = std::chrono::high_resolution_clock::<span class="built_in">now</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算耗时</span></span><br><span class="line">    std::chrono::duration&lt;<span class="type">double</span>&gt; elapsed = end - start;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 输出耗时</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Elapsed time: &quot;</span> &lt;&lt; elapsed.<span class="built_in">count</span>() &lt;&lt; <span class="string">&quot; seconds&quot;</span> &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><hr>
+<p><a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/chrono-in-c/">Chrono in C++ - GeeksforGeeks</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/cplusplus/cpp-date-time.html">C++ 日期 &amp; 时间 | 菜鸟教程</a></p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>echo
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://www.airchaoz.top/2024/06/30/c-%E6%97%B6%E9%97%B4%E7%B1%BB%E5%9E%8B/" title="c++时间类型">http://www.airchaoz.top/2024/06/30/c-时间类型/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/06/27/C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E4%B9%8B%E7%BA%BF%E7%A8%8B%E7%AE%A1%E7%90%86/" rel="prev" title="C++并发编程之线程管理">
+      <i class="fa fa-chevron-left"></i> C++并发编程之线程管理
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#C%E9%A3%8E%E6%A0%BC%E6%97%B6%E9%97%B4"><span class="nav-number">1.</span> <span class="nav-text">C风格时间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#tm%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">1.1.</span> <span class="nav-text">tm结构体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.1.</span> <span class="nav-text">相关函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E4%BE%8B"><span class="nav-number">1.1.2.</span> <span class="nav-text">用例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#timeval%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">1.2.</span> <span class="nav-text">timeval结构体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%87%BD%E6%95%B0-1"><span class="nav-number">1.2.1.</span> <span class="nav-text">相关函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E4%BE%8B-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">用例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#C-%E9%A3%8E%E6%A0%BC%E6%97%B6%E9%97%B4"><span class="nav-number">2.</span> <span class="nav-text">C++风格时间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8%E4%BE%8B-2"><span class="nav-number">2.1.</span> <span class="nav-text">用例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">3.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">echo</p>
+  <div class="site-description" itemprop="description">文字是思考的过程</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">echo</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
