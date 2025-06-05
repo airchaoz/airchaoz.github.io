@@ -6,7 +6,7 @@
   <link href="http://www.airchaoz.top/atom.xml" rel="self"/>
   
   <link href="http://www.airchaoz.top/"/>
-  <updated>2025-06-05T13:46:59.512Z</updated>
+  <updated>2025-06-05T15:46:51.334Z</updated>
   <id>http://www.airchaoz.top/</id>
   
   <author>
@@ -21,16 +21,10 @@
     <link href="http://www.airchaoz.top/2025/06/05/Transformer%E6%A8%A1%E5%9E%8B%E5%85%A5%E9%97%A8/"/>
     <id>http://www.airchaoz.top/2025/06/05/Transformer%E6%A8%A1%E5%9E%8B%E5%85%A5%E9%97%A8/</id>
     <published>2025-06-05T13:08:51.000Z</published>
-    <updated>2025-06-05T13:46:59.512Z</updated>
+    <updated>2025-06-05T15:46:51.334Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;p&gt;Transformer模型最早是由Google在2017年发布的一篇论文《Attention Is All You Need》中提出。最早该方法用用于翻译任务中，发现性能能够超越之前最优秀的RNN模型。在后一年，Google发表的《BERT: Pre-training</summary>
-        
-      
+    <summary type="html">&lt;p&gt;Transformer模型最早是由Google在2017年发布的一篇论文《Attention Is All You Need》中提出。最早该方法用用于翻译任务中，发现性能能够超越之前最优秀的RNN模型。在后一年，Google发表的《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》提出了BERT模型，和OpenAI发布《Improving Language Understanding by Generative Pre-Training》提出了GPT模型，这两个著名的模型奠定了大模型的基础。&lt;/p&gt;</summary>
     
     
     
@@ -312,7 +306,8 @@
 &lt;li&gt;Docker服务端：Docker Daemon&lt;/li&gt;
 &lt;li&gt;Docker镜像：Image&lt;/li&gt;
 &lt;li&gt;Registry：镜像远端&lt;/li&gt;
-&lt;li&gt;Docker容器：Container</summary>
+&lt;li&gt;Docker容器：Container&lt;/li&gt;
+&lt;/ul&gt;</summary>
     
     
     

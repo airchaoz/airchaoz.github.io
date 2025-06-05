@@ -3,7 +3,7 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
     
-        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
   (function () {
       function switchTab() {
           if (!location.hash) {
@@ -39,21 +39,21 @@
 <h1 id="链接库"><a href="#链接库" class="headerlink" title="链接库"></a>链接库</h1><p>以下是一段链接库的代码：</p>
 <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">target_link_libraries</span>(hello_binary</span><br><span class="line">    <span class="variable constant_">PRIVATE</span></span><br><span class="line">        hello_library</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
-<p>在CMake中，**<code>PRIVATE</code><strong>、</strong><code>PUBLIC</code>** 和 <strong><code>INTERFACE</code></strong> 是用来指定依赖库属性的关键词。它们用于控制库与目标（例如可执行文件或其他库）之间的链接方式和信息传递。</p>
+<p>在CMake中，<strong><code>PRIVATE</code></strong>、<strong><code>PUBLIC</code></strong> 和 <strong><code>INTERFACE</code></strong> 是用来指定依赖库属性的关键词。它们用于控制库与目标（例如可执行文件或其他库）之间的链接方式和信息传递。</p>
 <ol>
-<li>**<code>PRIVATE</code>**：<ul>
+<li><strong><code>PRIVATE</code></strong>：<ul>
 <li>当你将一个库标记为 <strong><code>PRIVATE</code></strong> 时，这意味着依赖库仅在当前目标中使用，并且不会传递给由当前目标链接的其他目标。</li>
-<li>在本例中，**<code>target_link_libraries(hello_binary PRIVATE hello_library)</code>** 表示只有 <strong><code>hello_binary</code></strong> 可以访问 <strong><code>hello_library</code></strong> 提供的功能，其他与 <strong><code>hello_binary</code></strong> 无关的目标不会受到 <strong><code>hello_library</code></strong> 的影响。</li>
+<li>在本例中，<strong><code>target_link_libraries(hello_binary PRIVATE hello_library)</code></strong> 表示只有 <strong><code>hello_binary</code></strong> 可以访问 <strong><code>hello_library</code></strong> 提供的功能，其他与 <strong><code>hello_binary</code></strong> 无关的目标不会受到 <strong><code>hello_library</code></strong> 的影响。</li>
 </ul>
 </li>
-<li>**<code>PUBLIC</code>**：<ul>
+<li><strong><code>PUBLIC</code></strong>：<ul>
 <li>将库标记为 <strong><code>PUBLIC</code></strong> 时，这表示依赖库在当前目标中使用的同时，也会传递给由当前目标链接的其他目标。</li>
-<li>在本例中，**<code>target_include_directories(hello_library PUBLIC $&#123;PROJECT_SOURCE_DIR&#125;/include)</code>** 会将 <strong><code>hello_library</code></strong> 的头文件包含路径公开给所有链接到它的目标，这样其他目标也能使用 <strong><code>hello_library</code></strong> 提供的头文件。</li>
+<li>在本例中，<strong><code>target_include_directories(hello_library PUBLIC $&#123;PROJECT_SOURCE_DIR&#125;/include)</code></strong> 会将 <strong><code>hello_library</code></strong> 的头文件包含路径公开给所有链接到它的目标，这样其他目标也能使用 <strong><code>hello_library</code></strong> 提供的头文件。</li>
 </ul>
 </li>
-<li>**<code>INTERFACE</code>**：<ul>
-<li><strong><code>INTERFACE</code></strong> 类似于 **<code>PUBLIC</code>**，但不会影响当前目标本身。它仅将依赖项传递给其他目标。</li>
-<li>如果你有一个中间库，它不会被链接到任何可执行文件，但你希望它的依赖项传递给其他库，那么可以使用 **<code>INTERFACE</code>**。</li>
+<li><strong><code>INTERFACE</code></strong>：<ul>
+<li><strong><code>INTERFACE</code></strong> 类似于 <strong><code>PUBLIC</code></strong>，但不会影响当前目标本身。它仅将依赖项传递给其他目标。</li>
+<li>如果你有一个中间库，它不会被链接到任何可执行文件，但你希望它的依赖项传递给其他库，那么可以使用 <strong><code>INTERFACE</code></strong>。</li>
 </ul>
 </li>
 </ol>
@@ -63,14 +63,14 @@
 <li>使用 <strong><code>PUBLIC</code></strong> 来将库的依赖传递给链接到当前目标的其他目标。</li>
 <li>使用 <strong><code>INTERFACE</code></strong> 将依赖项传递给其他目标，而不影响当前目标。</li>
 </ul>
-<p>在你的示例代码中，**<code>target_include_directories(hello_library PUBLIC $&#123;PROJECT_SOURCE_DIR&#125;/include)</code>** 允许其他目标访问 <strong><code>hello_library</code></strong> 的头文件路径，而 <strong><code>target_link_libraries(hello_binary PRIVATE hello_library)</code></strong> 使 <strong><code>hello_binary</code></strong> 能够链接到 <strong><code>hello_library</code></strong> 的功能，但这些功能不会传递给其他目标。</p>
+<p>在你的示例代码中，<strong><code>target_include_directories(hello_library PUBLIC $&#123;PROJECT_SOURCE_DIR&#125;/include)</code></strong> 允许其他目标访问 <strong><code>hello_library</code></strong> 的头文件路径，而 <strong><code>target_link_libraries(hello_binary PRIVATE hello_library)</code></strong> 使 <strong><code>hello_binary</code></strong> 能够链接到 <strong><code>hello_library</code></strong> 的功能，但这些功能不会传递给其他目标。</p>
 <h1 id="设置宏定义"><a href="#设置宏定义" class="headerlink" title="设置宏定义"></a>设置宏定义</h1><p><strong><code>target_compile_definitions</code></strong> 是CMake中用于在目标（例如可执行文件、库等）编译过程中添加预处理宏定义的函数。预处理宏定义是在编译阶段进行文本替换的标识符，它可以影响代码的编译过程。</p>
 <p>函数的基本语法如下：</p>
 <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">target_compile_definitions</span>(target_name</span><br><span class="line">    <span class="variable constant_">PRIVATE</span> definition1 definition2 ...</span><br><span class="line">    <span class="variable constant_">INTERFACE</span> definition3 definition4 ...</span><br><span class="line">    <span class="variable constant_">PUBLIC</span> definition5 definition6 ...</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>**<code>target_name</code>**：目标的名称，可以是可执行文件、库等的名称。</li>
-<li><strong><code>PRIVATE</code><strong>、</strong><code>INTERFACE</code></strong> 和 <strong><code>PUBLIC</code><strong>：这些关键词用于指定定义的可见性。</strong><code>PRIVATE</code></strong> 表示仅在当前目标内部可见，**<code>INTERFACE</code>** 表示仅在与当前目标链接的目标中可见，**<code>PUBLIC</code>** 表示在当前目标和链接到它的目标中都可见。</li>
+<li><strong><code>target_name</code></strong>：目标的名称，可以是可执行文件、库等的名称。</li>
+<li><strong><code>PRIVATE</code></strong>、<strong><code>INTERFACE</code></strong> 和 <strong><code>PUBLIC</code></strong>：这些关键词用于指定定义的可见性。<strong><code>PRIVATE</code></strong> 表示仅在当前目标内部可见，<strong><code>INTERFACE</code></strong> 表示仅在与当前目标链接的目标中可见，<strong><code>PUBLIC</code></strong> 表示在当前目标和链接到它的目标中都可见。</li>
 <li><strong><code>definition1</code></strong>, <strong><code>definition2</code></strong>, …：要添加的预处理宏定义。</li>
 </ul>
 <h1 id="设置编译类型"><a href="#设置编译类型" class="headerlink" title="设置编译类型"></a>设置编译类型</h1><figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Set a default build type if none was specified</span></span><br><span class="line"><span class="keyword">if</span>(<span class="variable constant_">NOT</span> <span class="variable constant_">CMAKE_BUILD_TYPE</span> <span class="variable constant_">AND</span> <span class="variable constant_">NOT</span> <span class="variable constant_">CMAKE_CONFIGURATION_TYPES</span>)</span><br><span class="line">  <span class="title function_">message</span>(<span class="string">&quot;Setting build type to &#x27;RelWithDebInfo&#x27; as none was specified.&quot;</span>)</span><br><span class="line">	<span class="comment">// 如果用户没有明确指定构建类型，该代码将默认构建类型设置为&quot;RelWithDebInfo&quot;</span></span><br><span class="line">  <span class="title function_">set</span>(<span class="variable constant_">CMAKE_BUILD_TYPE</span> <span class="title class_">RelWithDebInfo</span> <span class="variable constant_">CACHE</span> <span class="variable constant_">STRING</span> <span class="string">&quot;Choose the type of build.&quot;</span> <span class="variable constant_">FORCE</span>)</span><br><span class="line">  <span class="comment">// Set the possible values of build type for cmake-gui</span></span><br><span class="line">  <span class="title function_">set_property</span>(<span class="variable constant_">CACHE</span> <span class="variable constant_">CMAKE_BUILD_TYPE</span> <span class="variable constant_">PROPERTY</span> <span class="variable constant_">STRINGS</span> <span class="string">&quot;Debug&quot;</span> <span class="string">&quot;Release&quot;</span></span><br><span class="line">    <span class="string">&quot;MinSizeRel&quot;</span> <span class="string">&quot;RelWithDebInfo&quot;</span>)</span><br><span class="line"><span class="title function_">endif</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="variable constant_">CMAKE_BUILD_TYPE</span> <span class="variable constant_">MATCHES</span> <span class="string">&quot;Debug&quot;</span>)</span><br><span class="line">    <span class="title function_">message</span>(<span class="string">&quot;Debug build&quot;</span>)</span><br><span class="line">    <span class="comment">// 执行与Debug构建相关的代码</span></span><br><span class="line"><span class="title function_">elseif</span>(<span class="variable constant_">CMAKE_BUILD_TYPE</span> <span class="variable constant_">MATCHES</span> <span class="string">&quot;Release&quot;</span>)</span><br><span class="line">    <span class="title function_">message</span>(<span class="string">&quot;Release build&quot;</span>)</span><br><span class="line">    <span class="comment">// 执行与Release构建相关的代码</span></span><br><span class="line"><span class="title function_">elseif</span>(<span class="variable constant_">CMAKE_BUILD_TYPE</span> <span class="variable constant_">MATCHES</span> <span class="string">&quot;RelWithDebInfo&quot;</span>)</span><br><span class="line">    <span class="title function_">message</span>(<span class="string">&quot;Release with Debug Info build&quot;</span>)</span><br><span class="line">    <span class="comment">// 执行与RelWithDebInfo构建相关的代码</span></span><br><span class="line"><span class="title function_">else</span>()</span><br><span class="line">    <span class="title function_">message</span>(<span class="string">&quot;Unknown build type&quot;</span>)</span><br><span class="line">    <span class="comment">// 执行在未知构建类型时的操作</span></span><br><span class="line"><span class="title function_">endif</span>()</span><br></pre></td></tr></table></figure>
@@ -85,10 +85,10 @@
 <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">configure_file</span>(input_file output_file [@<span class="variable constant_">ONLY</span>] [<span class="variable constant_">COPYONLY</span>]</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>**<code>input_file</code>**：要作为源的输入文件路径。</li>
-<li>**<code>output_file</code>**：要生成的目标文件路径。</li>
-<li>**<code>@ONLY</code><strong>：一个可选参数，当设置为这个值时，只有以</strong><code>@</code>**开头的变量会被替换。如果不设置这个参数，所有变量都会被替换。</li>
-<li>**<code>COPYONLY</code>**：一个可选参数，当设置为这个值时，只复制输入文件到输出文件，不进行变量替换。这在复制二进制文件等时很有用。</li>
+<li><strong><code>input_file</code></strong>：要作为源的输入文件路径。</li>
+<li><strong><code>output_file</code></strong>：要生成的目标文件路径。</li>
+<li><strong><code>@ONLY</code></strong>：一个可选参数，当设置为这个值时，只有以**<code>@</code>**开头的变量会被替换。如果不设置这个参数，所有变量都会被替换。</li>
+<li><strong><code>COPYONLY</code></strong>：一个可选参数，当设置为这个值时，只复制输入文件到输出文件，不进行变量替换。这在复制二进制文件等时很有用。</li>
 </ul>
 <p>通常，您将在CMake中使用**<code>configure_file</code>**来生成配置文件，其中一些变量的值在构建过程中被设置。</p>
 <p>下面是一个示例，演示如何使用**<code>configure_file</code>**生成一个配置文件：</p>
@@ -98,7 +98,7 @@
 <p>然后，在CMakeLists.txt中，您可以使用**<code>configure_file</code>**来生成 <strong><code>config.h</code></strong> 配置文件：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">configure_file(config.h.in config.h)</span><br></pre></td></tr></table></figure>
 
-<p>在上述示例中，CMake将 <strong><code>config.h.in</code></strong> 中的**<code>@PROJECT_NAME@</code><strong>、</strong><code>@PROJECT_VERSION_MAJOR@</code><strong>和</strong><code>@PROJECT_VERSION_MINOR@</code>**等变量替换为实际的值，并生成了一个名为 <strong><code>config.h</code></strong> 的输出文件。您可以在代码中包含 **<code>config.h</code>**，以使用正确的配置信息。</p>
+<p>在上述示例中，CMake将 <strong><code>config.h.in</code></strong> 中的**<code>@PROJECT_NAME@</code><strong>、</strong><code>@PROJECT_VERSION_MAJOR@</code><strong>和</strong><code>@PROJECT_VERSION_MINOR@</code>**等变量替换为实际的值，并生成了一个名为 <strong><code>config.h</code></strong> 的输出文件。您可以在代码中包含 <strong><code>config.h</code></strong>，以使用正确的配置信息。</p>
 <p>这是一个简单的示例，但是**<code>configure_file</code>**函数非常有用，可以用于生成各种配置文件，包括用于在构建过程中动态生成项目信息的头文件、脚本文件等。</p>
 <h1 id="宏和函数的区别"><a href="#宏和函数的区别" class="headerlink" title="宏和函数的区别"></a>宏和函数的区别</h1><p>在CMake中，宏（macros）和函数（functions）都是用于封装一系列操作的工具，但它们在使用和行为方面存在一些区别。以下是它们之间的主要区别：</p>
 <ol>
@@ -129,26 +129,26 @@
 </li>
 </ol>
 <p>综合起来，宏和函数在CMake中都用于封装代码块，但它们在参数传递、变量作用域、返回值等方面存在差异。您可以根据需要选择使用宏或函数来实现不同的封装和逻辑。</p>
-<h1 id="find-package、find-library和find-program的区别"><a href="#find-package、find-library和find-program的区别" class="headerlink" title="find_package、find_library和find_program的区别"></a>find_package、find_library和find_program的区别</h1><p><strong><code>find_package</code><strong>、</strong><code>find_library</code></strong> 和 <strong><code>find_program</code></strong> 都是 CMake 中用于查找不同类型资源的命令，它们有不同的用途和区别：</p>
+<h1 id="find-package、find-library和find-program的区别"><a href="#find-package、find-library和find-program的区别" class="headerlink" title="find_package、find_library和find_program的区别"></a>find_package、find_library和find_program的区别</h1><p><strong><code>find_package</code></strong>、<strong><code>find_library</code></strong> 和 <strong><code>find_program</code></strong> 都是 CMake 中用于查找不同类型资源的命令，它们有不同的用途和区别：</p>
 <ol>
-<li><strong><code>find_package</code>：<code>find_package</code></strong> 用于查找已安装的软件包或库，并导入其配置信息。它通常用于查找外部的第三方库或工具，并在项目中使用它们。**<code>find_package</code>** 将检查指定的包是否安装在系统上，并在找到包时配置项目以使用该包。通过 <strong><code>CONFIG</code></strong> 模式，它还可以导入该软件包的配置文件，设置编译选项、链接库等。</li>
-<li><strong><code>find_library</code>：<code>find_library</code></strong> 用于查找特定的库文件，并返回库文件的绝对路径。它主要用于查找并指定要链接到项目中的库，以便在编译和链接时使用。您可以指定库的名称以及查找路径，**<code>find_library</code>** 将返回库文件的完整路径，供您在项目中使用。</li>
+<li><strong><code>find_package</code>：<code>find_package</code></strong> 用于查找已安装的软件包或库，并导入其配置信息。它通常用于查找外部的第三方库或工具，并在项目中使用它们。<strong><code>find_package</code></strong> 将检查指定的包是否安装在系统上，并在找到包时配置项目以使用该包。通过 <strong><code>CONFIG</code></strong> 模式，它还可以导入该软件包的配置文件，设置编译选项、链接库等。</li>
+<li><strong><code>find_library</code>：<code>find_library</code></strong> 用于查找特定的库文件，并返回库文件的绝对路径。它主要用于查找并指定要链接到项目中的库，以便在编译和链接时使用。您可以指定库的名称以及查找路径，<strong><code>find_library</code></strong> 将返回库文件的完整路径，供您在项目中使用。</li>
 <li><strong><code>find_program</code>：<code>find_program</code></strong> 用于查找可执行文件或命令。它允许您在CMake中查找特定的可执行文件，然后可以将找到的可执行文件与目标一起使用，或者执行自定义操作。例如，您可以使用 <strong><code>find_program</code></strong> 来查找编译器、工具或其他外部命令。</li>
 </ol>
-<p>综合起来，这些命令在CMake中都具有不同的用途，用于查找不同类型的资源。**<code>find_package</code>** 用于查找库和工具，并导入其配置，**<code>find_library</code>** 用于查找库文件的路径，而 <strong><code>find_program</code></strong> 则用于查找可执行文件的路径。根据您的需求，您可以选择适当的命令来在CMake项目中查找所需的资源。</p>
-<h1 id="option的使用"><a href="#option的使用" class="headerlink" title="option的使用"></a>option的使用</h1><p><strong><code>option</code></strong> 函数用于在CMake项目中创建用户可配置的选项。这些选项通常用于允许用户自定义项目的行为或功能开关。**<code>option</code>** 函数接受三个参数：选项名称、选项描述和默认值。</p>
+<p>综合起来，这些命令在CMake中都具有不同的用途，用于查找不同类型的资源。<strong><code>find_package</code></strong> 用于查找库和工具，并导入其配置，<strong><code>find_library</code></strong> 用于查找库文件的路径，而 <strong><code>find_program</code></strong> 则用于查找可执行文件的路径。根据您的需求，您可以选择适当的命令来在CMake项目中查找所需的资源。</p>
+<h1 id="option的使用"><a href="#option的使用" class="headerlink" title="option的使用"></a>option的使用</h1><p><strong><code>option</code></strong> 函数用于在CMake项目中创建用户可配置的选项。这些选项通常用于允许用户自定义项目的行为或功能开关。<strong><code>option</code></strong> 函数接受三个参数：选项名称、选项描述和默认值。</p>
 <p>其基本语法如下：</p>
 <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">option</span>(&lt;option_name&gt; &lt;option_description&gt; &lt;initial_value&gt;)</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>**<code>&lt;option_name&gt;</code>**：选项的名称，这是用户在CMake配置中使用的标识符。</li>
-<li>**<code>&lt;option_description&gt;</code>**：选项的描述，通常是一段文本，用于说明选项的作用。</li>
-<li>**<code>&lt;initial_value&gt;</code>**：选项的默认值，可以是 <strong><code>ON</code></strong> 或 **<code>OFF</code>**，表示选项的初始状态。</li>
+<li><strong><code>&lt;option_name&gt;</code></strong>：选项的名称，这是用户在CMake配置中使用的标识符。</li>
+<li><strong><code>&lt;option_description&gt;</code></strong>：选项的描述，通常是一段文本，用于说明选项的作用。</li>
+<li><strong><code>&lt;initial_value&gt;</code></strong>：选项的默认值，可以是 <strong><code>ON</code></strong> 或 <strong><code>OFF</code></strong>，表示选项的初始状态。</li>
 </ul>
 <p>例如，以下是一个使用 <strong><code>option</code></strong> 函数的示例：</p>
 <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">option</span>(<span class="variable constant_">ENABLE_FEATURE_X</span> <span class="string">&quot;Enable feature X&quot;</span> <span class="variable constant_">ON</span>)</span><br></pre></td></tr></table></figure>
 
-<p>在这个示例中，我们定义了一个名为 <strong><code>ENABLE_FEATURE_X</code></strong> 的选项，它用于启用或禁用某个功能（feature X）。默认情况下，该选项的值为 **<code>ON</code>**，表示功能是启用的。</p>
+<p>在这个示例中，我们定义了一个名为 <strong><code>ENABLE_FEATURE_X</code></strong> 的选项，它用于启用或禁用某个功能（feature X）。默认情况下，该选项的值为 <strong><code>ON</code></strong>，表示功能是启用的。</p>
 <p>要在项目中使用这个选项，您可以使用 <strong><code>if</code></strong> 语句来检查选项的值，例如：</p>
 <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="variable constant_">ENABLE_FEATURE_X</span>)</span><br><span class="line">    # 启用了功能 X，执行相关操作</span><br><span class="line">    # ...</span><br><span class="line"><span class="title function_">endif</span>()</span><br></pre></td></tr></table></figure>
 
@@ -156,8 +156,8 @@
 <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake -<span class="attr">DENABLE_FEATURE_X</span>:<span class="variable constant_">BOOL</span>=<span class="variable constant_">OFF</span> ..</span><br></pre></td></tr></table></figure>
 
 <p>这将覆盖默认值，并在CMake配置中禁用功能 X。</p>
-<p>总之，**<code>option</code>** 函数允许您在CMake项目中创建用户可配置的选项，以便根据用户的需求来配置项目的行为。</p>
-<h1 id="使用FetchContent引入第三方库"><a href="#使用FetchContent引入第三方库" class="headerlink" title="使用FetchContent引入第三方库"></a>使用FetchContent引入第三方库</h1><p><strong><code>FetchContent</code></strong> 是一个CMake模块，用于在CMake项目中下载和管理外部依赖项。它的目标是简化项目依赖项的管理，使得在项目中集成和使用第三方库更加方便。**<code>FetchContent</code>** 模块提供了一组函数，其中最重要的函数是 <strong><code>FetchContent_Declare</code></strong> 和 **<code>FetchContent_MakeAvailable</code>**。</p>
+<p>总之，<strong><code>option</code></strong> 函数允许您在CMake项目中创建用户可配置的选项，以便根据用户的需求来配置项目的行为。</p>
+<h1 id="使用FetchContent引入第三方库"><a href="#使用FetchContent引入第三方库" class="headerlink" title="使用FetchContent引入第三方库"></a>使用FetchContent引入第三方库</h1><p><strong><code>FetchContent</code></strong> 是一个CMake模块，用于在CMake项目中下载和管理外部依赖项。它的目标是简化项目依赖项的管理，使得在项目中集成和使用第三方库更加方便。<strong><code>FetchContent</code></strong> 模块提供了一组函数，其中最重要的函数是 <strong><code>FetchContent_Declare</code></strong> 和 <strong><code>FetchContent_MakeAvailable</code></strong>。</p>
 <p>以下是 <strong><code>FetchContent</code></strong> 相关函数的基本使用示例：</p>
 <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">cmakeCopy code</span><br><span class="line"><span class="keyword">include</span>(FetchContent)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 声明要下载的外部依赖项</span></span><br><span class="line">FetchContent_Declare(</span><br><span class="line">    my_dependency</span><br><span class="line">    GIT_REPOSITORY https://github.com/example/my_dependency.git</span><br><span class="line">    GIT_TAG v1.<span class="number">0.0</span>  <span class="comment"># 可选：指定要下载的特定标签或分支</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置并下载外部依赖项</span></span><br><span class="line">FetchContent_GetProperties(my_dependency)</span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">NOT</span> my_dependency_POPULATED)</span><br><span class="line">    FetchContent_Populate(my_dependency)</span><br><span class="line">    <span class="keyword">add_subdirectory</span>(<span class="variable">$&#123;my_dependency_SOURCE_DIR&#125;</span> <span class="variable">$&#123;my_dependency_BINARY_DIR&#125;</span>)</span><br><span class="line"><span class="keyword">endif</span>()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用已下载的外部依赖项</span></span><br><span class="line"><span class="keyword">target_link_libraries</span>(my_project PRIVATE my_dependency)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -168,7 +168,7 @@
 <li>配置并下载外部依赖项：使用 <strong><code>FetchContent_GetProperties</code></strong> 函数检查依赖项是否已经被下载和配置。如果尚未下载，使用 <strong><code>FetchContent_Populate</code></strong> 函数来下载和配置依赖项。这些函数会将依赖项的源代码下载到项目的构建目录中。</li>
 <li>使用已下载的外部依赖项：在项目中使用已下载的依赖项，例如，通过链接到它们的库文件。</li>
 </ol>
-<p><strong><code>FetchContent</code></strong> 还提供了其他函数和选项，用于自定义依赖项的下载和配置过程。这使得您可以更灵活地管理和集成外部依赖项，而无需手动下载和管理它们。注意，**<code>FetchContent</code>** 在CMake版本3.11及更高版本中可用。</p>
+<p><strong><code>FetchContent</code></strong> 还提供了其他函数和选项，用于自定义依赖项的下载和配置过程。这使得您可以更灵活地管理和集成外部依赖项，而无需手动下载和管理它们。注意，<strong><code>FetchContent</code></strong> 在CMake版本3.11及更高版本中可用。</p>
 </div><div class="article-licensing box"><div class="licensing-title"><p>CMake进阶</p><p><a href="http://www.airchaoz.top/2023/08/27/CMake进阶/">http://www.airchaoz.top/2023/08/27/CMake进阶/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>echo</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2023-08-27</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2024-08-10</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/CMake/">CMake</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2023/12/13/TF-Lite%E5%92%8CFlex-%E7%9A%84%E7%BC%96%E8%AF%91%E3%80%81%E4%BD%BF%E7%94%A8/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">TF Lite和Flex 的编译、使用</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2023/04/16/gperftools%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/"><span class="level-item">gperftools快速上手</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
             this.page.url = 'http://www.airchaoz.top/2023/08/27/CMake%E8%BF%9B%E9%98%B6/';
             this.page.identifier = '2023/08/27/CMake进阶/';
@@ -220,6 +220,16 @@
                 }
                 $('.justified-gallery').justifiedGallery();
             }
-        });</script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
             loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
         });</script></body></html>

@@ -3,7 +3,7 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
     
-        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
   (function () {
       function switchTab() {
           if (!location.hash) {
@@ -88,17 +88,17 @@
 </li>
 </ul>
 <h2 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a><strong>逻辑运算符</strong></h2><ul>
-<li><p>**与运算符 (<code>&amp;&amp;</code>)**：</p>
+<li><p><strong>与运算符 (<code>&amp;&amp;</code>)</strong>：</p>
   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip.addr == 192.168.1.100 &amp;&amp; tcp.port == 80</span><br></pre></td></tr></table></figure>
 
 <p>  显示源或目标 IP 地址为 <code>192.168.1.100</code> 且目标或源端口为 <code>80</code> 的所有 TCP 数据包。</p>
 </li>
-<li><p>**或运算符 (<code>||</code>)**：</p>
+<li><p><strong>或运算符 (<code>||</code>)</strong>：</p>
   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip.addr == 192.168.1.100 || ip.addr == 8.8.8.8</span><br></pre></td></tr></table></figure>
 
 <p>  显示源地址为 <code>192.168.1.100</code> 或目标地址为 <code>8.8.8.8</code> 的所有数据包。</p>
 </li>
-<li><p>**非运算符 (<code>!</code>)**：</p>
+<li><p><strong>非运算符 (<code>!</code>)</strong>：</p>
   <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!tcp.port == 80</span><br></pre></td></tr></table></figure>
 
 <p>  显示所有不是目标或源端口为 <code>80</code> 的 TCP 数据包。</p>
@@ -124,8 +124,8 @@
 <h1 id="tcpdump用法"><a href="#tcpdump用法" class="headerlink" title="tcpdump用法"></a>tcpdump用法</h1><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tcpdump [options] [filter_expression]</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>**<code>[options]</code>**：可选的命令行选项，用于配置 <code>tcpdump</code> 的捕获行为，如捕获的接口、是否显示数据包内容等。</li>
-<li>**<code>[filter_expression]</code>**：过滤表达式，用于指定要捕获的数据包的类型或条件。</li>
+<li><strong><code>[options]</code></strong>：可选的命令行选项，用于配置 <code>tcpdump</code> 的捕获行为，如捕获的接口、是否显示数据包内容等。</li>
+<li><strong><code>[filter_expression]</code></strong>：过滤表达式，用于指定要捕获的数据包的类型或条件。</li>
 </ul>
 <h1 id="tcpdump基本过滤规则"><a href="#tcpdump基本过滤规则" class="headerlink" title="tcpdump基本过滤规则"></a>tcpdump基本过滤规则</h1><h2 id="IP-地址过滤-1"><a href="#IP-地址过滤-1" class="headerlink" title="IP 地址过滤"></a><strong>IP 地址过滤</strong></h2><ul>
 <li><p><strong>显示特定 IP 地址的流量</strong>：</p>
@@ -178,17 +178,17 @@
 </li>
 </ul>
 <h2 id="逻辑运算符-1"><a href="#逻辑运算符-1" class="headerlink" title="逻辑运算符"></a><strong>逻辑运算符</strong></h2><ul>
-<li><p>**与运算符 (<code>and</code>)**：</p>
+<li><p><strong>与运算符 (<code>and</code>)</strong>：</p>
   <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">src</span> host <span class="number">192.168</span>.<span class="number">1.100</span> and port <span class="number">80</span></span><br></pre></td></tr></table></figure>
 
 <p>  显示源地址为 <code>192.168.1.100</code> 且目标或源端口为 <code>80</code> 的所有数据包。</p>
 </li>
-<li><p>**或运算符 (<code>or</code>)**：</p>
+<li><p><strong>或运算符 (<code>or</code>)</strong>：</p>
   <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">src</span> host <span class="number">192.168</span>.<span class="number">1.100</span> or dst host <span class="number">8.8</span>.<span class="number">8.8</span></span><br></pre></td></tr></table></figure>
 
 <p>  显示源地址为 <code>192.168.1.100</code> 或目标地址为 <code>8.8.8.8</code> 的所有数据包。</p>
 </li>
-<li><p>**非运算符 (<code>not</code>)**：</p>
+<li><p><strong>非运算符 (<code>not</code>)</strong>：</p>
   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">not port 22</span><br></pre></td></tr></table></figure>
 
 <p>  显示所有不是目标或源端口为 <code>22</code> 的数据包。</p>
@@ -273,6 +273,16 @@
                 }
                 $('.justified-gallery').justifiedGallery();
             }
-        });</script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
             loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
         });</script></body></html>

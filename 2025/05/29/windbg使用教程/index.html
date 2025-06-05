@@ -3,7 +3,7 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
     
-        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
   (function () {
       function switchTab() {
           if (!location.hash) {
@@ -39,9 +39,9 @@
 <p>相比VS调试程序，windbg开箱即用，不需要安装负责的编译环境，方便在生产环境调试。但是缺点是windbg上手难度大，对新手非常不友好。</p>
 <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h3 id="微软应用商店"><a href="#微软应用商店" class="headerlink" title="微软应用商店"></a>微软应用商店</h3><p>建议直接从微软应用商店中安装，直接安装最新版，注意该版本不带有gflags等工具，需要安装相关工具需要从下载。</p>
 <p><img src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/20250529183552.png"></p>
-<h3 id="windows-sdk"><a href="#windows-sdk" class="headerlink" title="windows sdk"></a>windows sdk</h3><p>可以从Windows SDK安装包中安装，选择只安装<strong>Debugging Tools for Windows，</strong>下载地址见：<a target="_blank" rel="noopener" href="https://developer.microsoft.com/zh-cn/windows/downloads/windows-sdk/">Windows SDK - Windows 应用开发 | Microsoft Developer</a></p>
+<h3 id="windows-sdk"><a href="#windows-sdk" class="headerlink" title="windows sdk"></a>windows sdk</h3><p>可以从Windows SDK安装包中安装，选择只安装**Debugging Tools for Windows，**下载地址见：<a target="_blank" rel="noopener" href="https://developer.microsoft.com/zh-cn/windows/downloads/windows-sdk/">Windows SDK - Windows 应用开发 | Microsoft Developer</a></p>
 <p><img src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/20250529211408.png"></p>
-<p>可以只安装<strong>Debugging Tools for Windows，</strong>其它的组件按需安装即可。</p>
+<p>可以只安装**Debugging Tools for Windows，**其它的组件按需安装即可。</p>
 <h1 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h1><h2 id="功能布局"><a href="#功能布局" class="headerlink" title="功能布局"></a>功能布局</h2><p><img src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/20250529211435.png"></p>
 <p>与所有调试工具一样，windbg提供基本的调试功能，例如断点，步过、步入、步出。具有反汇编窗口、寄存器窗口、内存窗口、调用堆栈、局部变量窗口、线程&#x2F;进程窗口和输出窗口。支持按钮交互控制和命令控制台。</p>
 <h2 id="基本命令"><a href="#基本命令" class="headerlink" title="基本命令"></a>基本命令</h2><p>命令可以参考微软官方命令手册：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/">Using WinDbg and the debugger commands - Windows drivers | Microsoft Learn</a></p>
@@ -111,6 +111,16 @@
                 }
                 $('.justified-gallery').justifiedGallery();
             }
-        });</script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
             loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
         });</script></body></html>
