@@ -6,7 +6,7 @@
   <link href="http://www.airchaoz.top/atom.xml" rel="self"/>
   
   <link href="http://www.airchaoz.top/"/>
-  <updated>2025-06-15T08:07:44.781Z</updated>
+  <updated>2025-07-14T03:30:27.856Z</updated>
   <id>http://www.airchaoz.top/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>C++模板学习笔记（一）</title>
+    <link href="http://www.airchaoz.top/2025/07/14/%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/"/>
+    <id>http://www.airchaoz.top/2025/07/14/%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/</id>
+    <published>2025-07-14T03:03:26.000Z</published>
+    <updated>2025-07-14T03:30:27.856Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;记录一下学习C++模板时的知识点&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="C++" scheme="http://www.airchaoz.top/tags/C/"/>
+    
+  </entry>
   
   <entry>
     <title>模型训练推理优化实践(一):训练优化</title>
@@ -347,23 +364,6 @@
     
     
     <category term="开发工具" scheme="http://www.airchaoz.top/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>TF Lite和Flex 的编译、使用</title>
-    <link href="http://www.airchaoz.top/2023/12/13/TF-Lite%E5%92%8CFlex-%E7%9A%84%E7%BC%96%E8%AF%91%E3%80%81%E4%BD%BF%E7%94%A8/"/>
-    <id>http://www.airchaoz.top/2023/12/13/TF-Lite%E5%92%8CFlex-%E7%9A%84%E7%BC%96%E8%AF%91%E3%80%81%E4%BD%BF%E7%94%A8/</id>
-    <published>2023-12-13T13:55:01.000Z</published>
-    <updated>2024-10-13T12:56:37.000Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;当谈到深度学习和机器学习框架时，必定绕不开Tensorflow。作为一个备受欢迎的开源工具，它被广泛用于构建、训练和部署机器学习模型。TensorFlow 由 Google 开发，并于2015年首次发布，它的目标是提供一个灵活、可扩展且易于使用的框架，使研究人员和工程师能够快速开发和部署深度学习模型。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="机器学习" scheme="http://www.airchaoz.top/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
   </entry>
   
