@@ -6,7 +6,7 @@
   <link href="http://www.airchaoz.top/atom.xml" rel="self"/>
   
   <link href="http://www.airchaoz.top/"/>
-  <updated>2025-07-16T13:12:04.515Z</updated>
+  <updated>2025-07-16T13:17:33.633Z</updated>
   <id>http://www.airchaoz.top/</id>
   
   <author>
@@ -21,17 +21,10 @@
     <link href="http://www.airchaoz.top/2025/07/16/%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
     <id>http://www.airchaoz.top/2025/07/16/%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/</id>
     <published>2025-07-16T13:11:17.000Z</published>
-    <updated>2025-07-16T13:12:04.515Z</updated>
+    <updated>2025-07-16T13:17:33.633Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;模板参数省略&quot;&gt;&lt;a href=&quot;#模板参数省略&quot; class=&quot;headerlink&quot; title=&quot;模板参数省略&quot;&gt;&lt;/a&gt;模板参数省略&lt;/h1&gt;&lt;p&gt;调用模板函数时可以省略模板参数，因为很容易从实参中推导出类型&lt;/p&gt;
-&lt;figure</summary>
-        
-      
+    <summary type="html">&lt;p&gt;记录一下学习C++模板时的知识点&lt;/p&gt;</summary>
     
     
     
