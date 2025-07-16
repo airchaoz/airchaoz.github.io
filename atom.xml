@@ -6,7 +6,7 @@
   <link href="http://www.airchaoz.top/atom.xml" rel="self"/>
   
   <link href="http://www.airchaoz.top/"/>
-  <updated>2025-07-14T03:30:27.856Z</updated>
+  <updated>2025-07-16T13:12:04.515Z</updated>
   <id>http://www.airchaoz.top/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>C++模板学习笔记（二）</title>
+    <link href="http://www.airchaoz.top/2025/07/16/%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
+    <id>http://www.airchaoz.top/2025/07/16/%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/</id>
+    <published>2025-07-16T13:11:17.000Z</published>
+    <updated>2025-07-16T13:12:04.515Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;模板参数省略&quot;&gt;&lt;a href=&quot;#模板参数省略&quot; class=&quot;headerlink&quot; title=&quot;模板参数省略&quot;&gt;&lt;/a&gt;模板参数省略&lt;/h1&gt;&lt;p&gt;调用模板函数时可以省略模板参数，因为很容易从实参中推导出类型&lt;/p&gt;
+&lt;figure</summary>
+        
+      
+    
+    
+    
+    
+    <category term="C++" scheme="http://www.airchaoz.top/tags/C/"/>
+    
+  </entry>
   
   <entry>
     <title>C++模板学习笔记（一）</title>
@@ -347,23 +371,6 @@
     
     
     <category term="Docker" scheme="http://www.airchaoz.top/tags/Docker/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>GDB-Dashboard的使用</title>
-    <link href="http://www.airchaoz.top/2024/02/14/GDB-Dashboard%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
-    <id>http://www.airchaoz.top/2024/02/14/GDB-Dashboard%E7%9A%84%E4%BD%BF%E7%94%A8/</id>
-    <published>2024-02-14T14:00:32.000Z</published>
-    <updated>2024-08-10T14:08:09.000Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;GDB-Dashboard是一个使用Python API编写的独立的.gdbinit文件，能提供一个模块化的界面，方便我们控制GDB显示的信息。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="开发工具" scheme="http://www.airchaoz.top/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"/>
     
   </entry>
   
