@@ -6,7 +6,7 @@
   <link href="http://www.airchaoz.top/atom.xml" rel="self"/>
   
   <link href="http://www.airchaoz.top/"/>
-  <updated>2025-07-18T09:55:07.997Z</updated>
+  <updated>2025-07-21T08:08:55.194Z</updated>
   <id>http://www.airchaoz.top/</id>
   
   <author>
@@ -15,6 +15,23 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>C++模板学习笔记（三）</title>
+    <link href="http://www.airchaoz.top/2025/07/21/%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89/"/>
+    <id>http://www.airchaoz.top/2025/07/21/%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%89%EF%BC%89/</id>
+    <published>2025-07-21T08:08:17.000Z</published>
+    <updated>2025-07-21T08:08:55.194Z</updated>
+    
+    
+    <summary type="html">&lt;p&gt;记录一下学习C++模板时的知识点&lt;/p&gt;</summary>
+    
+    
+    
+    
+    <category term="C++" scheme="http://www.airchaoz.top/tags/C/"/>
+    
+  </entry>
   
   <entry>
     <title>Python项目import管理</title>
@@ -339,23 +356,6 @@
     
     
     <category term="网络, 抓包" scheme="http://www.airchaoz.top/tags/%E7%BD%91%E7%BB%9C-%E6%8A%93%E5%8C%85/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>内存映射MMAP</title>
-    <link href="http://www.airchaoz.top/2024/04/23/%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84MMAP/"/>
-    <id>http://www.airchaoz.top/2024/04/23/%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84MMAP/</id>
-    <published>2024-04-23T13:01:00.000Z</published>
-    <updated>2024-08-10T14:07:17.000Z</updated>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;介绍&quot;&gt;&lt;a href=&quot;#介绍&quot; class=&quot;headerlink&quot; title=&quot;介绍&quot;&gt;&lt;/a&gt;介绍&lt;/h1&gt;&lt;p&gt;mmap 是一种操作系统提供的系统调用，用于在进程的虚拟地址空间中创建内存映射区域，实现文件和内存之间的直接映射。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="操作系统, 内存" scheme="http://www.airchaoz.top/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%86%85%E5%AD%98/"/>
     
   </entry>
   
