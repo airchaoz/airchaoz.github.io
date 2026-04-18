@@ -6,7 +6,7 @@
   <link href="http://www.airchaoz.top/atom.xml" rel="self"/>
   
   <link href="http://www.airchaoz.top/"/>
-  <updated>2025-07-21T08:08:55.194Z</updated>
+  <updated>2026-04-18T05:11:00.391Z</updated>
   <id>http://www.airchaoz.top/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>人月神话知识笔记</title>
+    <link href="http://www.airchaoz.top/2026/04/18/%E4%BA%BA%E6%9C%88%E7%A5%9E%E8%AF%9D%E7%9F%A5%E8%AF%86%E7%AC%94%E8%AE%B0/"/>
+    <id>http://www.airchaoz.top/2026/04/18/%E4%BA%BA%E6%9C%88%E7%A5%9E%E8%AF%9D%E7%9F%A5%E8%AF%86%E7%AC%94%E8%AE%B0/</id>
+    <published>2026-04-18T05:10:13.000Z</published>
+    <updated>2026-04-18T05:11:00.391Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;第一章-焦油坑&quot;&gt;&lt;a href=&quot;#第一章-焦油坑&quot; class=&quot;headerlink&quot; title=&quot;第一章 焦油坑&quot;&gt;&lt;/a&gt;第一章</summary>
+        
+      
+    
+    
+    
+    
+    <category term="学习笔记" scheme="http://www.airchaoz.top/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
   
   <entry>
     <title>C++模板学习笔记（三）</title>
@@ -55,7 +78,7 @@
     <link href="http://www.airchaoz.top/2025/07/16/%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
     <id>http://www.airchaoz.top/2025/07/16/%E6%A8%A1%E6%9D%BF%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/</id>
     <published>2025-07-16T13:11:17.000Z</published>
-    <updated>2025-07-16T13:17:33.633Z</updated>
+    <updated>2025-07-21T08:08:40.492Z</updated>
     
     
     <summary type="html">&lt;p&gt;记录一下学习C++模板时的知识点&lt;/p&gt;</summary>
@@ -339,23 +362,6 @@
     
     
     <category term="跨平台开发" scheme="http://www.airchaoz.top/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%BC%80%E5%8F%91/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>抓包工具的使用</title>
-    <link href="http://www.airchaoz.top/2024/06/13/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
-    <id>http://www.airchaoz.top/2024/06/13/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8/</id>
-    <published>2024-06-13T14:00:29.000Z</published>
-    <updated>2024-08-10T14:07:20.000Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;HTTP抓包工具有老牌的Fiddler和Charles，但这些工具仅限于HTTP抓包，想要抓取传输层的tcp包则需要用到更加强大的wireshark和tcpdump。&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="网络, 抓包" scheme="http://www.airchaoz.top/tags/%E7%BD%91%E7%BB%9C-%E6%8A%93%E5%8C%85/"/>
     
   </entry>
   
