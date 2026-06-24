@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>内存映射MMAP - echo&#039;s blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="echo"><meta name="msapplication-TileImage" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202408101608074.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="echo"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="介绍mmap 是一种操作系统提供的系统调用，用于在进程的虚拟地址空间中创建内存映射区域，实现文件和内存之间的直接映射。"><meta property="og:type" content="blog"><meta property="og:title" content="内存映射MMAP"><meta property="og:url" content="http://www.airchaoz.top/2024/04/23/%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84MMAP/"><meta property="og:site_name" content="echo&#039;s blog"><meta property="og:description" content="介绍mmap 是一种操作系统提供的系统调用，用于在进程的虚拟地址空间中创建内存映射区域，实现文件和内存之间的直接映射。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202404232103951.png"><meta property="og:image" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202404232104734.png"><meta property="article:published_time" content="2024-04-23T13:01:00.000Z"><meta property="article:modified_time" content="2026-02-25T16:04:13.000Z"><meta property="article:author" content="echo"><meta property="article:tag" content="操作系统, 内存"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202404232103951.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.airchaoz.top/2024/04/23/%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84MMAP/"},"headline":"内存映射MMAP","image":["https://blog-512.oss-cn-shenzhen.aliyuncs.com/202404232103951.png","https://blog-512.oss-cn-shenzhen.aliyuncs.com/202404232104734.png"],"datePublished":"2024-04-23T13:01:00.000Z","dateModified":"2026-02-25T16:04:13.000Z","author":{"@type":"Person","name":"echo"},"publisher":{"@type":"Organization","name":"echo's blog","logo":{"@type":"ImageObject","url":{"text":"echo's blog"}}},"description":"介绍mmap 是一种操作系统提供的系统调用，用于在进程的虚拟地址空间中创建内存映射区域，实现文件和内存之间的直接映射。"}</script><link rel="canonical" href="http://www.airchaoz.top/2024/04/23/%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84MMAP/"><link rel="icon" href="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202408101608074.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-dark.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-9N9JB3XQG1" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2024-04-23T13:01:00.000Z" title="4/23/2024, 9:01:00 PM">2024-04-23</time>发表</span><span class="level-item"><time dateTime="2026-02-25T16:04:13.000Z" title="2/26/2026, 12:04:13 AM">2026-02-26</time>更新</span><span class="level-item">18 分钟读完 (大约2744个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">内存映射MMAP</h1><div class="content"><h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><p>mmap 是一种操作系统提供的系统调用，用于在进程的虚拟地址空间中创建内存映射区域，实现文件和内存之间的直接映射。</p>
+<span id="more"></span>
+<p>一般来说，修改一个文件的内容需要如下3个步骤：</p>
+<ul>
+<li>把文件内容读入到内存中。</li>
+<li>修改内存中的内容。</li>
+<li>把内存的数据写入到文件中。<br><img src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202404232103951.png"><br>如果使用代码来实现上面的过程，代码如下：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">read(fd, buf, <span class="number">1024</span>);  <span class="comment">// 读取文件的内容到buf</span></span><br><span class="line">...                   <span class="comment">// 修改buf的内容</span></span><br><span class="line">write(fd, buf, <span class="number">1024</span>); <span class="comment">// 把buf的内容写入到文件</span></span><br></pre></td></tr></table></figure>
+从图中可以看出，<code>页缓存(page cache)</code> 是读写文件时的中间层，内核使用 <code>页缓存</code> 与文件的数据块关联起来。所以应用程序读写文件时，实际操作的是 <code>页缓存</code>。</li>
+</ul>
+<p>从传统读写文件的过程中，我们可以发现有个地方可以优化：<strong>如果可以直接在用户空间读写 <code>页缓存</code>，那么就可以免去将 <code>页缓存</code> 的数据复制到用户空间缓冲区的过程。</strong></p>
+<p>那么，有没有这样的技术能实现上面所说的方式呢？答案是肯定的，就是 <code>mmap</code>。</p>
+<p>使用 <code>mmap</code> 系统调用可以将用户空间的虚拟内存地址与文件进行映射（绑定），对映射后的虚拟内存地址进行读写操作就如同对文件进行读写操作一样。原理如图所示：<br><img src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202404232104734.png"><br>前面我们介绍过，读写文件都需要经过 <code>页缓存</code>，所以 <code>mmap</code> 映射的正是文件的 <code>页缓存</code>，而非磁盘中的文件本身。由于 <code>mmap</code> 映射的是文件的 <code>页缓存</code>，所以就涉及到同步的问题，即 <code>页缓存</code> 会在什么时候把数据同步到磁盘。</p>
+<p>Linux 内核并不会主动把 <code>mmap</code> 映射的 <code>页缓存</code> 同步到磁盘，而是需要用户主动触发。</p>
+<p>同步 <code>mmap</code> 映射的内存到磁盘的 4 个时机：</p>
+<ul>
+<li>调用 <code>msync</code> 函数主动进行数据同步（主动）。</li>
+<li>调用 <code>munmap</code> 函数对文件进行解除映射关系时（主动）。</li>
+<li>进程退出时（被动）。</li>
+<li>系统关机时（被动）。</li>
+</ul>
+<h1 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h1><p><strong>函数原型</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> *<span class="title function_">mmap</span><span class="params">(<span class="type">void</span> *start, <span class="type">size_t</span> length, <span class="type">int</span> prot, <span class="type">int</span> flags, <span class="type">int</span> fd, <span class="type">off_t</span> offset)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>用于将文件或匿名内存映射到进程的虚拟地址空间中</p>
+<p><strong>返回说明</strong></p>
+<p>成功执行时，mmap()返回被映射区的指针。失败时，mmap()返回MAP_FAILED[其值为(void *)-1]， error被设为以下的某个值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"> 1 EACCES：访问出错</span><br><span class="line"> 2 EAGAIN：文件已被锁定，或者太多的内存已被锁定</span><br><span class="line"> 3 EBADF：fd不是有效的文件描述词</span><br><span class="line"> 4 EINVAL：一个或者多个参数无效</span><br><span class="line"> 5 ENFILE：已达到系统对打开文件的限制</span><br><span class="line"> 6 ENODEV：指定文件所在的文件系统不支持内存映射</span><br><span class="line"> 7 ENOMEM：内存不足，或者进程已超出最大内存映射数量</span><br><span class="line"> 8 EPERM：权能不足，操作不允许</span><br><span class="line"> 9 ETXTBSY：已写的方式打开文件，同时指定MAP_DENYWRITE标志</span><br><span class="line">10 SIGSEGV：试着向只读区写入</span><br><span class="line">11 SIGBUS：试着访问不属于进程的内存区</span><br></pre></td></tr></table></figure>
+
+<p><strong>参数</strong></p>
+<p>start：映射区的开始地址</p>
+<p>length：映射区的长度</p>
+<p>prot：期望的内存保护标志，不能与文件的打开模式冲突。是以下的某个值，可以通过or运算合理地组合在一起</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1 PROT_EXEC ：页内容可以被执行</span><br><span class="line">2 PROT_READ ：页内容可以被读取</span><br><span class="line">3 PROT_WRITE ：页可以被写入</span><br><span class="line">4 PROT_NONE ：页不可访问</span><br></pre></td></tr></table></figure>
+
+<p>flags：指定映射对象的类型，映射选项和映射页是否可以共享。它的值可以是一个或者多个以下位的组合体</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> 1 MAP_FIXED //使用指定的映射起始地址，如果由start和len参数指定的内存区重叠于现存的映射空间，重叠部分将会被丢弃。如果指定的起始地址不可用，操作将会失败。并且起始地址必须落在页的边界上。</span><br><span class="line"> 2 MAP_SHARED //与其它所有映射这个对象的进程共享映射空间。对共享区的写入，相当于输出到文件。直到msync()或者munmap()被调用，文件实际上不会被更新。</span><br><span class="line"> 3 MAP_PRIVATE //建立一个写入时拷贝的私有映射。内存区域的写入不会影响到原文件。这个标志和以上标志是互斥的，只能使用其中一个。</span><br><span class="line"> 4 MAP_DENYWRITE //这个标志被忽略。</span><br><span class="line"> 5 MAP_EXECUTABLE //同上</span><br><span class="line"> 6 MAP_NORESERVE //不要为这个映射保留交换空间。当交换空间被保留，对映射区修改的可能会得到保证。当交换空间不被保留，同时内存不足，对映射区的修改会引起段违例信号。</span><br><span class="line"> 7 MAP_LOCKED //锁定映射区的页面，从而防止页面被交换出内存。</span><br><span class="line"> 8 MAP_GROWSDOWN //用于堆栈，告诉内核VM系统，映射区可以向下扩展。</span><br><span class="line"> 9 MAP_ANONYMOUS //匿名映射，映射区不与任何文件关联。</span><br><span class="line">10 MAP_ANON //MAP_ANONYMOUS的别称，不再被使用。</span><br><span class="line">11 MAP_FILE //兼容标志，被忽略。</span><br><span class="line">12 MAP_32BIT //将映射区放在进程地址空间的低2GB，MAP_FIXED指定时会被忽略。当前这个标志只在x86-64平台上得到支持。</span><br><span class="line">13 MAP_POPULATE //为文件映射通过预读的方式准备好页表。随后对映射区的访问不会被页违例阻塞。</span><br><span class="line">14 MAP_NONBLOCK //仅和MAP_POPULATE一起使用时才有意义。不执行预读，只为已存在于内存中的页面建立页表入口。</span><br></pre></td></tr></table></figure>
+
+<p>fd：有效的文件描述词。如果MAP_ANONYMOUS被设定，为了兼容问题，其值应为-1</p>
+<p>offset：被映射对象内容的起点</p>
+<p><strong>相关函数</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">munmap</span><span class="params">( <span class="type">void</span> * addr, <span class="type">size_t</span> len )</span></span><br></pre></td></tr></table></figure>
+
+<p>成功执行时，<code>munmap()</code>返回0。失败时，<code>munmap</code>返回-1，<code>error</code>返回标志和mmap一致；</p>
+<p>该调用在进程地址空间中解除一个映射关系，addr是调用mmap()时返回的地址，len是映射区的大小；</p>
+<p>当映射关系解除后，对原来映射地址的访问将导致段错误发生。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">msync</span><span class="params">( <span class="type">void</span> *addr, <span class="type">size_t</span> len, <span class="type">int</span> flags )</span></span><br></pre></td></tr></table></figure>
+
+<p>一般说来，进程在映射空间的对共享内容的改变并不直接写回到磁盘文件中，往往在调用<code>munmap()</code>后才执行该操作。</p>
+<p>可以通过调用msync()实现磁盘上文件内容与共享内存区的内容一致。</p>
+<h1 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h1><h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><p>1、对文件的读取操作跨过了页缓存，减少了数据的拷贝次数，用内存读写取代I&#x2F;O读写，提高了文件读取效率。</p>
+<p>2、实现了用户空间和内核空间的高效交互方式。两空间的各自修改操作可以直接反映在映射的区域内，从而被对方空间及时捕捉。</p>
+<p>3、提供进程间共享内存及相互通信的方式。不管是父子进程还是无亲缘关系的进程，都可以将自身用户空间映射到同一个文件或匿名映射到同一片区域。从而通过各自对映射区域的改动，达到进程间通信和进程间共享的目的。</p>
+<p>4、可用于实现高效的大规模数据传输。内存空间不足，是制约大数据操作的一个方面，解决方案往往是借助硬盘空间协助操作，补充内存的不足。但是进一步会造成大量的文件I&#x2F;O操作，极大影响效率。这个问题可以通过mmap映射很好的解决。换句话说，但凡是需要用磁盘空间代替内存的时候，mmap都可以发挥其功效。</p>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ol>
+<li>由于 mmap 使用时必须实现指定好内存映射的大小，因此 mmap 并不适合变长文件；</li>
+<li>如果更新文件的操作很多，mmap 避免两态拷贝的优势就被摊还，最终还是落在了大量的脏页回写及由此引发的随机 I&#x2F;O 上，所以在随机写很多的情况下，mmap 方式在效率上不一定会比带缓冲区的一般写快；</li>
+<li>读&#x2F;写小文件（例如 16K 以下的文件），mmap 与通过 read 系统调用相比有着更高的开销与延迟；同时 mmap 的刷盘由系统全权控制，但是在小数据量的情况下由应用本身手动控制更好；</li>
+<li>mmap 受限于操作系统内存大小：例如在 32-bits 的操作系统上，虚拟内存总大小也就 2GB，但由于 mmap 必须要在内存中找到一块连续的地址块，此时你就无法对 4GB 大小的文件完全进行 mmap，在这种情况下你必须分多块分别进行 mmap，但是此时地址内存地址已经不再连续，使用 mmap 的意义大打折扣，而且引入了额外的复杂性；</li>
+</ol>
+<h1 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h1><ol>
+<li>多个线程以只读的方式同时访问一个文件，这是因为 mmap 机制下多线程共享了同一物理内存空间，因此节约了内存。案例：多个进程可能依赖于同一个动态链接库，利用 mmap 可以实现内存仅仅加载一份动态链接库，多个进程共享此动态链接库。</li>
+<li>mmap 非常适合用于进程间通信，这是因为对同一文件对应的 mmap 分配的物理内存天然多线程共享，并可以依赖于操作系统的同步原语；</li>
+<li>mmap 虽然比 sendfile 等机制多了一次 CPU 全程参与的内存拷贝，但是用户空间与内核空间并不需要数据拷贝，因此在正确使用情况下并不比 sendfile 效率差；</li>
+</ol>
+<h1 id="相关阅读"><a href="#相关阅读" class="headerlink" title="相关阅读"></a>相关阅读</h1><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6956031662916534279">一文读懂 mmap 原理</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/huxiao-tee/p/4660352.html#_label3">认真分析mmap：是什么 为什么 怎么用</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/507907660">10分钟了解什么是内存映射MMAP！</a></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>内存映射MMAP</p><p><a href="http://www.airchaoz.top/2024/04/23/内存映射MMAP/">http://www.airchaoz.top/2024/04/23/内存映射MMAP/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>echo</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2024-04-23</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2026-02-26</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%86%85%E5%AD%98/">操作系统, 内存</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2024/06/13/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">抓包工具的使用</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2024/03/26/docker%E6%A0%B8%E5%BF%83%E7%9F%A5%E8%AF%86%E6%A6%82%E6%8B%AC/"><span class="level-item">docker核心知识概括</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://www.airchaoz.top/2024/04/23/%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84MMAP/';
+            this.page.identifier = '2024/04/23/内存映射MMAP/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'echos-blog-2' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202401032048869.png" alt="echo"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">echo</p><p class="is-size-6 is-block">C++ Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>GuangDong, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">31</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">18</p></a></div></div></nav></div></div><!--!--><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/C-20/"><span class="tag">C++20</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CMake/"><span class="tag">CMake</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Qt/"><span class="tag">Qt</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/"><span class="tag">内存模型</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">并发编程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97/"><span class="tag">并行计算</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%86%85%E5%AD%98/"><span class="tag">操作系统, 内存</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/"><span class="tag">效率工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"><span class="tag">机器学习</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"><span class="tag">源码阅读</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C-%E6%8A%93%E5%8C%85/"><span class="tag">网络, 抓包</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"><span class="tag">网络编程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%BC%80%E5%8F%91/"><span class="tag">跨平台开发</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#介绍"><span class="level-left"><span class="level-item">1</span><span class="level-item">介绍</span></span></a></li><li><a class="level is-mobile" href="#相关函数"><span class="level-left"><span class="level-item">2</span><span class="level-item">相关函数</span></span></a></li><li><a class="level is-mobile" href="#优缺点"><span class="level-left"><span class="level-item">3</span><span class="level-item">优缺点</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#优点"><span class="level-left"><span class="level-item">3.1</span><span class="level-item">优点</span></span></a></li><li><a class="level is-mobile" href="#缺点"><span class="level-left"><span class="level-item">3.2</span><span class="level-item">缺点</span></span></a></li></ul></li><li><a class="level is-mobile" href="#使用场景"><span class="level-left"><span class="level-item">4</span><span class="level-item">使用场景</span></span></a></li><li><a class="level is-mobile" href="#相关阅读"><span class="level-left"><span class="level-item">5</span><span class="level-item">相关阅读</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">echo&#039;s blog</a><p class="is-size-7"><span>&copy; 2026 echo</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
