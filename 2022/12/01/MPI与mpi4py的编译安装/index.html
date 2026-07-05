@@ -3,7 +3,37 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
     
-        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
+        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
 <style>
 body, button, input, select, textarea {
   font-family: 'LXGW WenKai', 'Microsoft YaHei', 'PingFang SC', sans-serif;
@@ -38,37 +68,7 @@ code, pre {
     width: 75%;
   }
 }
-</style><script>
-  (function () {
-      function switchTab() {
-          if (!location.hash) {
-            return;
-          }
-
-          const id = '#' + CSS.escape(location.hash.substring(1));
-          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
-          if (!$tabMenu) {
-            return;
-          }
-
-          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
-          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
-          Array.from($tabMenuContainer.querySelectorAll('a'))
-              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
-              .forEach($content => $content.classList.add('is-hidden'));
-
-          if ($tabMenu) {
-              $tabMenu.parentElement.classList.add('is-active');
-          }
-          const $activeTab = document.querySelector(id);
-          if ($activeTab) {
-              $activeTab.classList.remove('is-hidden');
-          }
-      }
-      switchTab();
-      window.addEventListener('hashchange', switchTab, false);
-  })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-12-01T06:50:09.000Z" title="12/1/2022, 2:50:09 PM">2022-12-01</time>发表</span><span class="level-item"><time dateTime="2026-02-25T16:04:13.000Z" title="2/26/2026, 12:04:13 AM">2026-02-26</time>更新</span><span class="level-item">7 分钟读完 (大约1087个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">MPI与mpi4py的编译安装</h1><div class="content"><p>mpi4py是sysumoc程序使用的必备模块，它的编译安装有着严格的要求。默认情况下，编译sysumoc所链接的MPI库和编译mpi4py所链接的MPI库需要是同一个MPI库，否则程序就会无法运行。在超算上普通用户没有root权限，甚至会无法连接网络，所以会从源码编译安装mpi4py就非常重要。</p>
+</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-12-01T06:50:09.000Z" title="12/1/2022, 2:50:09 PM">2022-12-01</time>发表</span><span class="level-item"><time dateTime="2026-02-25T16:04:13.000Z" title="2/26/2026, 12:04:13 AM">2026-02-26</time>更新</span><span class="level-item">7 分钟读完 (大约1087个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">MPI与mpi4py的编译安装</h1><div class="content"><p>mpi4py是sysumoc程序使用的必备模块，它的编译安装有着严格的要求。默认情况下，编译sysumoc所链接的MPI库和编译mpi4py所链接的MPI库需要是同一个MPI库，否则程序就会无法运行。在超算上普通用户没有root权限，甚至会无法连接网络，所以会从源码编译安装mpi4py就非常重要。</p>
 <span id="more"></span>
 
 <h1 id="一、有网络下pip编译安装mpi4py方法"><a href="#一、有网络下pip编译安装mpi4py方法" class="headerlink" title="一、有网络下pip编译安装mpi4py方法"></a>一、有网络下pip编译安装mpi4py方法</h1><p>注意，无论是否使用 conda 虚拟环境，都不建议用 conda install 的方式安装，因为 conda 安装的模块是事先编译好的，只有通过pip安装的包才会重新编译。</p>

@@ -3,7 +3,37 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
     
-        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
+        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css" />
 <style>
 body, button, input, select, textarea {
   font-family: 'LXGW WenKai', 'Microsoft YaHei', 'PingFang SC', sans-serif;
@@ -38,37 +68,7 @@ code, pre {
     width: 75%;
   }
 }
-</style><script>
-  (function () {
-      function switchTab() {
-          if (!location.hash) {
-            return;
-          }
-
-          const id = '#' + CSS.escape(location.hash.substring(1));
-          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
-          if (!$tabMenu) {
-            return;
-          }
-
-          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
-          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
-          Array.from($tabMenuContainer.querySelectorAll('a'))
-              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
-              .forEach($content => $content.classList.add('is-hidden'));
-
-          if ($tabMenu) {
-              $tabMenu.parentElement.classList.add('is-active');
-          }
-          const $activeTab = document.querySelector(id);
-          if ($activeTab) {
-              $activeTab.classList.remove('is-hidden');
-          }
-      }
-      switchTab();
-      window.addEventListener('hashchange', switchTab, false);
-  })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2026-06-24T12:24:30.000Z" title="6/24/2026, 8:24:30 PM">2026-06-24</time>发表</span><span class="level-item"><time dateTime="2026-06-24T12:27:14.388Z" title="6/24/2026, 8:27:14 PM">2026-06-24</time>更新</span><span class="level-item">30 分钟读完 (大约4498个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">C++20 Concepts用法</h1><div class="content"><h1 id="C-Concepts-教程：从类型萃取迁移到-Concepts"><a href="#C-Concepts-教程：从类型萃取迁移到-Concepts" class="headerlink" title="C++ Concepts 教程：从类型萃取迁移到 Concepts"></a>C++ Concepts 教程：从类型萃取迁移到 Concepts</h1><p>本文按用途和分类介绍 C++20 Concepts。每个用法都给出旧写法和新写法对比：</p>
+</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2026-06-24T12:24:30.000Z" title="6/24/2026, 8:24:30 PM">2026-06-24</time>发表</span><span class="level-item"><time dateTime="2026-06-24T12:27:14.388Z" title="6/24/2026, 8:27:14 PM">2026-06-24</time>更新</span><span class="level-item">30 分钟读完 (大约4498个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">C++20 Concepts用法</h1><div class="content"><h1 id="C-Concepts-教程：从类型萃取迁移到-Concepts"><a href="#C-Concepts-教程：从类型萃取迁移到-Concepts" class="headerlink" title="C++ Concepts 教程：从类型萃取迁移到 Concepts"></a>C++ Concepts 教程：从类型萃取迁移到 Concepts</h1><p>本文按用途和分类介绍 C++20 Concepts。每个用法都给出旧写法和新写法对比：</p>
 <ul>
 <li>旧写法：类型萃取、<code>std::enable_if</code>、<code>std::void_t</code>、<code>static_assert</code>、SFINAE。</li>
 <li>新写法：<code>concept</code>、<code>requires</code>、标准库 concepts。</li>
