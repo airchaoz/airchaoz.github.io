@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>echo&#039;s blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="echo"><meta name="msapplication-TileImage" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202408101608074.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="echo"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="vscode-changelog · 1.107            :root {         --bg: #ffffff;         --bg-soft: #fbfbfd;         --bg-elevated: #ffffff;         --ink: #1d1d1f;         --ink-2: #424245;"><meta property="og:type" content="blog"><meta property="og:title" content="echo&#039;s blog"><meta property="og:url" content="http://www.airchaoz.top/vscode-changelog/1.107_%E5%A4%9A%E4%BB%A3%E7%90%86%E7%BC%96%E6%8E%92.html"><meta property="og:site_name" content="echo&#039;s blog"><meta property="og:description" content="vscode-changelog · 1.107            :root {         --bg: #ffffff;         --bg-soft: #fbfbfd;         --bg-elevated: #ffffff;         --ink: #1d1d1f;         --ink-2: #424245;"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="http://www.airchaoz.top/img/og_image.png"><meta property="article:published_time" content="2026-07-20T23:59:31.504Z"><meta property="article:modified_time" content="2026-07-20T23:59:31.504Z"><meta property="article:author" content="echo"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="http://www.airchaoz.top/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"http://www.airchaoz.top/vscode-changelog/1.107_%E5%A4%9A%E4%BB%A3%E7%90%86%E7%BC%96%E6%8E%92.html"},"headline":"echo's blog","image":["http://www.airchaoz.top/img/og_image.png"],"datePublished":"2026-07-20T23:59:31.504Z","dateModified":"2026-07-20T23:59:31.504Z","author":{"@type":"Person","name":"echo"},"publisher":{"@type":"Organization","name":"echo's blog","logo":{"@type":"ImageObject","url":{"text":"echo's blog"}}},"description":"vscode-changelog · 1.107            :root {         --bg: #ffffff;         --bg-soft: #fbfbfd;         --bg-elevated: #ffffff;         --ink: #1d1d1f;         --ink-2: #424245;"}</script><link rel="canonical" href="http://www.airchaoz.top/vscode-changelog/1.107_%E5%A4%9A%E4%BB%A3%E7%90%86%E7%BC%96%E6%8E%92.html"><link rel="icon" href="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202408101608074.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-dark.css"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-9N9JB3XQG1" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web@1.522.0/style.min.css" crossorigin="anonymous" />
+<style>
+body, button, input, select, textarea {
+  font-family: 'LXGW WenKai GB Screen', '霞鹜文楷', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+}
+code, pre {
+  font-family: 'LXGW WenKai Mono GB Screen', '霞鹜文楷等宽', 'Source Code Pro', Consolas, monospace;
+}
+</style><style>
+@media screen and (min-width: 1280px) {
+  .is-3-column .column-main {
+    flex: none;
+    width: 60%;
+  }
+  .is-3-column .column-left {
+    flex: none;
+    width: 20%;
+    padding-left: 0.375rem;
+    padding-right: 0.75rem;
+  }
+  .is-3-column .column-right {
+    flex: none;
+    width: 20%;
+    padding-left: 0.75rem;
+    padding-right: 0.375rem;
+  }
+  .is-2-column .column-left {
+    flex: none;
+    width: 25%;
+  }
+  .is-2-column .column-main {
+    flex: none;
+    width: 75%;
+  }
+}
+</style><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="content"><!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>vscode-changelog · 1.107</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --bg-soft: #fbfbfd;
+        --bg-elevated: #ffffff;
+        --ink: #1d1d1f;
+        --ink-2: #424245;
+        --ink-muted: #6e6e73;
+        --ink-faint: #86868b;
+        --primary: #0066cc;
+        --c-highlight: #0066cc;
+        --c-ai: #7c3aed;
+        --c-editor: #0891b2;
+        --c-advanced: #059669;
+        --c-deprecation: #d97706;
+        --section-color: var(--c-highlight);
+        --hairline: #d2d2d7;
+        --hairline-soft: #e8e8ed;
+        --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.06);
+        --r-sm: 8px;
+        --r-md: 12px;
+        --r-lg: 18px;
+        --r-full: 9999px;
+        --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        --font-text: "SF Pro Text", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-text);
+        font-size: 17px;
+        line-height: 1.5;
+        letter-spacing: -0.374px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .nl-page { padding: 0 24px 80px; }
+      .nl-container { max-width: 880px; margin: 0 auto; }
+
+      /* HERO */
+      .nl-hero {
+        position: relative;
+        padding: 96px 0 80px;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .nl-hero::before {
+        content: "";
+        position: absolute;
+        inset: -10%;
+        background:
+          radial-gradient(ellipse 60% 50% at 88% 0%, rgba(124, 58, 237, 0.14), transparent 60%),
+          radial-gradient(ellipse 50% 40% at 5% 100%, rgba(0, 102, 204, 0.10), transparent 60%);
+        z-index: -1;
+      }
+      .nl-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+        background-size: 32px 32px;
+        -webkit-mask-image: radial-gradient(ellipse 60% 70% at 50% 40%, black, transparent 80%);
+        mask-image: radial-gradient(ellipse 60% 70% at 50% 40%, black, transparent 80%);
+        z-index: -1;
+      }
+      .nl-eyebrow {
+        margin: 0 0 24px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--primary);
+      }
+      .nl-version {
+        margin: 0 0 28px;
+        font-family: var(--font-display);
+        font-size: clamp(36px, 7.5vw, 56px);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: var(--ink);
+        word-break: break-word;
+      }
+      .nl-version-num {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        background: linear-gradient(180deg, var(--ink) 0%, color-mix(in srgb, var(--ink) 60%, var(--c-ai)) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+      .nl-version-sep {
+        display: inline-block;
+        margin: 0 0.4em;
+        color: var(--hairline);
+        font-weight: 400;
+        -webkit-text-fill-color: var(--hairline);
+      }
+      .nl-meta {
+        margin: 0 0 32px;
+        font-size: 15px;
+        color: var(--ink-muted);
+        font-variant-numeric: tabular-nums;
+      }
+      .nl-meta time { color: var(--ink-2); font-weight: 500; }
+      .nl-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        background: var(--primary);
+        color: #fff;
+        border-radius: var(--r-full);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      }
+      .nl-cta:hover {
+        background: color-mix(in srgb, var(--primary) 85%, black);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(0, 102, 204, 0.25);
+      }
+
+      /* TOC */
+      .nl-toc {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        padding: 16px 0;
+        margin: 0 0 8px;
+        border-top: 1px solid var(--hairline-soft);
+        border-bottom: 1px solid var(--hairline-soft);
+        font-size: 13px;
+      }
+      .nl-toc a {
+        color: var(--ink-muted);
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: var(--r-full);
+        transition: all 0.2s ease;
+      }
+      .nl-toc a:hover {
+        color: var(--ink);
+        background: var(--bg-soft);
+      }
+
+      /* SECTION */
+      .nl-section {
+        margin: 64px 0;
+        scroll-margin-top: 32px;
+      }
+      .nl-section[data-color="ai"] { --section-color: var(--c-ai); }
+      .nl-section[data-color="editor"] { --section-color: var(--c-editor); }
+      .nl-section[data-color="advanced"] { --section-color: var(--c-advanced); }
+
+      .nl-section-head {
+        position: relative;
+        margin-bottom: 28px;
+        padding-left: 16px;
+      }
+      .nl-section-head::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        bottom: 8px;
+        width: 4px;
+        background: var(--section-color);
+        border-radius: 2px;
+      }
+      .nl-section-eyebrow {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--section-color);
+        margin-bottom: 6px;
+      }
+      .nl-section-title {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        line-height: 1.2;
+      }
+
+      /* HIGHLIGHTS */
+      .nl-highlights {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin: 0;
+      }
+      .nl-hl-card {
+        position: relative;
+        padding: 22px;
+        background: var(--bg-elevated);
+        border: 1px solid var(--hairline-soft);
+        border-radius: var(--r-md);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+      .nl-hl-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-2);
+        border-color: var(--hairline);
+      }
+      .nl-hl-num {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-highlight);
+        margin-bottom: 16px;
+        letter-spacing: 0.06em;
+        font-variant-numeric: tabular-nums;
+      }
+      .nl-hl-card h3 {
+        font-family: var(--font-display);
+        font-size: 17px;
+        font-weight: 600;
+        line-height: 1.3;
+        margin: 0 0 8px;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+      .nl-hl-card p {
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: var(--ink-muted);
+        margin: 0;
+      }
+
+      /* CHANGES LIST */
+      .nl-changes {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .nl-changes li {
+        position: relative;
+        padding: 18px 0 18px 28px;
+        border-top: 1px solid var(--hairline-soft);
+        font-size: 15.5px;
+        line-height: 1.6;
+        color: var(--ink-2);
+        transition: background 0.2s ease;
+      }
+      .nl-changes li:first-child { border-top-color: var(--hairline); }
+      .nl-changes li:hover { background: var(--bg-soft); }
+      .nl-changes li::before {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 28px;
+        width: 8px;
+        height: 8px;
+        background: var(--section-color);
+        border-radius: 50%;
+      }
+      .nl-changes strong {
+        color: var(--ink);
+        font-weight: 600;
+        border-bottom: 1px solid var(--section-color);
+        padding-bottom: 1px;
+      }
+      .nl-changes code {
+        font-family: var(--font-mono);
+        font-size: 0.875em;
+        background: var(--bg-soft);
+        padding: 2px 6px;
+        border: 1px solid var(--hairline-soft);
+        border-radius: 4px;
+        color: var(--ink);
+      }
+      .nl-changes p { margin: 0; }
+      .nl-changes pre {
+        background: var(--bg-soft);
+        padding: 12px;
+        border-radius: var(--r-sm);
+        overflow: auto;
+        font-size: 13px;
+        margin: 10px 0;
+      }
+      .nl-changes blockquote {
+        margin: 8px 0;
+        padding: 0 0 0 12px;
+        border-left: 2px solid var(--hairline);
+        color: var(--ink-muted);
+      }
+
+      /* TAGS (legacy JSON branch) */
+      .nl-tags {
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid var(--hairline-soft);
+      }
+      .nl-tag {
+        display: inline-block;
+        font-size: 12px;
+        color: var(--ink-muted);
+        background: var(--bg-soft);
+        border: 1px solid var(--hairline-soft);
+        border-radius: var(--r-full);
+        padding: 6px 12px;
+        margin: 0 6px 6px 0;
+      }
+
+      /* FOOTER */
+      .nl-footer {
+        margin-top: 80px;
+        padding-top: 32px;
+        border-top: 1px solid var(--hairline-soft);
+        font-size: 12px;
+        color: var(--ink-faint);
+        text-align: center;
+        font-family: var(--font-mono);
+        letter-spacing: 0.04em;
+      }
+      .nl-footer-sep { margin: 0 8px; color: var(--hairline); }
+
+      /* MOTION */
+      @keyframes nl-fade-up {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .nl-hl-card, .nl-section { animation: nl-fade-up 0.5s ease both; }
+      .nl-section:nth-of-type(1) { animation-delay: 0s; }
+      .nl-section:nth-of-type(2) { animation-delay: 0.05s; }
+      .nl-section:nth-of-type(3) { animation-delay: 0.1s; }
+      .nl-section:nth-of-type(4) { animation-delay: 0.15s; }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+        html { scroll-behavior: auto; }
+      }
+
+      /* DARK */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #000000;
+          --bg-soft: #0a0a0a;
+          --bg-elevated: #141416;
+          --ink: #f5f5f7;
+          --ink-2: #d2d2d7;
+          --ink-muted: #a1a1a6;
+          --ink-faint: #6e6e73;
+          --primary: #2997ff;
+          --c-highlight: #2997ff;
+          --c-ai: #a78bfa;
+          --c-editor: #22d3ee;
+          --c-advanced: #34d399;
+          --hairline: #2c2c2e;
+          --hairline-soft: #1c1c1e;
+          --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.4);
+        }
+        .nl-hero::before {
+          background:
+            radial-gradient(ellipse 60% 50% at 88% 0%, rgba(167, 139, 250, 0.20), transparent 60%),
+            radial-gradient(ellipse 50% 40% at 5% 100%, rgba(41, 151, 255, 0.15), transparent 60%);
+        }
+        .nl-hero::after {
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        .nl-changes code { color: #f5f5f7; }
+      }
+
+      /* RESPONSIVE */
+      @media only screen and (max-width: 640px) {
+        .nl-page { padding: 0 16px 60px; }
+        .nl-hero { padding: 56px 0 56px; }
+        .nl-version { font-size: clamp(48px, 18vw, 80px); }
+        .nl-highlights { grid-template-columns: 1fr; }
+        .nl-section-title { font-size: 22px; }
+        .nl-section { margin: 48px 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nl-page">
+      <div class="nl-container">
+        <header class="nl-hero">
+          <p class="nl-eyebrow">新发布 · vscode-changelog</p>
+          <h1 class="nl-version">
+            <span class="nl-version-num">1.107</span> <span class="nl-version-sep">·</span> 多代理编排          </h1>
+          <p class="nl-meta">
+<time datetime="2025-12-10T00:00:00+00:00">2025年12月10日</time>          </p>
+<a class="nl-cta" target="_blank" rel="noopener" href="https://code.visualstudio.com/updates/v1_107">查看发布说明 ↗</a>        </header>
+
+        <nav class="nl-toc" aria-label="目录">
+<a href="#核心亮点">核心亮点</a><a href="#代理与工作流">代理与工作流</a><a href="#聊天与-ai-体验">聊天与 AI 体验</a><a href="#其他特性">其他特性</a>        </nav>
+
+          <section class="nl-section" id="核心亮点">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">TL;DR</span>
+              <h2 class="nl-section-title">核心亮点</h2>
+            </header>
+            <div class="nl-highlights">
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">01</span>
+                <h3>多智能体编排</h3>
+                <p>引入多智能体编排能力，支持 GitHub Copilot 与自定义代理协同工作，并行加速开发任务。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">02</span>
+                <h3>Agent HQ 统一管理</h3>
+                <p>新增 Agent HQ 视图，集中管理所有本地、后台、云端代理，任务委派与状态监控一目了然。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">03</span>
+                <h3>后台代理隔离执行</h3>
+                <p>后台代理可在独立 Git Worktree 中运行，避免多任务同时修改同一工作区产生冲突。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">04</span>
+                <h3>委托工作流无缝衔接</h3>
+                <p>本地聊天会话可一键委托给后台或云端代理，原会话自动归档，上下文完整传递。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">05</span>
+                <h3>终端建议稳定版</h3>
+                <p>Terminal Suggest 正式面向稳定用户推出，提供内联补全与上下文提示，分组显示选项标志与参数。</p>
+              </article>
+            </div>
+          </section>
+          <section class="nl-section" id="代理与工作流" data-color="ai">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">代理与工</span>
+              <h2 class="nl-section-title">代理与工作流</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>代理会话集成到聊天视图</strong>：代理会话列表直接嵌入 Chat 视图，支持紧凑、侧边栏两种布局，并持久化筛选与切换状态。</li><li><strong>本地代理后台持续运行</strong>：关闭聊天会话后，本地代理任务继续执行，可在会话列表查看进度并随时切回。</li><li><strong>为后台代理添加上下文</strong>：支持将选中内容、问题、符号、Git 提交等作为上下文附加到后台代理提示，构建更精准的指令。</li><li><strong>组织级自定义代理（实验性）</strong>：允许在 GitHub 组织层面定义自定义代理，成员可在聊天中直接使用组织级代理。</li><li><strong>自定义代理可作子代理（实验性）</strong>：复杂任务中主代理可委托子代理独立处理子议题，自定义代理也可被用作子代理。</li><li><strong>复用 Claude Skills（实验性）</strong>：支持加载 ~/.claude/skills 或项目中的 Claude Skills，作为按需能力供代理使用。</li>            </ul>
+          </section>
+          <section class="nl-section" id="聊天与-ai-体验" data-color="editor">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">聊天与 </span>
+              <h2 class="nl-section-title">聊天与 AI 体验</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>内联聊天优化为代码编辑</strong>：内联聊天聚焦于当前文件的快速修改，无法处理的任务自动升级至 Chat 视图并保留上下文。</li><li><strong>语言模型集中管理</strong>：新增 Language Models 编辑器，统一查看和管理所有可用的语言模型，支持搜索、过滤、开关可见性。</li><li><strong>URL 与域名自动审批增强</strong>：fetch 工具新增两步审批流程：先批准域名访问，再批准内容注入聊天，防范提示注入攻击。</li><li><strong>fetch 工具支持动态内容</strong>：现在可正确获取由 JavaScript 渲染的网页内容（如 SPA、Jira 页面），不再返回空结果。</li><li><strong>文本搜索可查忽略文件</strong>：#textSearch 工具支持搜索 .gitignore 或 files.exclude 指定的文件（如 node_modules），并提供提示以启用搜索。</li><li><strong>聊天终端输出丰富化</strong>：Terminal 响应中的输出现在以完整只读 xterm 终端形式渲染，保留 ANSI 颜色和运行时间信息。</li><li><strong>敏感文件差异预览</strong>：对 settings.json 等敏感文件的编辑，现在显示差异视图而非原始文本，便于审批。</li><li><strong>推理与工具调用可折叠</strong>：模型推理文本和连续工具调用默认折叠，以 <code>chat.agent.thinkingStyle</code> 和 <code>chat.agent.thinking.collapsedTools</code> 设置控制。</li>            </ul>
+          </section>
+          <section class="nl-section" id="其他特性" data-color="advanced">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">其他特性</span>
+              <h2 class="nl-section-title">其他特性</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>MCP 最新规范支持</strong>：支持 MCP 2025-11-25 规范，包括 URL 模式引导、任务系统、枚举选择增强等。</li><li><strong>GitHub MCP 服务器（预览）</strong>：GitHub Copilot Chat 内置 GitHub MCP 服务器，复用已有认证状态，可直接查询 Issues、PR 等。</li><li><strong>TypeScript 7 原生预览</strong>：安装 TypeScript (Native Preview) 扩展可体验完全重写的原生 TS 7，拥有大幅性能提升。</li><li><strong>源码控制：仓库视图实验性 Stashes</strong>：在 SCM 仓库视图中新增 Stashes 节点，支持查看、应用、弹出和丢弃 stash。</li><li><strong>编辑器：按需悬停弹窗</strong>：<code>editor.hover.enabled</code> 新增 <code>onKeyboardModifier</code> 模式，按住修饰键才显示悬停信息，减少视觉干扰。</li><li><strong>编辑器：macOS 三指滑动导航</strong>：使用三指滑动在编辑组之间导航，需在 trackpad 设置中配置为“三指滑动切换页面”。</li><li><strong>调试：变量附加到聊天</strong>：可在 Variables 和 Watch 视图中右键附加变量、作用域或表达式到聊天上下文。</li><li><strong>企业：控制代理工具自动审批</strong>：通过 <code>chat.tools.eligibleForAutoApproval</code> 策略，组织可禁用高危工具的自动审批，强制每次确认。</li>            </ul>
+          </section>
+
+
+        <footer class="nl-footer">
+          <span>由 NovaLog 自动生成</span>
+          <span class="nl-footer-sep">·</span>
+          <span>2026-07-19</span>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html></div><div class="article-licensing box"><div class="licensing-title"><p><a href="http://www.airchaoz.top/vscode-changelog/1.107_多代理编排.html">http://www.airchaoz.top/vscode-changelog/1.107_多代理编排.html</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>echo</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2026-07-21</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2026-07-21</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><!--!--></article></div><!--!--><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'http://www.airchaoz.top/vscode-changelog/1.107_%E5%A4%9A%E4%BB%A3%E7%90%86%E7%BC%96%E6%8E%92.html';
+            this.page.identifier = 'vscode-changelog/1.107_多代理编排.html';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'echos-blog-2' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202401032048869.png" alt="echo"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">echo</p><p class="is-size-6 is-block">C++ Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>GuangDong, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">30</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">18</p></a></div></div></nav></div></div><!--!--><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/C-20/"><span class="tag">C++20</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/CMake/"><span class="tag">CMake</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Docker/"><span class="tag">Docker</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Python/"><span class="tag">Python</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Qt/"><span class="tag">Qt</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/"><span class="tag">内存模型</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"><span class="tag">并发编程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%B9%B6%E8%A1%8C%E8%AE%A1%E7%AE%97/"><span class="tag">并行计算</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"><span class="tag">性能优化</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F-%E5%86%85%E5%AD%98/"><span class="tag">操作系统, 内存</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/"><span class="tag">效率工具</span><span class="tag">2</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"><span class="tag">机器学习</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"><span class="tag">源码阅读</span><span class="tag">4</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C-%E6%8A%93%E5%8C%85/"><span class="tag">网络, 抓包</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/"><span class="tag">网络编程</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%B7%A8%E5%B9%B3%E5%8F%B0%E5%BC%80%E5%8F%91/"><span class="tag">跨平台开发</span><span class="tag">1</span></a></div></div></div></div></div></div><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3 is-sticky"><!--!--></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">echo&#039;s blog</a><p class="is-size-7"><span>&copy; 2026 echo</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
