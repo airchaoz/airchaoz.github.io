@@ -3,7 +3,37 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
     
-        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web@1.522.0/style.min.css" crossorigin="anonymous" />
+        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web@1.522.0/style.min.css" crossorigin="anonymous" />
 <style>
 body, button, input, select, textarea {
   font-family: 'LXGW WenKai GB Screen', '霞鹜文楷', 'Microsoft YaHei', 'PingFang SC', sans-serif;
@@ -38,37 +68,7 @@ code, pre {
     width: 75%;
   }
 }
-</style><script>
-  (function () {
-      function switchTab() {
-          if (!location.hash) {
-            return;
-          }
-
-          const id = '#' + CSS.escape(location.hash.substring(1));
-          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
-          if (!$tabMenu) {
-            return;
-          }
-
-          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
-          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
-          Array.from($tabMenuContainer.querySelectorAll('a'))
-              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
-              .forEach($content => $content.classList.add('is-hidden'));
-
-          if ($tabMenu) {
-              $tabMenu.parentElement.classList.add('is-active');
-          }
-          const $activeTab = document.querySelector(id);
-          if ($activeTab) {
-              $activeTab.classList.remove('is-hidden');
-          }
-      }
-      switchTab();
-      window.addEventListener('hashchange', switchTab, false);
-  })();
-  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/20250605214521.png" alt="Transformer模型入门"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-06-05T13:08:51.000Z" title="6/5/2025, 9:08:51 PM">2025-06-05</time>发表</span><span class="level-item"><time dateTime="2026-02-25T16:04:13.000Z" title="2/26/2026, 12:04:13 AM">2026-02-26</time>更新</span><span class="level-item">15 分钟读完 (大约2188个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Transformer模型入门</h1><div class="content"><p>Transformer模型最早是由Google在2017年发布的一篇论文《Attention Is All You Need》中提出。最早该方法用用于翻译任务中，发现性能能够超越之前最优秀的RNN模型。在后一年，Google发表的《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》提出了BERT模型，和OpenAI发布《Improving Language Understanding by Generative Pre-Training》提出了GPT模型，这两个著名的模型奠定了大模型的基础。</p>
+</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/20250605214521.png" alt="Transformer模型入门"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-06-05T13:08:51.000Z" title="6/5/2025, 9:08:51 PM">2025-06-05</time>发表</span><span class="level-item"><time dateTime="2026-02-25T16:04:13.000Z" title="2/26/2026, 12:04:13 AM">2026-02-26</time>更新</span><span class="level-item">15 分钟读完 (大约2188个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">Transformer模型入门</h1><div class="content"><p>Transformer模型最早是由Google在2017年发布的一篇论文《Attention Is All You Need》中提出。最早该方法用用于翻译任务中，发现性能能够超越之前最优秀的RNN模型。在后一年，Google发表的《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》提出了BERT模型，和OpenAI发布《Improving Language Understanding by Generative Pre-Training》提出了GPT模型，这两个著名的模型奠定了大模型的基础。</p>
 <span id="more"></span>
 <p>Transformer 最核心、最具革新性的特点是它<strong>完全依赖注意力机制</strong>来处理序列数据，彻底放弃了传统的循环神经网络（RNN，如 LSTM）和卷积神经网络（CNN）结构。它通过位置编码来实现对序列顺序的识别，在模型训练时没有前后依赖关系，可以实现高度并行化，显著提高训练效率，正是这一点使得大模型成为可能。</p>
 <p>相比卷积神经网络只考虑附近数据的影响，Transformer有更大的感受野，更容易连接序列的任意位置，这也是Transformer的重要优点之一。</p>
