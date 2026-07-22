@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>claude-changelog · 2.1.172</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --bg-soft: #fbfbfd;
+        --bg-elevated: #ffffff;
+        --ink: #1d1d1f;
+        --ink-2: #424245;
+        --ink-muted: #6e6e73;
+        --ink-faint: #86868b;
+        --primary: #0066cc;
+        --c-highlight: #0066cc;
+        --c-ai: #7c3aed;
+        --c-editor: #0891b2;
+        --c-advanced: #059669;
+        --c-deprecation: #d97706;
+        --section-color: var(--c-highlight);
+        --hairline: #d2d2d7;
+        --hairline-soft: #e8e8ed;
+        --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.06);
+        --r-sm: 8px;
+        --r-md: 12px;
+        --r-lg: 18px;
+        --r-full: 9999px;
+        --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        --font-text: "SF Pro Text", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-text);
+        font-size: 17px;
+        line-height: 1.5;
+        letter-spacing: -0.374px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .nl-page { padding: 0 24px 80px; }
+      .nl-container { max-width: 880px; margin: 0 auto; }
+
+      /* HERO */
+      .nl-hero {
+        position: relative;
+        padding: 96px 0 80px;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .nl-hero::before {
+        content: "";
+        position: absolute;
+        inset: -10%;
+        background:
+          radial-gradient(ellipse 60% 50% at 88% 0%, rgba(124, 58, 237, 0.14), transparent 60%),
+          radial-gradient(ellipse 50% 40% at 5% 100%, rgba(0, 102, 204, 0.10), transparent 60%);
+        z-index: -1;
+      }
+      .nl-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+        background-size: 32px 32px;
+        -webkit-mask-image: radial-gradient(ellipse 60% 70% at 50% 40%, black, transparent 80%);
+        mask-image: radial-gradient(ellipse 60% 70% at 50% 40%, black, transparent 80%);
+        z-index: -1;
+      }
+      .nl-eyebrow {
+        margin: 0 0 24px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--primary);
+      }
+      .nl-version {
+        margin: 0 0 28px;
+        font-family: var(--font-display);
+        font-size: clamp(36px, 7.5vw, 56px);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: var(--ink);
+        word-break: break-word;
+      }
+      .nl-version-num {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        background: linear-gradient(180deg, var(--ink) 0%, color-mix(in srgb, var(--ink) 60%, var(--c-ai)) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+      .nl-version-sep {
+        display: inline-block;
+        margin: 0 0.4em;
+        color: var(--hairline);
+        font-weight: 400;
+        -webkit-text-fill-color: var(--hairline);
+      }
+      .nl-meta {
+        margin: 0 0 32px;
+        font-size: 15px;
+        color: var(--ink-muted);
+        font-variant-numeric: tabular-nums;
+      }
+      .nl-meta time { color: var(--ink-2); font-weight: 500; }
+      .nl-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        background: var(--primary);
+        color: #fff;
+        border-radius: var(--r-full);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      }
+      .nl-cta:hover {
+        background: color-mix(in srgb, var(--primary) 85%, black);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(0, 102, 204, 0.25);
+      }
+
+      /* TOC */
+      .nl-toc {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        padding: 16px 0;
+        margin: 0 0 8px;
+        border-top: 1px solid var(--hairline-soft);
+        border-bottom: 1px solid var(--hairline-soft);
+        font-size: 13px;
+      }
+      .nl-toc a {
+        color: var(--ink-muted);
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: var(--r-full);
+        transition: all 0.2s ease;
+      }
+      .nl-toc a:hover {
+        color: var(--ink);
+        background: var(--bg-soft);
+      }
+
+      /* SECTION */
+      .nl-section {
+        margin: 64px 0;
+        scroll-margin-top: 32px;
+      }
+      .nl-section[data-color="ai"] { --section-color: var(--c-ai); }
+      .nl-section[data-color="editor"] { --section-color: var(--c-editor); }
+      .nl-section[data-color="advanced"] { --section-color: var(--c-advanced); }
+
+      .nl-section-head {
+        position: relative;
+        margin-bottom: 28px;
+        padding-left: 16px;
+      }
+      .nl-section-head::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        bottom: 8px;
+        width: 4px;
+        background: var(--section-color);
+        border-radius: 2px;
+      }
+      .nl-section-eyebrow {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--section-color);
+        margin-bottom: 6px;
+      }
+      .nl-section-title {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        line-height: 1.2;
+      }
+
+      /* HIGHLIGHTS */
+      .nl-highlights {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin: 0;
+      }
+      .nl-hl-card {
+        position: relative;
+        padding: 22px;
+        background: var(--bg-elevated);
+        border: 1px solid var(--hairline-soft);
+        border-radius: var(--r-md);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+      .nl-hl-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-2);
+        border-color: var(--hairline);
+      }
+      .nl-hl-num {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-highlight);
+        margin-bottom: 16px;
+        letter-spacing: 0.06em;
+        font-variant-numeric: tabular-nums;
+      }
+      .nl-hl-card h3 {
+        font-family: var(--font-display);
+        font-size: 17px;
+        font-weight: 600;
+        line-height: 1.3;
+        margin: 0 0 8px;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+      .nl-hl-card p {
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: var(--ink-muted);
+        margin: 0;
+      }
+
+      /* CHANGES LIST */
+      .nl-changes {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .nl-changes li {
+        position: relative;
+        padding: 18px 0 18px 28px;
+        border-top: 1px solid var(--hairline-soft);
+        font-size: 15.5px;
+        line-height: 1.6;
+        color: var(--ink-2);
+        transition: background 0.2s ease;
+      }
+      .nl-changes li:first-child { border-top-color: var(--hairline); }
+      .nl-changes li:hover { background: var(--bg-soft); }
+      .nl-changes li::before {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 28px;
+        width: 8px;
+        height: 8px;
+        background: var(--section-color);
+        border-radius: 50%;
+      }
+      .nl-changes strong {
+        color: var(--ink);
+        font-weight: 600;
+        border-bottom: 1px solid var(--section-color);
+        padding-bottom: 1px;
+      }
+      .nl-changes code {
+        font-family: var(--font-mono);
+        font-size: 0.875em;
+        background: var(--bg-soft);
+        padding: 2px 6px;
+        border: 1px solid var(--hairline-soft);
+        border-radius: 4px;
+        color: var(--ink);
+      }
+      .nl-changes p { margin: 0; }
+      .nl-changes pre {
+        background: var(--bg-soft);
+        padding: 12px;
+        border-radius: var(--r-sm);
+        overflow: auto;
+        font-size: 13px;
+        margin: 10px 0;
+      }
+      .nl-changes blockquote {
+        margin: 8px 0;
+        padding: 0 0 0 12px;
+        border-left: 2px solid var(--hairline);
+        color: var(--ink-muted);
+      }
+
+      /* TAGS (legacy JSON branch) */
+      .nl-tags {
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid var(--hairline-soft);
+      }
+      .nl-tag {
+        display: inline-block;
+        font-size: 12px;
+        color: var(--ink-muted);
+        background: var(--bg-soft);
+        border: 1px solid var(--hairline-soft);
+        border-radius: var(--r-full);
+        padding: 6px 12px;
+        margin: 0 6px 6px 0;
+      }
+
+      /* FOOTER */
+      .nl-footer {
+        margin-top: 80px;
+        padding-top: 32px;
+        border-top: 1px solid var(--hairline-soft);
+        font-size: 12px;
+        color: var(--ink-faint);
+        text-align: center;
+        font-family: var(--font-mono);
+        letter-spacing: 0.04em;
+      }
+      .nl-footer-sep { margin: 0 8px; color: var(--hairline); }
+
+      /* MOTION */
+      @keyframes nl-fade-up {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .nl-hl-card, .nl-section { animation: nl-fade-up 0.5s ease both; }
+      .nl-section:nth-of-type(1) { animation-delay: 0s; }
+      .nl-section:nth-of-type(2) { animation-delay: 0.05s; }
+      .nl-section:nth-of-type(3) { animation-delay: 0.1s; }
+      .nl-section:nth-of-type(4) { animation-delay: 0.15s; }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+        html { scroll-behavior: auto; }
+      }
+
+      /* DARK */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #000000;
+          --bg-soft: #0a0a0a;
+          --bg-elevated: #141416;
+          --ink: #f5f5f7;
+          --ink-2: #d2d2d7;
+          --ink-muted: #a1a1a6;
+          --ink-faint: #6e6e73;
+          --primary: #2997ff;
+          --c-highlight: #2997ff;
+          --c-ai: #a78bfa;
+          --c-editor: #22d3ee;
+          --c-advanced: #34d399;
+          --hairline: #2c2c2e;
+          --hairline-soft: #1c1c1e;
+          --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.4);
+        }
+        .nl-hero::before {
+          background:
+            radial-gradient(ellipse 60% 50% at 88% 0%, rgba(167, 139, 250, 0.20), transparent 60%),
+            radial-gradient(ellipse 50% 40% at 5% 100%, rgba(41, 151, 255, 0.15), transparent 60%);
+        }
+        .nl-hero::after {
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        .nl-changes code { color: #f5f5f7; }
+      }
+
+      /* RESPONSIVE */
+      @media only screen and (max-width: 640px) {
+        .nl-page { padding: 0 16px 60px; }
+        .nl-hero { padding: 56px 0 56px; }
+        .nl-version { font-size: clamp(48px, 18vw, 80px); }
+        .nl-highlights { grid-template-columns: 1fr; }
+        .nl-section-title { font-size: 22px; }
+        .nl-section { margin: 48px 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nl-page">
+      <div class="nl-container">
+        <header class="nl-hero">
+          <p class="nl-eyebrow">新发布 · claude-changelog</p>
+          <h1 class="nl-version">
+            <span class="nl-version-num">2.1.172</span> <span class="nl-version-sep">·</span> 子代理深度嵌套与安全加固          </h1>
+          <p class="nl-meta">
+<time datetime="2026-06-10T00:00:00+00:00">2026年6月10日</time>          </p>
+<a class="nl-cta" href="https://code.claude.com/docs/en/changelog#2-1-172" target="_blank" rel="noopener noreferrer">查看发布说明 ↗</a>        </header>
+
+        <nav class="nl-toc" aria-label="目录">
+<a href="#核心亮点">核心亮点</a><a href="#子代理与后台会话">子代理与后台会话</a><a href="#模型与权限">模型与权限</a><a href="#其他重要修复与改进">其他重要修复与改进</a>        </nav>
+
+          <section class="nl-section" id="核心亮点">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">TL;DR</span>
+              <h2 class="nl-section-title">核心亮点</h2>
+            </header>
+            <div class="nl-highlights">
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">01</span>
+                <h3>子代理支持嵌套，最多5层深度</h3>
+                <p>子代理现在可以再生成自己的子代理，形成多级协作树，极大扩展了复杂任务的分解与并行执行能力。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">02</span>
+                <h3>自动修复1M上下文无积分时的永久卡死</h3>
+                <p>会话会自动压缩回标准上下文限制，避免因无积分而永久卡断工作流。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">03</span>
+                <h3>修复后台代理跨目录读取项目设置问题</h3>
+                <p>后台代理在预热 worker 上运行时，不会再错误地读取其他目录的 .mcp.json 审批与信任配置，提升安全隔离。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">04</span>
+                <h3>availableModels 限制全面应用于子代理与模型选择器</h3>
+                <p>修复了子代理模型覆盖、dispatch 模型选择器和 advisor 模型忽略 availableModels 限制的问题，确保权限策略一致生效。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">05</span>
+                <h3>WebFetch 通配符域名规则与文件权限中间通配符修复</h3>
+                <p>修复了 allow/deny/ask 中通配符域名规则不匹配子域名，以及文件权限规则中间通配符被拒绝的问题，安全规则更可靠。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">06</span>
+                <h3>长对话性能优化与 CPU 空闲时降低能耗</h3>
+                <p>移除冗余消息规范化，避免流式工具调用状态不变时全量历史转换；暂停 /goal 状态芯片闲置刷新，降低空闲 CPU 占用。</p>
+              </article>
+            </div>
+          </section>
+          <section class="nl-section" id="子代理与后台会话" data-color="ai">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">子代理与</span>
+              <h2 class="nl-section-title">子代理与后台会话</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>嵌套子代理支持</strong>：子代理可递归生成子代理（最多5层），实现多级任务分解。</li><li><strong>后台代理修复跨目录读取问题</strong>：预热 worker 上启动的后台代理不再错读其他目录的 MCP 审批和信任设置。</li><li><strong>后台会话附加 EAUTH 错误修复</strong>：后台会话在守护进程自动更新后附加旧版会话不再失败。</li><li><strong>修复嵌套代理停止后子代理状态残留</strong>：当嵌套代理停止时，其父代理不再在代理面板中显示为卡住的活动状态。</li>            </ul>
+          </section>
+          <section class="nl-section" id="模型与权限" data-color="editor">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">模型与权</span>
+              <h2 class="nl-section-title">模型与权限</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>Amazon Bedrock 区域解析优化</strong>：当 AWS_REGION 未设置时，从 ~/.aws 配置文件读取区域，并遵循 AWS SDK 优先级；在 /status 中显示区域来源。</li><li><strong>availableModels 限制完整覆盖</strong>：子代理模型覆盖、dispatch 模型选择器、advisor 模型均受 availableModels 限制，且修复了白名单中版本特定 ID 隐藏 Opus/Sonnet 1M 行的问题。</li><li><strong>Bedrock 模型选择器不再展示不可用模型</strong>：修复了从提供者不支持的模型列表中选中时静默切换模型并多选标记的问题。</li><li><strong>opusplan 模型配置 1M 上下文支持</strong>：修复了 opusplan 模型设置未为有权限用户提供 1M 上下文，以及 [1m] 工作区未正确切换到 Opus 的问题。</li>            </ul>
+          </section>
+          <section class="nl-section" id="其他重要修复与改进" data-color="advanced">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">其他重要</span>
+              <h2 class="nl-section-title">其他重要修复与改进</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>MCP/文件权限通配符规则修复</strong>：WebFetch 域名通配符规则现在正确匹配子域；文件权限规则支持中间通配符（如 Read(secrets-*/config.json)）。</li><li><strong>工作流验证误报修复</strong>：修复了脚本中仅提及 Date.now()/Math.random() 字符串或注释时被拒绝的问题。</li><li><strong>远程会话中隐藏 /loop 提示</strong>：在远程会话中不再推广 /loop，因为挂起的循环不会保持容器存活。</li><li><strong>Chrome 工具加载优化</strong>：浏览器工具现在通过单次批量调用加载，而不是逐个工具加载，显著提升速度。</li><li><strong>VSCode 中 PowerShell 调用显示优化</strong>：PowerShell 工具调用不再显示为原始 JSON，而是正确渲染命令与权限对话框，并移除 ANSI 转义码。</li><li><strong>/plugin 市场列表修复</strong>：修复了退出长插件列表后光标丢失，以及 Esc 返回错误标签的问题。</li><li><strong>内存召回修复远程会话挂载团队内存</strong>：修复了远程会话中通过 CLAUDE_MEMORY_STORES 挂载的团队内存存储无法被记忆召回的问题。</li>            </ul>
+          </section>
+
+
+        <footer class="nl-footer">
+          <span>由 WatchBot 自动生成</span>
+          <span class="nl-footer-sep">·</span>
+          <span>2026-07-22</span>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

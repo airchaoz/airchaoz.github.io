@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>claude-changelog · 2.1.196</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --bg-soft: #fbfbfd;
+        --bg-elevated: #ffffff;
+        --ink: #1d1d1f;
+        --ink-2: #424245;
+        --ink-muted: #6e6e73;
+        --ink-faint: #86868b;
+        --primary: #0066cc;
+        --c-highlight: #0066cc;
+        --c-ai: #7c3aed;
+        --c-editor: #0891b2;
+        --c-advanced: #059669;
+        --c-deprecation: #d97706;
+        --section-color: var(--c-highlight);
+        --hairline: #d2d2d7;
+        --hairline-soft: #e8e8ed;
+        --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.06);
+        --r-sm: 8px;
+        --r-md: 12px;
+        --r-lg: 18px;
+        --r-full: 9999px;
+        --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        --font-text: "SF Pro Text", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-text);
+        font-size: 17px;
+        line-height: 1.5;
+        letter-spacing: -0.374px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .nl-page { padding: 0 24px 80px; }
+      .nl-container { max-width: 880px; margin: 0 auto; }
+
+      /* HERO */
+      .nl-hero {
+        position: relative;
+        padding: 96px 0 80px;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .nl-hero::before {
+        content: "";
+        position: absolute;
+        inset: -10%;
+        background:
+          radial-gradient(ellipse 60% 50% at 88% 0%, rgba(124, 58, 237, 0.14), transparent 60%),
+          radial-gradient(ellipse 50% 40% at 5% 100%, rgba(0, 102, 204, 0.10), transparent 60%);
+        z-index: -1;
+      }
+      .nl-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+        background-size: 32px 32px;
+        -webkit-mask-image: radial-gradient(ellipse 60% 70% at 50% 40%, black, transparent 80%);
+        mask-image: radial-gradient(ellipse 60% 70% at 50% 40%, black, transparent 80%);
+        z-index: -1;
+      }
+      .nl-eyebrow {
+        margin: 0 0 24px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--primary);
+      }
+      .nl-version {
+        margin: 0 0 28px;
+        font-family: var(--font-display);
+        font-size: clamp(36px, 7.5vw, 56px);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: var(--ink);
+        word-break: break-word;
+      }
+      .nl-version-num {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        background: linear-gradient(180deg, var(--ink) 0%, color-mix(in srgb, var(--ink) 60%, var(--c-ai)) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+      .nl-version-sep {
+        display: inline-block;
+        margin: 0 0.4em;
+        color: var(--hairline);
+        font-weight: 400;
+        -webkit-text-fill-color: var(--hairline);
+      }
+      .nl-meta {
+        margin: 0 0 32px;
+        font-size: 15px;
+        color: var(--ink-muted);
+        font-variant-numeric: tabular-nums;
+      }
+      .nl-meta time { color: var(--ink-2); font-weight: 500; }
+      .nl-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        background: var(--primary);
+        color: #fff;
+        border-radius: var(--r-full);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      }
+      .nl-cta:hover {
+        background: color-mix(in srgb, var(--primary) 85%, black);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(0, 102, 204, 0.25);
+      }
+
+      /* TOC */
+      .nl-toc {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        padding: 16px 0;
+        margin: 0 0 8px;
+        border-top: 1px solid var(--hairline-soft);
+        border-bottom: 1px solid var(--hairline-soft);
+        font-size: 13px;
+      }
+      .nl-toc a {
+        color: var(--ink-muted);
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: var(--r-full);
+        transition: all 0.2s ease;
+      }
+      .nl-toc a:hover {
+        color: var(--ink);
+        background: var(--bg-soft);
+      }
+
+      /* SECTION */
+      .nl-section {
+        margin: 64px 0;
+        scroll-margin-top: 32px;
+      }
+      .nl-section[data-color="ai"] { --section-color: var(--c-ai); }
+      .nl-section[data-color="editor"] { --section-color: var(--c-editor); }
+      .nl-section[data-color="advanced"] { --section-color: var(--c-advanced); }
+
+      .nl-section-head {
+        position: relative;
+        margin-bottom: 28px;
+        padding-left: 16px;
+      }
+      .nl-section-head::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        bottom: 8px;
+        width: 4px;
+        background: var(--section-color);
+        border-radius: 2px;
+      }
+      .nl-section-eyebrow {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--section-color);
+        margin-bottom: 6px;
+      }
+      .nl-section-title {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        line-height: 1.2;
+      }
+
+      /* HIGHLIGHTS */
+      .nl-highlights {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin: 0;
+      }
+      .nl-hl-card {
+        position: relative;
+        padding: 22px;
+        background: var(--bg-elevated);
+        border: 1px solid var(--hairline-soft);
+        border-radius: var(--r-md);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+      .nl-hl-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-2);
+        border-color: var(--hairline);
+      }
+      .nl-hl-num {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-highlight);
+        margin-bottom: 16px;
+        letter-spacing: 0.06em;
+        font-variant-numeric: tabular-nums;
+      }
+      .nl-hl-card h3 {
+        font-family: var(--font-display);
+        font-size: 17px;
+        font-weight: 600;
+        line-height: 1.3;
+        margin: 0 0 8px;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+      .nl-hl-card p {
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: var(--ink-muted);
+        margin: 0;
+      }
+
+      /* CHANGES LIST */
+      .nl-changes {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .nl-changes li {
+        position: relative;
+        padding: 18px 0 18px 28px;
+        border-top: 1px solid var(--hairline-soft);
+        font-size: 15.5px;
+        line-height: 1.6;
+        color: var(--ink-2);
+        transition: background 0.2s ease;
+      }
+      .nl-changes li:first-child { border-top-color: var(--hairline); }
+      .nl-changes li:hover { background: var(--bg-soft); }
+      .nl-changes li::before {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 28px;
+        width: 8px;
+        height: 8px;
+        background: var(--section-color);
+        border-radius: 50%;
+      }
+      .nl-changes strong {
+        color: var(--ink);
+        font-weight: 600;
+        border-bottom: 1px solid var(--section-color);
+        padding-bottom: 1px;
+      }
+      .nl-changes code {
+        font-family: var(--font-mono);
+        font-size: 0.875em;
+        background: var(--bg-soft);
+        padding: 2px 6px;
+        border: 1px solid var(--hairline-soft);
+        border-radius: 4px;
+        color: var(--ink);
+      }
+      .nl-changes p { margin: 0; }
+      .nl-changes pre {
+        background: var(--bg-soft);
+        padding: 12px;
+        border-radius: var(--r-sm);
+        overflow: auto;
+        font-size: 13px;
+        margin: 10px 0;
+      }
+      .nl-changes blockquote {
+        margin: 8px 0;
+        padding: 0 0 0 12px;
+        border-left: 2px solid var(--hairline);
+        color: var(--ink-muted);
+      }
+
+      /* TAGS (legacy JSON branch) */
+      .nl-tags {
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid var(--hairline-soft);
+      }
+      .nl-tag {
+        display: inline-block;
+        font-size: 12px;
+        color: var(--ink-muted);
+        background: var(--bg-soft);
+        border: 1px solid var(--hairline-soft);
+        border-radius: var(--r-full);
+        padding: 6px 12px;
+        margin: 0 6px 6px 0;
+      }
+
+      /* FOOTER */
+      .nl-footer {
+        margin-top: 80px;
+        padding-top: 32px;
+        border-top: 1px solid var(--hairline-soft);
+        font-size: 12px;
+        color: var(--ink-faint);
+        text-align: center;
+        font-family: var(--font-mono);
+        letter-spacing: 0.04em;
+      }
+      .nl-footer-sep { margin: 0 8px; color: var(--hairline); }
+
+      /* MOTION */
+      @keyframes nl-fade-up {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .nl-hl-card, .nl-section { animation: nl-fade-up 0.5s ease both; }
+      .nl-section:nth-of-type(1) { animation-delay: 0s; }
+      .nl-section:nth-of-type(2) { animation-delay: 0.05s; }
+      .nl-section:nth-of-type(3) { animation-delay: 0.1s; }
+      .nl-section:nth-of-type(4) { animation-delay: 0.15s; }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+        html { scroll-behavior: auto; }
+      }
+
+      /* DARK */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #000000;
+          --bg-soft: #0a0a0a;
+          --bg-elevated: #141416;
+          --ink: #f5f5f7;
+          --ink-2: #d2d2d7;
+          --ink-muted: #a1a1a6;
+          --ink-faint: #6e6e73;
+          --primary: #2997ff;
+          --c-highlight: #2997ff;
+          --c-ai: #a78bfa;
+          --c-editor: #22d3ee;
+          --c-advanced: #34d399;
+          --hairline: #2c2c2e;
+          --hairline-soft: #1c1c1e;
+          --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.4);
+        }
+        .nl-hero::before {
+          background:
+            radial-gradient(ellipse 60% 50% at 88% 0%, rgba(167, 139, 250, 0.20), transparent 60%),
+            radial-gradient(ellipse 50% 40% at 5% 100%, rgba(41, 151, 255, 0.15), transparent 60%);
+        }
+        .nl-hero::after {
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        .nl-changes code { color: #f5f5f7; }
+      }
+
+      /* RESPONSIVE */
+      @media only screen and (max-width: 640px) {
+        .nl-page { padding: 0 16px 60px; }
+        .nl-hero { padding: 56px 0 56px; }
+        .nl-version { font-size: clamp(48px, 18vw, 80px); }
+        .nl-highlights { grid-template-columns: 1fr; }
+        .nl-section-title { font-size: 22px; }
+        .nl-section { margin: 48px 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nl-page">
+      <div class="nl-container">
+        <header class="nl-hero">
+          <p class="nl-eyebrow">新发布 · claude-changelog</p>
+          <h1 class="nl-version">
+            <span class="nl-version-num">2.1.196</span> <span class="nl-version-sep">·</span> 安全加固与后台会话可靠性          </h1>
+          <p class="nl-meta">
+<time datetime="2026-06-29T00:00:00+00:00">2026年6月29日</time>          </p>
+<a class="nl-cta" href="https://code.claude.com/docs/en/changelog#2-1-196" target="_blank" rel="noopener noreferrer">查看发布说明 ↗</a>        </header>
+
+        <nav class="nl-toc" aria-label="目录">
+<a href="#核心亮点">核心亮点</a><a href="#安全与权限">安全与权限</a><a href="#后台会话与代理">后台会话与代理</a><a href="#用户界面与性能">用户界面与性能</a>        </nav>
+
+          <section class="nl-section" id="核心亮点">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">TL;DR</span>
+              <h2 class="nl-section-title">核心亮点</h2>
+            </header>
+            <div class="nl-highlights">
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">01</span>
+                <h3>MCP 安全加固：阻止自批准服务器自动启动</h3>
+                <p>`claude mcp list`/`get` 不再执行仓库通过承诺的 `.claude/settings.json` 自批准的 `.mcp.json` 服务器；不可信工作区显示「⏸ Pending approval」，防止恶意代码自动运行。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">02</span>
+                <h3>后台会话与代理可靠性飞跃</h3>
+                <p>长时间运行的命令和工作流在进程停止、重启或更新后仍能存活，Windows 后台 shell 被移交而非杀死；被守护进程重启杀死的后台代理自动恢复，不再丢失进度。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">03</span>
+                <h3>组织默认模型支持</h3>
+                <p>管理员可在组织控制台设置默认模型，用户在 `/model` 中看到「Org default」/「Role default」标识，无需手动选择即使用组织统一模型。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">04</span>
+                <h3>性能与效率优化</h3>
+                <p>`/code-review` 合并五个清理查找器，token 使用量降低约 25%；终端 UI 跳过无副作用的子树遍历减少每帧渲染工作。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">05</span>
+                <h3>流空闲看门狗默认开启</h3>
+                <p>所有提供商默认启用 5 分钟无事件中止并重试机制（`CLAUDE_ENABLE_STREAM_WATCHDOG=0` 可关闭），防止响应卡死。</p>
+              </article>
+            </div>
+          </section>
+          <section class="nl-section" id="安全与权限" data-color="ai">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">Security</span>
+              <h2 class="nl-section-title">安全与权限</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>MCP 自批准服务器不再自动执行</strong>：<code>claude mcp list</code>/<code>get</code> 忽略仓库提交的 <code>.claude/settings.json</code> 中自批准的 <code>.mcp.json</code> 服务器，不可信工作区强制审批。</li><li><strong><code>--dangerously-skip-permissions</code> 修复</strong>：该标志不再悄悄回退到 auto 模式，而是正确显示免责声明并对衍生代理应用绕过模式。</li><li><strong>远程控制条件禁用</strong>：当 <code>ANTHROPIC_BASE_URL</code> 指向非 Anthropic 主机时（类似 Bedrock/Vertex 场景），Remote Control 自动禁用。</li>            </ul>
+          </section>
+          <section class="nl-section" id="后台会话与代理" data-color="editor">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">后台会话</span>
+              <h2 class="nl-section-title">后台会话与代理</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>后台任务进程存活</strong>：停止、重启或更新 Claude Code 进程后，后台会话中的长命令和工作流自动延续；Windows 上后台 shell 被移交而非杀死。</li><li><strong>后台代理自动恢复</strong>：守护进程重启导致的后台代理 worker 被杀，下次打开 agents 视图时自动从断点恢复。</li><li><strong>修复唤醒后台作业删除对话</strong>：transcript 探测误读真实对话时，不再永久删除对话并重跑原始提示，而是将文件搁置。</li><li><strong>agents 侧边栏多项修复</strong>：修复键盘焦点卡死、后台作业丢失子代理类型、会话状态显示不正确等问题；完成的行不再在「Done」和「Needs your input」间闪烁，停滞的代理标记为「Needs attention」。</li>            </ul>
+          </section>
+          <section class="nl-section" id="用户界面与性能" data-color="advanced">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">Perf</span>
+              <h2 class="nl-section-title">用户界面与性能</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>可读的会话默认名称</strong>：新会话启动时自动赋予易识别的名称，便于在列表中定位和消息。</li><li><strong>可点击的文件附件</strong>：聊天中的文件附件支持 Cmd/Ctrl+点击，在 Finder/Explorer 中直接定位文件。</li><li><strong><code>/code-review</code> token 减少 25%</strong>：合并五个清理查找器，每次 code review 平均节省约 25% token 消耗。</li><li><strong>终端 UI 渲染优化</strong>：流式渲染时跳过无副作用的子树遍历，减少每帧计算量，提升流畅度。</li><li><strong>从前景会话打开 agents 视图简化</strong>：仅需按一次 <code>←</code> 键（之前需两次），与后台会话行为一致。</li><li><strong>MCP OAuth 作用域修复</strong>：当未指定 scope 时，不再请求授权服务器完整的 <code>scopes_supported</code> 列表，修复 GitLab 自托管等企业 IdP 的 <code>invalid_scope</code> 错误。</li>            </ul>
+          </section>
+
+
+        <footer class="nl-footer">
+          <span>由 WatchBot 自动生成</span>
+          <span class="nl-footer-sep">·</span>
+          <span>2026-07-22</span>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

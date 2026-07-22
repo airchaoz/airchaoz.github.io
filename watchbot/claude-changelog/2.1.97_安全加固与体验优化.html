@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>claude-changelog · 2.1.97</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --bg-soft: #fbfbfd;
+        --bg-elevated: #ffffff;
+        --ink: #1d1d1f;
+        --ink-2: #424245;
+        --ink-muted: #6e6e73;
+        --ink-faint: #86868b;
+        --primary: #0066cc;
+        --c-highlight: #0066cc;
+        --c-ai: #7c3aed;
+        --c-editor: #0891b2;
+        --c-advanced: #059669;
+        --c-deprecation: #d97706;
+        --section-color: var(--c-highlight);
+        --hairline: #d2d2d7;
+        --hairline-soft: #e8e8ed;
+        --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.06);
+        --r-sm: 8px;
+        --r-md: 12px;
+        --r-lg: 18px;
+        --r-full: 9999px;
+        --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        --font-text: "SF Pro Text", -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+        --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+      }
+
+      * { box-sizing: border-box; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--font-text);
+        font-size: 17px;
+        line-height: 1.5;
+        letter-spacing: -0.374px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .nl-page { padding: 0 24px 80px; }
+      .nl-container { max-width: 880px; margin: 0 auto; }
+
+      /* HERO */
+      .nl-hero {
+        position: relative;
+        padding: 96px 0 80px;
+        overflow: hidden;
+        isolation: isolate;
+      }
+      .nl-hero::before {
+        content: "";
+        position: absolute;
+        inset: -10%;
+        background:
+          radial-gradient(ellipse 60% 50% at 88% 0%, rgba(124, 58, 237, 0.14), transparent 60%),
+          radial-gradient(ellipse 50% 40% at 5% 100%, rgba(0, 102, 204, 0.10), transparent 60%);
+        z-index: -1;
+      }
+      .nl-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+        background-size: 32px 32px;
+        -webkit-mask-image: radial-gradient(ellipse 60% 70% at 50% 40%, black, transparent 80%);
+        mask-image: radial-gradient(ellipse 60% 70% at 50% 40%, black, transparent 80%);
+        z-index: -1;
+      }
+      .nl-eyebrow {
+        margin: 0 0 24px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--primary);
+      }
+      .nl-version {
+        margin: 0 0 28px;
+        font-family: var(--font-display);
+        font-size: clamp(36px, 7.5vw, 56px);
+        font-weight: 600;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: var(--ink);
+        word-break: break-word;
+      }
+      .nl-version-num {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        background: linear-gradient(180deg, var(--ink) 0%, color-mix(in srgb, var(--ink) 60%, var(--c-ai)) 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+      .nl-version-sep {
+        display: inline-block;
+        margin: 0 0.4em;
+        color: var(--hairline);
+        font-weight: 400;
+        -webkit-text-fill-color: var(--hairline);
+      }
+      .nl-meta {
+        margin: 0 0 32px;
+        font-size: 15px;
+        color: var(--ink-muted);
+        font-variant-numeric: tabular-nums;
+      }
+      .nl-meta time { color: var(--ink-2); font-weight: 500; }
+      .nl-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 20px;
+        background: var(--primary);
+        color: #fff;
+        border-radius: var(--r-full);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      }
+      .nl-cta:hover {
+        background: color-mix(in srgb, var(--primary) 85%, black);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(0, 102, 204, 0.25);
+      }
+
+      /* TOC */
+      .nl-toc {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        padding: 16px 0;
+        margin: 0 0 8px;
+        border-top: 1px solid var(--hairline-soft);
+        border-bottom: 1px solid var(--hairline-soft);
+        font-size: 13px;
+      }
+      .nl-toc a {
+        color: var(--ink-muted);
+        text-decoration: none;
+        padding: 6px 12px;
+        border-radius: var(--r-full);
+        transition: all 0.2s ease;
+      }
+      .nl-toc a:hover {
+        color: var(--ink);
+        background: var(--bg-soft);
+      }
+
+      /* SECTION */
+      .nl-section {
+        margin: 64px 0;
+        scroll-margin-top: 32px;
+      }
+      .nl-section[data-color="ai"] { --section-color: var(--c-ai); }
+      .nl-section[data-color="editor"] { --section-color: var(--c-editor); }
+      .nl-section[data-color="advanced"] { --section-color: var(--c-advanced); }
+
+      .nl-section-head {
+        position: relative;
+        margin-bottom: 28px;
+        padding-left: 16px;
+      }
+      .nl-section-head::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 8px;
+        bottom: 8px;
+        width: 4px;
+        background: var(--section-color);
+        border-radius: 2px;
+      }
+      .nl-section-eyebrow {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--section-color);
+        margin-bottom: 6px;
+      }
+      .nl-section-title {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 28px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        line-height: 1.2;
+      }
+
+      /* HIGHLIGHTS */
+      .nl-highlights {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin: 0;
+      }
+      .nl-hl-card {
+        position: relative;
+        padding: 22px;
+        background: var(--bg-elevated);
+        border: 1px solid var(--hairline-soft);
+        border-radius: var(--r-md);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+      .nl-hl-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-2);
+        border-color: var(--hairline);
+      }
+      .nl-hl-num {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-highlight);
+        margin-bottom: 16px;
+        letter-spacing: 0.06em;
+        font-variant-numeric: tabular-nums;
+      }
+      .nl-hl-card h3 {
+        font-family: var(--font-display);
+        font-size: 17px;
+        font-weight: 600;
+        line-height: 1.3;
+        margin: 0 0 8px;
+        color: var(--ink);
+        letter-spacing: -0.01em;
+      }
+      .nl-hl-card p {
+        font-size: 13.5px;
+        line-height: 1.55;
+        color: var(--ink-muted);
+        margin: 0;
+      }
+
+      /* CHANGES LIST */
+      .nl-changes {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .nl-changes li {
+        position: relative;
+        padding: 18px 0 18px 28px;
+        border-top: 1px solid var(--hairline-soft);
+        font-size: 15.5px;
+        line-height: 1.6;
+        color: var(--ink-2);
+        transition: background 0.2s ease;
+      }
+      .nl-changes li:first-child { border-top-color: var(--hairline); }
+      .nl-changes li:hover { background: var(--bg-soft); }
+      .nl-changes li::before {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 28px;
+        width: 8px;
+        height: 8px;
+        background: var(--section-color);
+        border-radius: 50%;
+      }
+      .nl-changes strong {
+        color: var(--ink);
+        font-weight: 600;
+        border-bottom: 1px solid var(--section-color);
+        padding-bottom: 1px;
+      }
+      .nl-changes code {
+        font-family: var(--font-mono);
+        font-size: 0.875em;
+        background: var(--bg-soft);
+        padding: 2px 6px;
+        border: 1px solid var(--hairline-soft);
+        border-radius: 4px;
+        color: var(--ink);
+      }
+      .nl-changes p { margin: 0; }
+      .nl-changes pre {
+        background: var(--bg-soft);
+        padding: 12px;
+        border-radius: var(--r-sm);
+        overflow: auto;
+        font-size: 13px;
+        margin: 10px 0;
+      }
+      .nl-changes blockquote {
+        margin: 8px 0;
+        padding: 0 0 0 12px;
+        border-left: 2px solid var(--hairline);
+        color: var(--ink-muted);
+      }
+
+      /* TAGS (legacy JSON branch) */
+      .nl-tags {
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid var(--hairline-soft);
+      }
+      .nl-tag {
+        display: inline-block;
+        font-size: 12px;
+        color: var(--ink-muted);
+        background: var(--bg-soft);
+        border: 1px solid var(--hairline-soft);
+        border-radius: var(--r-full);
+        padding: 6px 12px;
+        margin: 0 6px 6px 0;
+      }
+
+      /* FOOTER */
+      .nl-footer {
+        margin-top: 80px;
+        padding-top: 32px;
+        border-top: 1px solid var(--hairline-soft);
+        font-size: 12px;
+        color: var(--ink-faint);
+        text-align: center;
+        font-family: var(--font-mono);
+        letter-spacing: 0.04em;
+      }
+      .nl-footer-sep { margin: 0 8px; color: var(--hairline); }
+
+      /* MOTION */
+      @keyframes nl-fade-up {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .nl-hl-card, .nl-section { animation: nl-fade-up 0.5s ease both; }
+      .nl-section:nth-of-type(1) { animation-delay: 0s; }
+      .nl-section:nth-of-type(2) { animation-delay: 0.05s; }
+      .nl-section:nth-of-type(3) { animation-delay: 0.1s; }
+      .nl-section:nth-of-type(4) { animation-delay: 0.15s; }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.01ms !important;
+        }
+        html { scroll-behavior: auto; }
+      }
+
+      /* DARK */
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #000000;
+          --bg-soft: #0a0a0a;
+          --bg-elevated: #141416;
+          --ink: #f5f5f7;
+          --ink-2: #d2d2d7;
+          --ink-muted: #a1a1a6;
+          --ink-faint: #6e6e73;
+          --primary: #2997ff;
+          --c-highlight: #2997ff;
+          --c-ai: #a78bfa;
+          --c-editor: #22d3ee;
+          --c-advanced: #34d399;
+          --hairline: #2c2c2e;
+          --hairline-soft: #1c1c1e;
+          --shadow-2: 0 4px 12px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.4);
+        }
+        .nl-hero::before {
+          background:
+            radial-gradient(ellipse 60% 50% at 88% 0%, rgba(167, 139, 250, 0.20), transparent 60%),
+            radial-gradient(ellipse 50% 40% at 5% 100%, rgba(41, 151, 255, 0.15), transparent 60%);
+        }
+        .nl-hero::after {
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        }
+        .nl-changes code { color: #f5f5f7; }
+      }
+
+      /* RESPONSIVE */
+      @media only screen and (max-width: 640px) {
+        .nl-page { padding: 0 16px 60px; }
+        .nl-hero { padding: 56px 0 56px; }
+        .nl-version { font-size: clamp(48px, 18vw, 80px); }
+        .nl-highlights { grid-template-columns: 1fr; }
+        .nl-section-title { font-size: 22px; }
+        .nl-section { margin: 48px 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nl-page">
+      <div class="nl-container">
+        <header class="nl-hero">
+          <p class="nl-eyebrow">新发布 · claude-changelog</p>
+          <h1 class="nl-version">
+            <span class="nl-version-num">2.1.97</span> <span class="nl-version-sep">·</span> 安全加固与体验优化          </h1>
+          <p class="nl-meta">
+<time datetime="2026-04-08T00:00:00+00:00">2026年4月8日</time>          </p>
+<a class="nl-cta" href="https://code.claude.com/docs/en/changelog#2-1-97" target="_blank" rel="noopener noreferrer">查看发布说明 ↗</a>        </header>
+
+        <nav class="nl-toc" aria-label="目录">
+<a href="#核心亮点">核心亮点</a><a href="#权限与安全">权限与安全</a><a href="#ai-copilot-与-mcp-集成">AI Copilot 与 MCP 集成</a><a href="#界面与体验">界面与体验</a>        </nav>
+
+          <section class="nl-section" id="核心亮点">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">TL;DR</span>
+              <h2 class="nl-section-title">核心亮点</h2>
+            </header>
+            <div class="nl-highlights">
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">01</span>
+                <h3>修复 --dangerously-skip-permissions 降级漏洞</h3>
+                <p>保护路径写入后该标记被静默降级为 accept-edits 模式的问题，确保权限模式按预期运行。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">02</span>
+                <h3>Bash 工具权限强化</h3>
+                <p>收紧环境变量前缀和网络重定向检查，减少常见命令误报，提升安全性。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">03</span>
+                <h3>MCP HTTP/SSE 连接内存泄漏修复</h3>
+                <p>修复约 50 MB/hr 的未释放缓冲区累积，提高长时间运行稳定性。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">04</span>
+                <h3>子代理工作目录泄漏修复</h3>
+                <p>修复使用工作树隔离或 cwd: 覆盖的子代理将工作目录泄露回父会话 Bash 工具的问题。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">05</span>
+                <h3>429 重试指数退避修复</h3>
+                <p>修复服务器小 Retry-After 导致耗尽重试的问题，现在退避作为最小值应用。</p>
+              </article>
+              <article class="nl-hl-card">
+                <span class="nl-hl-num">06</span>
+                <h3>NO_FLICKER 模式焦点视图</h3>
+                <p>新增 Ctrl+O 切换视图，显示提示、单行工具摘要及编辑 diff 统计，改善可观测性。</p>
+              </article>
+            </div>
+          </section>
+          <section class="nl-section" id="权限与安全" data-color="ai">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">Security</span>
+              <h2 class="nl-section-title">权限与安全</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>修复权限规则名称与 JS 原型属性冲突</strong>：例如 toString 导致 settings.json 被静默忽略的问题已修复。</li><li><strong>修复 managed-settings 规则残留</strong>：管理员移除 allow 规则后，之前规则仍有效直到进程重启的问题已修复。</li><li><strong>修复 permissions.additionalDirectories 更改不生效</strong>：会话期间修改 additionalDirectories 现在立即生效。</li><li><strong>修复从设置中移除目录影响 --add-dir</strong>：从 settings.permissions.additionalDirectories 移除目录会同时撤销 --add-dir 传递的相同目录访问。</li><li><strong>改进 Accept Edits 模式自动批准安全命令</strong>：带安全环境变量前缀或 process wrappers（如 LANG=C rm foo）的文件系统命令自动批准。</li><li><strong>改进自动 / 绕过权限模式的沙箱网络批准</strong>：自动批准沙箱网络访问提示，减少不必要的人工干预。</li><li><strong>改进沙箱网络 macOS 支持</strong>：sandbox.network.allowMachLookup 现在在 macOS 上生效。</li>            </ul>
+          </section>
+          <section class="nl-section" id="ai-copilot-与-mcp-集成" data-color="editor">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">AI</span>
+              <h2 class="nl-section-title">AI Copilot 与 MCP 集成</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>修复 MCP OAuth 重启后不继承元数据 URL</strong>：oauth.authServerMetadataUrl 在重启后不生效，影响 ADFS 等 IdP 的修复。</li><li><strong>改进 Bridge 会话在 claude.ai 显示本地信息</strong>：会话卡片上现在显示本地 git 仓库、分支和工作目录。</li><li><strong>改进会话转录大小和准确性</strong>：跳过空 hook 条目、限制预编辑文件副本，每块条目使用最终 token 用量而非占位符。</li><li><strong>修复速率限制升级选项在上下文压缩后消失</strong>：确保用户仍可访问升级选项。</li><li><strong>修复 /resume 多项问题</strong>：包括 --resume <name> 打开不可编辑、搜索重置、空列表导航、任务状态替换对话摘要、跨项目陈旧等。</li><li><strong>修复 /resume 时大文件编辑 diff 消失</strong>：编辑的文件大于 10KB 时 diff 不再丢失。</li><li><strong>改进 Bash 工具 OTEL 跟踪</strong>：子进程现在在启用跟踪时继承 W3C TRACEPARENT 环境变量。</li><li><strong>更新 /claude-api 技能覆盖 Managed Agents</strong>：技能文档同步更新以支持 Managed Agents。</li>            </ul>
+          </section>
+          <section class="nl-section" id="界面与体验" data-color="advanced">
+            <header class="nl-section-head">
+              <span class="nl-section-eyebrow">界面与体</span>
+              <h2 class="nl-section-title">界面与体验</h2>
+            </header>
+            <ul class="nl-changes">
+<li><strong>添加 refreshInterval 状态行设置</strong>：可配置状态行命令每 N 秒自动刷新。</li><li><strong>添加 /agents 面板活跃代理指示器</strong>：在 agent 类型旁显示 "● N running"，标识存活的子代理实例。</li><li><strong>修复 NO_FLICKER 模式内存泄漏</strong>：API 重试时残留的流状态不再导致内存泄漏。</li><li><strong>修复 NO_FLICKER 模式在 Windows Terminal 滚动缓慢</strong>：鼠标滚轮滚动性能显著提升。</li><li><strong>修复 NO_FLICKER 模式在 Warp 的快捷键问题</strong>：Shift+Enter 和 Alt/Cmd+箭头快捷键恢复正常。</li><li><strong>修复 NO_FLICKER 模式复制 Unicode 乱码（Windows）</strong>：韩文/日文/Unicode 文本复制不再乱码。</li><li><strong>改进粘贴图像压缩</strong>：粘贴和附加的图像压缩到与 Read 工具相同的 token 预算。</li><li><strong>改进 CJK 斜杠命令和 @-mention 补全</strong>：在中文/日文句末标点后即可触发，不再需要前导空格。</li><li><strong>改进 footer 布局和 context-low 警告</strong>：指示器保持在模式指示行，context-low 警告显示为瞬态通知。</li><li><strong>改进 markdown 块引用显示</strong>：跨行连续左栏风格，提升可读性。</li>            </ul>
+          </section>
+
+
+        <footer class="nl-footer">
+          <span>由 WatchBot 自动生成</span>
+          <span class="nl-footer-sep">·</span>
+          <span>2026-07-22</span>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

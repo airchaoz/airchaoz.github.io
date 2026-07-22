@@ -1,9 +1,17 @@
 [
   {
     "id": "01",
+    "name": "claude-changelog",
+    "folder": "claude-changelog",
+    "description": "Claude Code 终端 AI 编程助手的更新记录",
+    "accent": "#cc785c",
+    "icon": "C"
+  },
+  {
+    "id": "02",
     "name": "vscode-changelog",
     "folder": "vscode-changelog",
-    "description": "VS Code 1.52 – 1.129 中文更新聚合（78 篇）",
+    "description": "VS Code 跨平台编辑器的更新记录",
     "accent": "#0066cc",
     "icon": "V"
   }
