@@ -1,1 +1,10 @@
-[{"id":"01","name":"vscode-changelog","folder":"vscode-changelog","description":"VS Code 1.52 – 1.129 中文更新聚合（78 篇）","accent":"#0066cc","icon":"V"}]
+[
+  {
+    "id": "01",
+    "name": "vscode-changelog",
+    "folder": "vscode-changelog",
+    "description": "VS Code 1.52 – 1.129 中文更新聚合（78 篇）",
+    "accent": "#0066cc",
+    "icon": "V"
+  }
+]
