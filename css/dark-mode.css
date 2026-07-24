@@ -90,6 +90,17 @@ html[data-theme="dark"] .widget .card-content {
     background-color: transparent;
     color: var(--gh-fg-default);
 }
+html[data-theme="dark"] .widget .title,
+html[data-theme="dark"] .widget .subtitle,
+html[data-theme="dark"] .widget .heading,
+html[data-theme="dark"] .widget p,
+html[data-theme="dark"] .widget span,
+html[data-theme="dark"] .widget .level-item {
+    color: var(--gh-fg-default);
+}
+html[data-theme="dark"] .widget .heading {
+    color: var(--gh-fg-muted);
+}
 
 /* ---- Article body ---- */
 html[data-theme="dark"] article,
@@ -166,16 +177,21 @@ html[data-theme="dark"] figure.highlight {
     background-color: var(--gh-bg-elevated);
     box-shadow: var(--gh-card-shadow);
 }
-html[data-theme="dark"] figure.highlight figcaption,
-html[data-theme="dark"] figure.highlight .gutter {
-    background-color: rgba(255, 255, 255, 0.05);
+html[data-theme="dark"] figure.highlight figcaption {
+    background-color: var(--gh-bg-elevated);
     color: var(--gh-fg-muted);
+    border-bottom: 1px solid var(--gh-border-default);
+}
+html[data-theme="dark"] figure.highlight .gutter {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-fg-muted);
+    border-right: 1px solid var(--gh-border-default);
 }
 html[data-theme="dark"] figure.highlight pre,
 html[data-theme="dark"] figure.highlight .code .line,
 html[data-theme="dark"] figure.highlight .code {
     color: var(--gh-fg-default);
-    background-color: transparent;
+    background-color: var(--gh-bg-elevated);
 }
 
 /* ---- Tags / pills ---- */

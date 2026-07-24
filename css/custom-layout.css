@@ -17,6 +17,7 @@
 .widget#toc .menu-list li ul {
     margin: 0.25em 0;
     padding-left: 0.75em;
+    border-left: none;
 }
 
 /* ---- TOC: cap height + internal scroll ---- */
