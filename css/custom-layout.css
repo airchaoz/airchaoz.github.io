@@ -1,0 +1,42 @@
+/* ============================================================
+ *  Custom Layout Tweaks
+ *  - Light/dark mode shared overrides
+ *  - Tighter TOC line spacing
+ *  - TOC height limit + internal scroll
+ * ============================================================ */
+
+/* ---- TOC: tighter line spacing ---- */
+.widget#toc .menu-list,
+.widget#toc .menu-list a {
+    line-height: 1.15;
+}
+.widget#toc .menu-list a {
+    padding-top: 0.3em;
+    padding-bottom: 0.3em;
+}
+.widget#toc .menu-list li ul {
+    margin: 0.25em 0;
+    padding-left: 0.75em;
+}
+
+/* ---- TOC: cap height + internal scroll ---- */
+.widget#toc {
+    max-height: calc(100vh - 4rem);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.widget#toc .card-content {
+    overflow: hidden;
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+.widget#toc .menu {
+    overflow-y: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+    /* Smooth scroll for auto-scroll + manual scroll */
+    scroll-behavior: smooth;
+}

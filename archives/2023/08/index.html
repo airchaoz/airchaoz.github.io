@@ -33,7 +33,9 @@
       switchTab();
       window.addEventListener('hashchange', switchTab, false);
   })();
-  </script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web@1.522.0/style.min.css" crossorigin="anonymous" />
+  </script><script>
+(function(){try{var t=localStorage.getItem('theme');var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',t||(d?'dark':'light'));}catch(e){document.documentElement.setAttribute('data-theme','light');}})();
+</script><link rel="stylesheet" href="/css/dark-mode.css"><link rel="stylesheet" href="/css/custom-layout.css"><script src="/js/theme-toggle.js" defer></script><script src="/js/toc-autoscroll.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web@1.522.0/style.min.css" crossorigin="anonymous" />
 <style>
 body, button, input, select, textarea {
   font-family: 'LXGW WenKai GB Screen', '霞鹜文楷', 'Microsoft YaHei', 'PingFang SC', sans-serif;

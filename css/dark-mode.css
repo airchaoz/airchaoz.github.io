@@ -1,0 +1,380 @@
+/* ============================================================
+ *  Dark Mode - GitHub Dark Palette
+ *  - Triggered by [data-theme="dark"] on <html>
+ *  - Auto-applies if no user choice and OS prefers dark
+ *  - [data-theme="light"] cancels system dark
+ * ============================================================ */
+
+/* ---- 1. CSS custom properties (palette tokens) ---- */
+:root {
+    --gh-bg-canvas:      #0d1117;
+    --gh-bg-subtle:      #161b22;
+    --gh-bg-elevated:    #21262d;
+    --gh-border-default: #30363d;
+    --gh-border-muted:   #21262d;
+    --gh-fg-default:     #e6edf3;
+    --gh-fg-muted:       #7d8590;
+    --gh-fg-subtle:      #6e7681;
+    --gh-accent-fg:      #58a6ff;
+    --gh-accent-emphasis:#1f6feb;
+    --gh-shadow:         0 0 transparent;
+    --gh-card-shadow:    0 0 0 1px #30363d;
+}
+
+/* ---- 2. Follow system when user hasn't chosen ---- */
+@media (prefers-color-scheme: dark) {
+    html:not([data-theme="light"]) {
+        --gh-bg-canvas:      #0d1117;
+        --gh-bg-subtle:      #161b22;
+        --gh-bg-elevated:    #21262d;
+        --gh-border-default: #30363d;
+        --gh-border-muted:   #21262d;
+        --gh-fg-default:     #e6edf3;
+        --gh-fg-muted:       #7d8590;
+        --gh-fg-subtle:      #6e7681;
+        --gh-accent-fg:      #58a6ff;
+        --gh-accent-emphasis:#1f6feb;
+        --gh-shadow:         0 0 transparent;
+        --gh-card-shadow:    0 0 0 1px #30363d;
+    }
+}
+
+/* ============================================================
+ *  3. Component overrides - dark mode only
+ * ============================================================ */
+html[data-theme="dark"],
+html[data-theme="dark"] body {
+    background-color: var(--gh-bg-canvas);
+    color: var(--gh-fg-default);
+    color-scheme: dark;
+}
+
+/* ---- Links ---- */
+html[data-theme="dark"] a {
+    color: var(--gh-accent-fg);
+}
+html[data-theme="dark"] a:hover {
+    color: #79c0ff;
+}
+
+/* ---- Navbar ---- */
+html[data-theme="dark"] .navbar,
+html[data-theme="dark"] .navbar-main,
+html[data-theme="dark"] .navbar-menu,
+html[data-theme="dark"] .navbar-container {
+    background-color: var(--gh-bg-subtle);
+    box-shadow: 0 1px 0 var(--gh-border-default);
+}
+html[data-theme="dark"] .navbar-item,
+html[data-theme="dark"] .navbar-item.navbar-logo {
+    color: var(--gh-fg-default);
+}
+html[data-theme="dark"] .navbar-item:hover,
+html[data-theme="dark"] .navbar-item.is-active,
+html[data-theme="dark"] .theme-toggle:hover {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-fg-default);
+}
+
+/* ---- Card / widget surfaces ---- */
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .widget,
+html[data-theme="dark"] .box {
+    background-color: var(--gh-bg-subtle);
+    box-shadow: var(--gh-card-shadow);
+    border-radius: 6px;
+    color: var(--gh-fg-default);
+}
+html[data-theme="dark"] .card .card-content,
+html[data-theme="dark"] .widget .card-content {
+    background-color: transparent;
+    color: var(--gh-fg-default);
+}
+
+/* ---- Article body ---- */
+html[data-theme="dark"] article,
+html[data-theme="dark"] .article,
+html[data-theme="dark"] .article .content,
+html[data-theme="dark"] .article .content blockquote,
+html[data-theme="dark"] .article .content table {
+    color: var(--gh-fg-default);
+}
+html[data-theme="dark"] .article .article-meta,
+html[data-theme="dark"] .article .article-tags,
+html[data-theme="dark"] article.media,
+html[data-theme="dark"] article.media .media-content,
+html[data-theme="dark"] article.media .date,
+html[data-theme="dark"] article.media .categories {
+    color: var(--gh-fg-muted);
+}
+html[data-theme="dark"] .article .article-licensing {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-fg-muted);
+}
+html[data-theme="dark"] .article h1,
+html[data-theme="dark"] .article h2,
+html[data-theme="dark"] .article h3,
+html[data-theme="dark"] .article h4,
+html[data-theme="dark"] .article h5,
+html[data-theme="dark"] .article h6,
+html[data-theme="dark"] .article .title,
+html[data-theme="dark"] .article .content h1,
+html[data-theme="dark"] .article .content h2,
+html[data-theme="dark"] .article .content h3,
+html[data-theme="dark"] .article .content h4,
+html[data-theme="dark"] .article .content h5,
+html[data-theme="dark"] .article .content h6 {
+    color: var(--gh-fg-default);
+    border-bottom-color: var(--gh-border-default);
+}
+html[data-theme="dark"] .article .content blockquote {
+    background-color: transparent;
+    border-left-color: var(--gh-border-default);
+    color: var(--gh-fg-muted);
+}
+html[data-theme="dark"] .article .content code,
+html[data-theme="dark"] .article .content pre {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-fg-default);
+}
+html[data-theme="dark"] .article .content pre code {
+    background-color: transparent;
+}
+html[data-theme="dark"] .article .content table th,
+html[data-theme="dark"] .article .content table td,
+html[data-theme="dark"] .article .content table tr {
+    border-color: var(--gh-border-default);
+    color: var(--gh-fg-default);
+}
+html[data-theme="dark"] .article .content table thead {
+    background-color: var(--gh-bg-elevated);
+}
+html[data-theme="dark"] .article .content table tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+html[data-theme="dark"] .article .content hr {
+    background-color: var(--gh-border-default);
+}
+
+/* ---- Post navigation (prev/next) ---- */
+html[data-theme="dark"] .post-navigation {
+    color: var(--gh-fg-muted);
+}
+
+/* ---- Code block (figure.highlight) ---- */
+html[data-theme="dark"] figure.highlight {
+    background-color: var(--gh-bg-elevated);
+    box-shadow: var(--gh-card-shadow);
+}
+html[data-theme="dark"] figure.highlight figcaption,
+html[data-theme="dark"] figure.highlight .gutter {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--gh-fg-muted);
+}
+html[data-theme="dark"] figure.highlight pre,
+html[data-theme="dark"] figure.highlight .code .line,
+html[data-theme="dark"] figure.highlight .code {
+    color: var(--gh-fg-default);
+    background-color: transparent;
+}
+
+/* ---- Tags / pills ---- */
+html[data-theme="dark"] .tag:not(body),
+html[data-theme="dark"] .article .tag {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-fg-default);
+    border: 1px solid var(--gh-border-default);
+}
+html[data-theme="dark"] .tag:hover {
+    background-color: #30363d;
+}
+
+/* ---- Footer ---- */
+html[data-theme="dark"] .footer {
+    background-color: var(--gh-bg-subtle);
+    border-top: 1px solid var(--gh-border-default);
+    color: var(--gh-fg-muted);
+}
+html[data-theme="dark"] .footer a {
+    color: var(--gh-fg-muted);
+}
+html[data-theme="dark"] .footer a:hover {
+    color: var(--gh-fg-default);
+}
+
+/* ---- Pagination ---- */
+html[data-theme="dark"] .pagination-link,
+html[data-theme="dark"] .pagination-previous,
+html[data-theme="dark"] .pagination-next,
+html[data-theme="dark"] .pagination-ellipsis {
+    background-color: var(--gh-bg-subtle);
+    color: var(--gh-fg-default);
+    box-shadow: var(--gh-card-shadow);
+    border: none;
+}
+html[data-theme="dark"] .pagination-link.is-current {
+    background-color: var(--gh-accent-emphasis);
+    color: #ffffff;
+}
+html[data-theme="dark"] .pagination-link:hover,
+html[data-theme="dark"] .pagination-previous:hover,
+html[data-theme="dark"] .pagination-next:hover {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-accent-fg);
+}
+
+/* ---- Timeline (archive) ---- */
+html[data-theme="dark"] .timeline {
+    border-left-color: var(--gh-border-default);
+}
+html[data-theme="dark"] .timeline .media:before,
+html[data-theme="dark"] .timeline .media:last-child:after {
+    background-color: var(--gh-border-default);
+}
+html[data-theme="dark"] .timeline .media:last-child:after {
+    background-color: var(--gh-bg-canvas);
+}
+
+/* ---- Search box ---- */
+html[data-theme="dark"] .searchbox {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+html[data-theme="dark"] .searchbox-container {
+    background-color: var(--gh-bg-subtle);
+    box-shadow: var(--gh-card-shadow);
+}
+html[data-theme="dark"] .searchbox-header,
+html[data-theme="dark"] .searchbox-input,
+html[data-theme="dark"] .searchbox-input-container,
+html[data-theme="dark"] .searchbox-close {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-fg-default);
+}
+html[data-theme="dark"] .searchbox-body,
+html[data-theme="dark"] .searchbox-footer {
+    background-color: var(--gh-bg-subtle);
+    color: var(--gh-fg-default);
+    border-top-color: var(--gh-border-default);
+}
+html[data-theme="dark"] .searchbox-result-section {
+    border-bottom-color: var(--gh-border-default);
+}
+html[data-theme="dark"] .searchbox-result-item:hover {
+    background-color: var(--gh-bg-elevated);
+}
+html[data-theme="dark"] .searchbox-result-title,
+html[data-theme="dark"] .searchbox-result-preview {
+    color: var(--gh-fg-default);
+}
+html[data-theme="dark"] .searchbox-result-title-secondary,
+html[data-theme="dark"] .searchbox-result-section header {
+    color: var(--gh-fg-muted);
+}
+html[data-theme="dark"] .searchbox-pagination-link {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-fg-default);
+    box-shadow: var(--gh-card-shadow);
+}
+html[data-theme="dark"] .searchbox-pagination-item.active .searchbox-pagination-link {
+    background-color: var(--gh-accent-emphasis);
+    color: #ffffff;
+}
+
+/* ---- TOC menu (sidebar) ---- */
+html[data-theme="dark"] .menu-list a,
+html[data-theme="dark"] .menu-list li > a {
+    color: var(--gh-fg-default);
+}
+html[data-theme="dark"] .menu-list a:hover {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-accent-fg);
+}
+html[data-theme="dark"] .menu-list a.is-active {
+    background-color: var(--gh-accent-emphasis);
+    color: #ffffff;
+}
+html[data-theme="dark"] .menu-label {
+    color: var(--gh-fg-muted);
+}
+
+/* ---- Buttons (general) ---- */
+html[data-theme="dark"] .button {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-fg-default);
+    border-color: var(--gh-border-default);
+}
+html[data-theme="dark"] .button.is-light {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-fg-default);
+    border: 1px solid var(--gh-border-default);
+}
+html[data-theme="dark"] .button:hover {
+    background-color: #30363d;
+    border-color: var(--gh-fg-muted);
+}
+
+/* ---- Form inputs ---- */
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select {
+    background-color: var(--gh-bg-elevated);
+    color: var(--gh-fg-default);
+    border-color: var(--gh-border-default);
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+    color: var(--gh-fg-subtle);
+}
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] textarea:focus,
+html[data-theme="dark"] select:focus {
+    border-color: var(--gh-accent-fg);
+    box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.2);
+}
+
+/* ---- Scrollbar ---- */
+html[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--gh-bg-subtle);
+    box-shadow: none;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--gh-bg-elevated);
+    box-shadow: none;
+}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: #30363d;
+}
+
+/* ---- Section background ---- */
+html[data-theme="dark"] .section {
+    background-color: transparent;
+}
+
+/* ---- Selection ---- */
+html[data-theme="dark"] ::selection {
+    background-color: rgba(88, 166, 255, 0.4);
+    color: var(--gh-fg-default);
+}
+
+/* ---- Image helpers (slight dim for dark) ---- */
+html[data-theme="dark"] img {
+    opacity: 0.95;
+}
+
+/* ============================================================
+ *  4. Theme toggle button - icon swapping
+ * ============================================================ */
+html[data-theme="light"] .theme-toggle .fa-moon { display: none; }
+html[data-theme="dark"]  .theme-toggle .fa-sun  { display: none; }
+
+/* ---- Smooth transitions (subtle) ---- */
+html[data-theme] body,
+html[data-theme] .card,
+html[data-theme] .navbar,
+html[data-theme] .footer,
+html[data-theme] .widget,
+html[data-theme] figure.highlight,
+html[data-theme] .article .content,
+html[data-theme] a {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
