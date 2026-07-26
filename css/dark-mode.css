@@ -248,7 +248,7 @@ html[data-theme="dark"] .timeline .media:last-child:after {
     background-color: var(--gh-border-default);
 }
 html[data-theme="dark"] .timeline .media:last-child:after {
-    background-color: var(--gh-bg-canvas);
+    background-color: var(--gh-bg-subtle);
 }
 
 /* ---- Search box ---- */
