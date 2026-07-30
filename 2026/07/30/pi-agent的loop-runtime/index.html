@@ -74,7 +74,8 @@ code, pre {
     width: 75%;
   }
 }
-</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub Page" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Rss" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2026-07-30T00:29:05.000Z" title="7/30/2026, 8:29:05 AM">2026-07-30</time>发表</span><span class="level-item"><time dateTime="2026-07-30T00:34:14.588Z" title="7/30/2026, 8:34:14 AM">2026-07-30</time>更新</span><span class="level-item">34 分钟读完 (大约5140个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">pi agent的loop runtime</h1><div class="content"><p>本文档介绍 pi-agent-core 的运行时循环（runtime loop）框架——整体架构分层、核心概念，以及 AgentHarness &#x2F; Agent &#x2F; agent-loop &#x2F; pi-ai 四层封装的职责与协作。</p>
+</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="echo's blog" type="application/atom+xml">
+</head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub Page" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Rss" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2026-07-30T00:29:05.000Z" title="7/30/2026, 8:29:05 AM">2026-07-30</time>发表</span><span class="level-item"><time dateTime="2026-07-30T00:34:14.588Z" title="7/30/2026, 8:34:14 AM">2026-07-30</time>更新</span><span class="level-item">34 分钟读完 (大约5140个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">pi agent的loop runtime</h1><div class="content"><p>本文档介绍 pi-agent-core 的运行时循环（runtime loop）框架——整体架构分层、核心概念，以及 AgentHarness &#x2F; Agent &#x2F; agent-loop &#x2F; pi-ai 四层封装的职责与协作。</p>
 <span id="more"></span>
 <h2 id="一、整体架构分层"><a href="#一、整体架构分层" class="headerlink" title="一、整体架构分层"></a>一、整体架构分层</h2><img src="/images/runtime-loop-arch.svg" alt="Runtime Loop 分层架构图" style="max-width:100%;height:auto">
 
@@ -203,7 +204,20 @@ code, pre {
 </tr>
 </tbody></table>
 <p><strong>核心流转</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">stateDiagram-v2</span><br><span class="line">    direction LR</span><br><span class="line"></span><br><span class="line">    %% 左侧状态：短期转换或辅助功能</span><br><span class="line">    compaction --&gt; idle: 完成</span><br><span class="line">    branch_summary --&gt; idle: 完成</span><br><span class="line">    </span><br><span class="line">    %% 核心状态转换</span><br><span class="line">    idle --&gt; turn: prompt / skill / promptFromTemplate</span><br><span class="line">    idle --&gt; compaction: compact</span><br><span class="line">    idle --&gt; branch_summary: navigateTree</span><br><span class="line">    </span><br><span class="line">    %% 右侧状态：主循环返回</span><br><span class="line">    turn --&gt; idle: agent_end / abort / error</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">stateDiagram-v2
+    direction LR
+
+    %% 左侧状态：短期转换或辅助功能
+    compaction --> idle: 完成
+    branch_summary --> idle: 完成
+    
+    %% 核心状态转换
+    idle --> turn: prompt / skill / promptFromTemplate
+    idle --> compaction: compact
+    idle --> branch_summary: navigateTree
+    
+    %% 右侧状态：主循环返回
+    turn --> idle: agent_end / abort / error</pre>
 <p>使用状态机来保证各个操作的原子性</p>
 <h4 id="配置管理"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理</h4><table>
 <thead>
@@ -239,7 +253,19 @@ code, pre {
 </tbody></table>
 <p>这些配置在 <code>createTurnState()</code> 时快照，运行中的 setter 不影响当前 provider 请求。其中 model &#x2F; thinkingLevel &#x2F; activeTools 的变更会写入 session 条目持久化（idle 时立即写，忙时排队）；streamOptions &#x2F; resources &#x2F; 队列模式等变更只在内存生效，不持久化。</p>
 <h4 id="三队列系统"><a href="#三队列系统" class="headerlink" title="三队列系统"></a>三队列系统</h4><p>三者在生命周期中的位置关系：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">    Input[&quot;用户输入&quot;] --&gt; Prompt[&quot;prompt 入口&quot;]</span><br><span class="line">    NextTurn[&quot;nextTurnQueue&quot;] -.-&gt;|下次 prompt 注入| Prompt</span><br><span class="line"></span><br><span class="line">    Prompt --&gt; Loop&#123;&quot;turn 循环&quot;&#125;</span><br><span class="line"></span><br><span class="line">    Loop --&gt; LLM[&quot;LLM 调用&quot;]</span><br><span class="line">    LLM --&gt; Tools[&quot;工具执行&quot;]</span><br><span class="line">    Tools --&gt; Steer&#123;&quot;steerQueue\n有消息？&quot;&#125;</span><br><span class="line">    Steer --&gt;|有| Loop</span><br><span class="line">    Steer --&gt;|无 且 无工具执行| FollowUp&#123;&quot;followUpQueue\n有消息？&quot;&#125;</span><br><span class="line">    FollowUp --&gt;|有| Loop</span><br><span class="line">    FollowUp --&gt;|无| End[&quot;agent_end&quot;]</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">flowchart TB
+    Input["用户输入"] --> Prompt["prompt 入口"]
+    NextTurn["nextTurnQueue"] -.->|下次 prompt 注入| Prompt
+
+    Prompt --> Loop{"turn 循环"}
+
+    Loop --> LLM["LLM 调用"]
+    LLM --> Tools["工具执行"]
+    Tools --> Steer{"steerQueue\n有消息？"}
+    Steer -->|有| Loop
+    Steer -->|无 且 无工具执行| FollowUp{"followUpQueue\n有消息？"}
+    FollowUp -->|有| Loop
+    FollowUp -->|无| End["agent_end"]</pre>
 
 <table>
 <thead>
@@ -638,4 +664,32 @@ code, pre {
       }
     };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
             loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
-        });</script></body></html>
+        });</script><!-- hexo injector body_end start --><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+(function () {
+    'use strict';
+    function getTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+    }
+    function initMermaid() {
+        mermaid.initialize({ startOnLoad: true, theme: getTheme() });
+    }
+    initMermaid();
+
+    // Re-render on dark/light theme toggle
+    var observer = new MutationObserver(function (ms) {
+        ms.forEach(function (m) {
+            if (m.attributeName === 'data-theme') {
+                mermaid.initialize({ theme: getTheme() });
+                mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+            }
+        });
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    // PJAX: Icarus replaces page content; re-run mermaid
+    window.addEventListener('pjax:complete', function () {
+        mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+    });
+})();
+</script><!-- hexo injector body_end end --></body></html>

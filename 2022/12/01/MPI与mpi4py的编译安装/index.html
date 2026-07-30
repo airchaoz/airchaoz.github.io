@@ -74,7 +74,8 @@ code, pre {
     width: 75%;
   }
 }
-</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub Page" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Rss" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-12-01T06:50:09.000Z" title="12/1/2022, 2:50:09 PM">2022-12-01</time>发表</span><span class="level-item"><time dateTime="2026-07-26T05:55:51.227Z" title="7/26/2026, 1:55:51 PM">2026-07-26</time>更新</span><span class="level-item">7 分钟读完 (大约1087个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">MPI与mpi4py的编译安装</h1><div class="content"><p>mpi4py是sysumoc程序使用的必备模块，它的编译安装有着严格的要求。默认情况下，编译sysumoc所链接的MPI库和编译mpi4py所链接的MPI库需要是同一个MPI库，否则程序就会无法运行。在超算上普通用户没有root权限，甚至会无法连接网络，所以会从源码编译安装mpi4py就非常重要。</p>
+</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="echo's blog" type="application/atom+xml">
+</head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub Page" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Rss" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-12-01T06:50:09.000Z" title="12/1/2022, 2:50:09 PM">2022-12-01</time>发表</span><span class="level-item"><time dateTime="2026-07-26T05:55:51.227Z" title="7/26/2026, 1:55:51 PM">2026-07-26</time>更新</span><span class="level-item">7 分钟读完 (大约1087个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">MPI与mpi4py的编译安装</h1><div class="content"><p>mpi4py是sysumoc程序使用的必备模块，它的编译安装有着严格的要求。默认情况下，编译sysumoc所链接的MPI库和编译mpi4py所链接的MPI库需要是同一个MPI库，否则程序就会无法运行。在超算上普通用户没有root权限，甚至会无法连接网络，所以会从源码编译安装mpi4py就非常重要。</p>
 <span id="more"></span>
 
 <h1 id="一、有网络下pip编译安装mpi4py方法"><a href="#一、有网络下pip编译安装mpi4py方法" class="headerlink" title="一、有网络下pip编译安装mpi4py方法"></a>一、有网络下pip编译安装mpi4py方法</h1><p>注意，无论是否使用 conda 虚拟环境，都不建议用 conda install 的方式安装，因为 conda 安装的模块是事先编译好的，只有通过pip安装的包才会重新编译。</p>
@@ -162,4 +163,32 @@ code, pre {
       }
     };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
             loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
-        });</script></body></html>
+        });</script><!-- hexo injector body_end start --><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+(function () {
+    'use strict';
+    function getTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+    }
+    function initMermaid() {
+        mermaid.initialize({ startOnLoad: true, theme: getTheme() });
+    }
+    initMermaid();
+
+    // Re-render on dark/light theme toggle
+    var observer = new MutationObserver(function (ms) {
+        ms.forEach(function (m) {
+            if (m.attributeName === 'data-theme') {
+                mermaid.initialize({ theme: getTheme() });
+                mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+            }
+        });
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    // PJAX: Icarus replaces page content; re-run mermaid
+    window.addEventListener('pjax:complete', function () {
+        mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+    });
+})();
+</script><!-- hexo injector body_end end --></body></html>

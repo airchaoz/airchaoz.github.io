@@ -74,7 +74,8 @@ code, pre {
     width: 75%;
   }
 }
-</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub Page" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Rss" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-06-05T13:08:51.000Z" title="6/5/2025, 9:08:51 PM">2025-06-05</time>发表</span><span class="level-item"><time dateTime="2026-07-26T05:57:17.735Z" title="7/26/2026, 1:57:17 PM">2026-07-26</time>更新</span><span class="level-item">15 分钟读完 (大约2188个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">Transformer模型入门</h1><div class="content"><p>Transformer模型最早是由Google在2017年发布的一篇论文《Attention Is All You Need》中提出。最早该方法用用于翻译任务中，发现性能能够超越之前最优秀的RNN模型。在后一年，Google发表的《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》提出了BERT模型，和OpenAI发布《Improving Language Understanding by Generative Pre-Training》提出了GPT模型，这两个著名的模型奠定了大模型的基础。</p>
+</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="echo's blog" type="application/atom+xml">
+</head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub Page" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Rss" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-06-05T13:08:51.000Z" title="6/5/2025, 9:08:51 PM">2025-06-05</time>发表</span><span class="level-item"><time dateTime="2026-07-26T05:57:17.735Z" title="7/26/2026, 1:57:17 PM">2026-07-26</time>更新</span><span class="level-item">15 分钟读完 (大约2188个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">Transformer模型入门</h1><div class="content"><p>Transformer模型最早是由Google在2017年发布的一篇论文《Attention Is All You Need》中提出。最早该方法用用于翻译任务中，发现性能能够超越之前最优秀的RNN模型。在后一年，Google发表的《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》提出了BERT模型，和OpenAI发布《Improving Language Understanding by Generative Pre-Training》提出了GPT模型，这两个著名的模型奠定了大模型的基础。</p>
 <span id="more"></span>
 <p>Transformer 最核心、最具革新性的特点是它<strong>完全依赖注意力机制</strong>来处理序列数据，彻底放弃了传统的循环神经网络（RNN，如 LSTM）和卷积神经网络（CNN）结构。它通过位置编码来实现对序列顺序的识别，在模型训练时没有前后依赖关系，可以实现高度并行化，显著提高训练效率，正是这一点使得大模型成为可能。</p>
 <p>相比卷积神经网络只考虑附近数据的影响，Transformer有更大的感受野，更容易连接序列的任意位置，这也是Transformer的重要优点之一。</p>
@@ -200,4 +201,32 @@ $$
       }
     };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
             loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
-        });</script></body></html>
+        });</script><!-- hexo injector body_end start --><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+(function () {
+    'use strict';
+    function getTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+    }
+    function initMermaid() {
+        mermaid.initialize({ startOnLoad: true, theme: getTheme() });
+    }
+    initMermaid();
+
+    // Re-render on dark/light theme toggle
+    var observer = new MutationObserver(function (ms) {
+        ms.forEach(function (m) {
+            if (m.attributeName === 'data-theme') {
+                mermaid.initialize({ theme: getTheme() });
+                mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+            }
+        });
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    // PJAX: Icarus replaces page content; re-run mermaid
+    window.addEventListener('pjax:complete', function () {
+        mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+    });
+})();
+</script><!-- hexo injector body_end end --></body></html>

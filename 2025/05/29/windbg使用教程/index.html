@@ -74,7 +74,8 @@ code, pre {
     width: 75%;
   }
 }
-</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub Page" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Rss" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-29T13:12:43.000Z" title="5/29/2025, 9:12:43 PM">2025-05-29</time>发表</span><span class="level-item"><time dateTime="2026-07-26T05:57:15.118Z" title="7/26/2026, 1:57:15 PM">2026-07-26</time>更新</span><span class="level-item">5 分钟读完 (大约697个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">windbg使用教程</h1><div class="content"><p>windbg是微软开发的用于在win平台调试程序的强大工具，支持内核态、用户态调试。可以调试程序、正在运行的进程和动态库，本教程主要介绍在用户态模式下调试应用程序。</p>
+</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="echo's blog" type="application/atom+xml">
+</head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub Page" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Rss" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2025-05-29T13:12:43.000Z" title="5/29/2025, 9:12:43 PM">2025-05-29</time>发表</span><span class="level-item"><time dateTime="2026-07-26T05:57:15.118Z" title="7/26/2026, 1:57:15 PM">2026-07-26</time>更新</span><span class="level-item">5 分钟读完 (大约697个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">windbg使用教程</h1><div class="content"><p>windbg是微软开发的用于在win平台调试程序的强大工具，支持内核态、用户态调试。可以调试程序、正在运行的进程和动态库，本教程主要介绍在用户态模式下调试应用程序。</p>
 <span id="more"></span>
 <p>相比VS调试程序，windbg开箱即用，不需要安装负责的编译环境，方便在生产环境调试。但是缺点是windbg上手难度大，对新手非常不友好。</p>
 <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><h3 id="微软应用商店"><a href="#微软应用商店" class="headerlink" title="微软应用商店"></a>微软应用商店</h3><p>建议直接从微软应用商店中安装，直接安装最新版，注意该版本不带有gflags等工具，需要安装相关工具需要从下载。</p>
@@ -163,4 +164,32 @@ code, pre {
       }
     };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
             loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
-        });</script></body></html>
+        });</script><!-- hexo injector body_end start --><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+(function () {
+    'use strict';
+    function getTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+    }
+    function initMermaid() {
+        mermaid.initialize({ startOnLoad: true, theme: getTheme() });
+    }
+    initMermaid();
+
+    // Re-render on dark/light theme toggle
+    var observer = new MutationObserver(function (ms) {
+        ms.forEach(function (m) {
+            if (m.attributeName === 'data-theme') {
+                mermaid.initialize({ theme: getTheme() });
+                mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+            }
+        });
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    // PJAX: Icarus replaces page content; re-run mermaid
+    window.addEventListener('pjax:complete', function () {
+        mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+    });
+})();
+</script><!-- hexo injector body_end end --></body></html>
