@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="zh"><head><!-- hexo injector head_begin start --><style>
+@media (prefers-color-scheme: dark) {
+    html:not([data-theme]) { background-color: #0d1117; }
+}
+</style><script>
+(function(){try{var t=localStorage.getItem('theme');var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',t||(d?'dark':'light'));}catch(e){document.documentElement.setAttribute('data-theme','light');}})();
+</script><!-- hexo injector head_begin end --><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>pi agent的loop runtime - echo&#039;s blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="echo"><meta name="msapplication-TileImage" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202408101608074.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="echo"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="本文档介绍 pi-agent-core 的运行时循环（runtime loop）框架——整体架构分层、核心概念，以及 AgentHarness &amp;#x2F; Agent &amp;#x2F; agent-loop &amp;#x2F; pi-ai 四层封装的职责与协作。"><meta property="og:type" content="blog"><meta property="og:title" content="pi agent的loop runtime"><meta property="og:url" content="https://blog.airchaoz.top/2026/07/30/pi-agent%E7%9A%84loop-runtime/"><meta property="og:site_name" content="echo&#039;s blog"><meta property="og:description" content="本文档介绍 pi-agent-core 的运行时循环（runtime loop）框架——整体架构分层、核心概念，以及 AgentHarness &amp;#x2F; Agent &amp;#x2F; agent-loop &amp;#x2F; pi-ai 四层封装的职责与协作。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://blog.airchaoz.top/images/runtime-loop-arch.svg"><meta property="article:published_time" content="2026-07-30T00:29:05.000Z"><meta property="article:modified_time" content="2026-07-30T00:33:06.856Z"><meta property="article:author" content="echo"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://blog.airchaoz.top/images/runtime-loop-arch.svg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.airchaoz.top/2026/07/30/pi-agent%E7%9A%84loop-runtime/"},"headline":"pi agent的loop runtime","image":[],"datePublished":"2026-07-30T00:29:05.000Z","dateModified":"2026-07-30T00:33:06.856Z","author":{"@type":"Person","name":"echo"},"publisher":{"@type":"Organization","name":"echo's blog","logo":{"@type":"ImageObject","url":{"text":"echo's blog"}}},"description":"本文档介绍 pi-agent-core 的运行时循环（runtime loop）框架——整体架构分层、核心概念，以及 AgentHarness &#x2F; Agent &#x2F; agent-loop &#x2F; pi-ai 四层封装的职责与协作。"}</script><link rel="canonical" href="https://blog.airchaoz.top/2026/07/30/pi-agent%E7%9A%84loop-runtime/"><link rel="icon" href="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202408101608074.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-dark.css"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-9N9JB3XQG1" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "efe973c702754d6dabb7f200f6f96a09"}'></script><link rel="stylesheet" href="/css/dark-mode.css"><link rel="stylesheet" href="/css/custom-layout.css"><script src="/js/theme-toggle.js" defer></script><script src="/js/toc-autoscroll.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web@1.522.0/style.min.css" crossorigin="anonymous" />
+<style>
+body, button, input, select, textarea {
+  font-family: 'LXGW WenKai GB Screen', '霞鹜文楷', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+}
+code, pre {
+  font-family: 'LXGW WenKai Mono GB Screen', '霞鹜文楷等宽', 'Source Code Pro', Consolas, monospace;
+}
+</style><style>
+@media screen and (min-width: 1280px) {
+  .is-3-column .column-main {
+    flex: none;
+    width: 60%;
+  }
+  .is-3-column .column-left {
+    flex: none;
+    width: 20%;
+    padding-left: 0.375rem;
+    padding-right: 0.75rem;
+  }
+  .is-3-column .column-right {
+    flex: none;
+    width: 20%;
+    padding-left: 0.75rem;
+    padding-right: 0.375rem;
+  }
+  .is-2-column .column-left {
+    flex: none;
+    width: 25%;
+  }
+  .is-2-column .column-main {
+    flex: none;
+    width: 75%;
+  }
+}
+</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub Page" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Rss" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2026-07-30T00:29:05.000Z" title="7/30/2026, 8:29:05 AM">2026-07-30</time>发表</span><span class="level-item"><time dateTime="2026-07-30T00:33:06.856Z" title="7/30/2026, 8:33:06 AM">2026-07-30</time>更新</span><span class="level-item">34 分钟读完 (大约5140个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">pi agent的loop runtime</h1><div class="content"><p>本文档介绍 pi-agent-core 的运行时循环（runtime loop）框架——整体架构分层、核心概念，以及 AgentHarness &#x2F; Agent &#x2F; agent-loop &#x2F; pi-ai 四层封装的职责与协作。</p>
+<span id="more"></span>
+<h2 id="一、整体架构分层"><a href="#一、整体架构分层" class="headerlink" title="一、整体架构分层"></a>一、整体架构分层</h2><img src="/images/runtime-loop-arch.svg" alt="Runtime Loop 分层架构图" style="max-width:100%;height:auto">
+
+<h2 id="二、核心概念"><a href="#二、核心概念" class="headerlink" title="二、核心概念"></a>二、核心概念</h2><table>
+<thead>
+<tr>
+<th>概念</th>
+<th>定义</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>turn</td>
+<td>一轮「LLM 回答 + 可能的工具调用」的完整回合</td>
+<td>一次大模型的调用</td>
+</tr>
+<tr>
+<td>run</td>
+<td>从用户一次输入到 agent 最终停止的完整执行过程</td>
+<td>多轮大模型的调用，一次用户输入的完整响应</td>
+</tr>
+<tr>
+<td>session</td>
+<td>一次完整的 agent 会话及其持久化存储</td>
+<td>包含从会话开始到当前的所有消息历史、配置变更、压缩摘要等数据，以 JSONL 文件存储并支持树形分支结构</td>
+</tr>
+<tr>
+<td>phase</td>
+<td>AgentHarness 当前的操作状态锁，防止并发冲突</td>
+<td>避免新 prompt&#x2F;压缩&#x2F;导航在已有操作未完成时闯入导致状态错乱。</td>
+</tr>
+<tr>
+<td>message</td>
+<td>在用户、agent、工具之间传递信息的载体</td>
+<td>对话流转和工具结果回传的核心数据单元</td>
+</tr>
+<tr>
+<td>steering</td>
+<td>用户在一轮run执行过程中，输入的新消息队列</td>
+<td>用于实时打断和纠正 agent 方向，当前turn执行完成后会处理该信息</td>
+</tr>
+<tr>
+<td>follow-up</td>
+<td>用户在 agent 运行时输入、但等到 agent 自然停止前才处理的消息队列</td>
+<td>和 steering 相反——这条消息不急着打断当前流程，等 agent 把手头的事都做完（无 toolCall、无 steering）再处理。相当于「先把手头的事收尾，然后再做这个」</td>
+</tr>
+<tr>
+<td>save point</td>
+<td>turn 之间的一致性检查点</td>
+<td>agent 运转时修改配置或写入会话不会立即生效，而是排队等到当前 turn 完成后统一刷出。save point 就是「刷出排队变更」的时刻，保证不会在 agent 忙时动状态</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、封装层"><a href="#三、封装层" class="headerlink" title="三、封装层"></a>三、封装层</h2><p>AgentHarness 和 Agent 是直接调用 <code>runAgentLoop</code> 的两种封装，分别应对不同场景，使用者按需选其一。</p>
+<h3 id="3-1-AgentHarness（编排层）"><a href="#3-1-AgentHarness（编排层）" class="headerlink" title="3.1 AgentHarness（编排层）"></a>3.1 AgentHarness（编排层）</h3><p>编排层（AgentHarness）是 Agent 系统的总控制器，承上（coding-agent&#x2F;UI 调用）启下（Agent 循环），负责管控并发、管理配置、处理事件循环和结算。</p>
+<h4 id="管理的五大子系统"><a href="#管理的五大子系统" class="headerlink" title="管理的五大子系统"></a>管理的五大子系统</h4><table>
+<thead>
+<tr>
+<th>子系统</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Phase 状态机</strong></td>
+<td>互斥锁，保证单轮操作的原子性</td>
+</tr>
+<tr>
+<td><strong>配置管理</strong></td>
+<td>model&#x2F;tools&#x2F;thinkingLevel&#x2F;resources&#x2F;streamOptions 的读写</td>
+</tr>
+<tr>
+<td><strong>三队列系统</strong></td>
+<td>steerQueue &#x2F; followUpQueue &#x2F; nextTurnQueue，配合 drain 模式控制消息注入时机</td>
+</tr>
+<tr>
+<td><strong>Hook 系统</strong></td>
+<td>回调型（8 个，可影响行为）+ 通知型（7 个，只读观察），在外部实现定义</td>
+</tr>
+<tr>
+<td><strong>会话管理</strong></td>
+<td>整场对话的持久化和恢复——记录消息、配置变更等所有会话数据，支持树形分支结构，确保下次继续对话时上下文不丢失</td>
+</tr>
+</tbody></table>
+<h4 id="设计理念"><a href="#设计理念" class="headerlink" title="设计理念"></a>设计理念</h4><p><strong>委托而非内聚</strong></p>
+<p>AgentHarness 不自已做 LLM 调用和工具执行，而是将所有”做事”的职责委托给下层：</p>
+<ul>
+<li>LLM 流式调用 → 委托给 pi-ai StreamFn，自带 30+ provider 支持、重试、流式解析</li>
+<li>turn 循环 + 工具执行 → 委托给 runAgentLoop（agent-loop.ts 的模块级函数），封装了 LLM 调用→工具→下一轮的完整循环</li>
+</ul>
+<p>好处：编排层保持薄层，职责单一——只做断言、快照、路由、结算。下层可以独立演化（例如增加 provider 或修改循环策略）而不影响编排逻辑。</p>
+<h4 id="流程全貌"><a href="#流程全貌" class="headerlink" title="流程全貌"></a>流程全貌</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">AgentHarness.prompt(text)</span><br><span class="line">       │</span><br><span class="line">       ├── [Phase 锁] 断言 phase === &quot;idle&quot;，设置为 &quot;turn&quot;</span><br><span class="line">       │</span><br><span class="line">       ├── createTurnState()                     ← 配置快照隔离</span><br><span class="line">       │    ├── session.buildContext()            ← Session 读：JSONL → AgentMessage[]</span><br><span class="line">       │    ├── 解析 resources (skills/templates)</span><br><span class="line">       │    ├── 调用 systemPrompt 回调</span><br><span class="line">       │    └── 快照 model/thinkingLevel/tools/streamOptions</span><br><span class="line">       │</span><br><span class="line">       ├── executeTurn(turnState, text)</span><br><span class="line">       │    ├── [Hook] before_agent_start         ← 可注入消息/覆盖 systemPrompt</span><br><span class="line">       │    ├── createStreamFn()</span><br><span class="line">       │    │    └── [Hook] before_provider_request / before_provider_payload</span><br><span class="line">       │    ├── runAgentLoop()                   ← 委托给下层</span><br><span class="line">       │    └── handleAgentEvent(events)         ← 事件枢纽</span><br><span class="line">       │         ├── message_end → session.appendMessage + emit</span><br><span class="line">       │         ├── turn_end → [写排队] flushPendingSessionWrites + emit(save_point)</span><br><span class="line">       │         └── agent_end → flushPendingSessionWrites + phase=&quot;idle&quot; + emit(settled)</span><br><span class="line">       │              （phase 置 idle 与 emit(settled) 均在此发生，无独立结算阶段）</span><br><span class="line">       │</span><br><span class="line">       └── executeTurn / prompt 的 finally</span><br><span class="line">            ├── flushPendingSessionWrites()   ← 兜底再刷一次</span><br><span class="line">            └── finishRunPromise()            ← 解除 waitForIdle 等待</span><br></pre></td></tr></table></figure>
+
+<h4 id="Phase-状态机"><a href="#Phase-状态机" class="headerlink" title="Phase 状态机"></a>Phase 状态机</h4><p><strong>状态与事件</strong></p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>含义</th>
+<th>进入事件</th>
+<th>离开事件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>idle</td>
+<td>空闲，可接收结构性操作</td>
+<td>agent_end &#x2F; compact &#x2F; navigateTree 完成</td>
+<td>prompt &#x2F; compact &#x2F; navigateTree 调用</td>
+</tr>
+<tr>
+<td>turn</td>
+<td>正在执行一轮 prompt</td>
+<td>prompt &#x2F; skill &#x2F; promptFromTemplate</td>
+<td>agent_end</td>
+</tr>
+<tr>
+<td>compaction</td>
+<td>正在执行会话压缩</td>
+<td>compact</td>
+<td>压缩完成）</td>
+</tr>
+<tr>
+<td>branch_summary</td>
+<td>正在执行分支导航摘要</td>
+<td>navigateTree</td>
+<td>导航完成</td>
+</tr>
+</tbody></table>
+<p><strong>核心流转</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">stateDiagram-v2</span><br><span class="line">    direction LR</span><br><span class="line"></span><br><span class="line">    %% 左侧状态：短期转换或辅助功能</span><br><span class="line">    compaction --&gt; idle: 完成</span><br><span class="line">    branch_summary --&gt; idle: 完成</span><br><span class="line">    </span><br><span class="line">    %% 核心状态转换</span><br><span class="line">    idle --&gt; turn: prompt / skill / promptFromTemplate</span><br><span class="line">    idle --&gt; compaction: compact</span><br><span class="line">    idle --&gt; branch_summary: navigateTree</span><br><span class="line">    </span><br><span class="line">    %% 右侧状态：主循环返回</span><br><span class="line">    turn --&gt; idle: agent_end / abort / error</span><br></pre></td></tr></table></figure>
+<p>使用状态机来保证各个操作的原子性</p>
+<h4 id="配置管理"><a href="#配置管理" class="headerlink" title="配置管理"></a>配置管理</h4><table>
+<thead>
+<tr>
+<th>配置项</th>
+<th>内容说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>model</td>
+<td>当前 LLM 模型，含 provider &#x2F; api &#x2F; baseUrl 等连接信息</td>
+</tr>
+<tr>
+<td>thinkingLevel</td>
+<td>推理级别：off &#x2F; low &#x2F; medium &#x2F; high</td>
+</tr>
+<tr>
+<td>activeToolNames</td>
+<td>当前启用的工具名称列表</td>
+</tr>
+<tr>
+<td>resources</td>
+<td>技能（skills）和提示模板（promptTemplates）资源</td>
+</tr>
+<tr>
+<td>streamOptions</td>
+<td>传输 &#x2F; 超时 &#x2F; 重试 &#x2F; 认证等 provider 请求设置</td>
+</tr>
+<tr>
+<td>systemPrompt</td>
+<td>静态字符串或异步工厂函数，每轮 turn 时重新生成</td>
+</tr>
+</tbody></table>
+<p>这些配置在 <code>createTurnState()</code> 时快照，运行中的 setter 不影响当前 provider 请求。其中 model &#x2F; thinkingLevel &#x2F; activeTools 的变更会写入 session 条目持久化（idle 时立即写，忙时排队）；streamOptions &#x2F; resources &#x2F; 队列模式等变更只在内存生效，不持久化。</p>
+<h4 id="三队列系统"><a href="#三队列系统" class="headerlink" title="三队列系统"></a>三队列系统</h4><p>三者在生命周期中的位置关系：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">    Input[&quot;用户输入&quot;] --&gt; Prompt[&quot;prompt 入口&quot;]</span><br><span class="line">    NextTurn[&quot;nextTurnQueue&quot;] -.-&gt;|下次 prompt 注入| Prompt</span><br><span class="line"></span><br><span class="line">    Prompt --&gt; Loop&#123;&quot;turn 循环&quot;&#125;</span><br><span class="line"></span><br><span class="line">    Loop --&gt; LLM[&quot;LLM 调用&quot;]</span><br><span class="line">    LLM --&gt; Tools[&quot;工具执行&quot;]</span><br><span class="line">    Tools --&gt; Steer&#123;&quot;steerQueue\n有消息？&quot;&#125;</span><br><span class="line">    Steer --&gt;|有| Loop</span><br><span class="line">    Steer --&gt;|无 且 无工具执行| FollowUp&#123;&quot;followUpQueue\n有消息？&quot;&#125;</span><br><span class="line">    FollowUp --&gt;|有| Loop</span><br><span class="line">    FollowUp --&gt;|无| End[&quot;agent_end&quot;]</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>队列</th>
+<th>消息来源</th>
+<th>消费时机</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>steerQueue</strong></td>
+<td>用户在当前 run 中输入，想打断 agent 当前思路</td>
+<td>每个 turn 完成后、下个 LLM 调用前取出，实现即时干预</td>
+</tr>
+<tr>
+<td><strong>followUpQueue</strong></td>
+<td>用户在当前 run 中输入，但不急</td>
+<td>agent 即将停止时才取出，让 agent 先把手头事收尾</td>
+</tr>
+<tr>
+<td><strong>nextTurnQueue</strong></td>
+<td>外部调用 public nextTurn() 注入</td>
+<td>下个 prompt 时合并到用户消息之前，属于系统级注入</td>
+</tr>
+</tbody></table>
+<p>drain 模式控制每次取出多少条：</p>
+<ul>
+<li><strong>one-at-a-time</strong>（默认）：每次只取最早一条，剩下的下次再取</li>
+<li><strong>all</strong>：一次性取出所有消息</li>
+</ul>
+<h4 id="Hook-系统"><a href="#Hook-系统" class="headerlink" title="Hook 系统"></a>Hook 系统</h4><p>分为两类，注册方式不同：</p>
+<p><strong>回调型</strong>（handler 可返回结果影响行为）：</p>
+<table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>可修改的内容</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>before_agent_start</td>
+<td>messages, systemPrompt</td>
+<td>prompt 前注入消息&#x2F;覆盖系统提示</td>
+</tr>
+<tr>
+<td>context</td>
+<td>messages</td>
+<td>变换消息列表（剪枝&#x2F;注入上下文）</td>
+</tr>
+<tr>
+<td>before_provider_request</td>
+<td>streamOptions</td>
+<td>按请求修改传输&#x2F;超时&#x2F;重试选项</td>
+</tr>
+<tr>
+<td>before_provider_payload</td>
+<td>payload</td>
+<td>修改 LLM 请求体</td>
+</tr>
+<tr>
+<td>tool_call</td>
+<td>block, reason</td>
+<td>拦截工具调用，模型收到错误结果后重试</td>
+</tr>
+<tr>
+<td>tool_result</td>
+<td>content, isError, terminate</td>
+<td>修改工具结果（例如隐藏敏感内容）</td>
+</tr>
+<tr>
+<td>session_before_compact</td>
+<td>cancel, compaction</td>
+<td>取消压缩或提供自定义摘要</td>
+</tr>
+<tr>
+<td>session_before_tree</td>
+<td>cancel, summary</td>
+<td>取消树导航或提供自定义分支摘要</td>
+</tr>
+</tbody></table>
+<p><strong>通知型</strong>（通过 <code>subscribe(listener)</code> 观察，<code>&quot;*&quot;</code> 通道，只读不可修改行为）：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>after_provider_response</td>
+<td>provider 响应后，可观察 status &#x2F; headers</td>
+</tr>
+<tr>
+<td>session_compact</td>
+<td>会话压缩完成</td>
+</tr>
+<tr>
+<td>session_tree</td>
+<td>树导航完成</td>
+</tr>
+<tr>
+<td>model_update</td>
+<td>model 配置变更</td>
+</tr>
+<tr>
+<td>thinking_level_update</td>
+<td>thinkingLevel 配置变更</td>
+</tr>
+<tr>
+<td>resources_update</td>
+<td>resources 配置变更</td>
+</tr>
+<tr>
+<td>tools_update</td>
+<td>工具列表或活跃工具变更</td>
+</tr>
+<tr>
+<td>queue_update</td>
+<td>队列状态变更（steer &#x2F; followUp &#x2F; nextTurn）</td>
+</tr>
+<tr>
+<td>save_point</td>
+<td>保存点（turn 完成 + 持久化后）</td>
+</tr>
+<tr>
+<td>abort</td>
+<td>中止完成</td>
+</tr>
+<tr>
+<td>settled</td>
+<td>完全结算</td>
+</tr>
+<tr>
+<td>retry_scheduled</td>
+<td>压缩 &#x2F; 分支摘要重试已调度</td>
+</tr>
+<tr>
+<td>retry_attempt_start</td>
+<td>重试开始</td>
+</tr>
+<tr>
+<td>retry_finished</td>
+<td>重试结束</td>
+</tr>
+</tbody></table>
+<h4 id="会话管理"><a href="#会话管理" class="headerlink" title="会话管理"></a>会话管理</h4><p>负责整场对话的<strong>持久化</strong>和<strong>恢复</strong>——记录对话中发生的每一件事（消息、模型切换、工具开关等），确保下次继续对话时上下文不丢失。</p>
+<p><strong>读侧</strong>：每轮 turn 开始前，从磁盘 JSONL 文件中读取历史消息和最新配置，还原成 agent 可理解的上下文。同时识别压缩标记，跳过已被摘要替换的历史，避免上下文过长。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">session.buildContext()</span><br><span class="line">  ├── getBranch() → getPathToRootOrCompaction(leafId)   ← 从叶子回溯到最近一次 compaction（或根）</span><br><span class="line">  ├── deriveSessionContextState()               ← 提取最新配置</span><br><span class="line">  ├── buildContextEntries()                     ← 压缩感知：保留 compaction 摘要或跳过已压缩条目</span><br><span class="line">  └── sessionEntryToContextMessages()           ← 转 AgentMessage[]</span><br><span class="line">       ├── message        → [AgentMessage]</span><br><span class="line">       ├── custom_message → [CustomMessage]</span><br><span class="line">       ├── compaction     → [CompactionSummaryMessage, ...retainedTail]</span><br><span class="line">       ├── branch_summary → [BranchSummaryMessage]</span><br><span class="line">       └── custom         → entryProjectors[customType] ?? []   ← 默认空</span><br></pre></td></tr></table></figure>
+
+<p><strong>写侧</strong>：对话进行中持续记录新产生的内容。但 turn 运行时直接写入文件可能造成冲突，因此将写入请求暂存到缓冲区，在 turn 之间的安全点（save point）统一写入。</p>
+<table>
+<thead>
+<tr>
+<th>写入什么</th>
+<th>什么情况下触发</th>
+<th>写入到哪里</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用户&#x2F;助手&#x2F;工具消息</td>
+<td>每轮 LLM 调用或工具执行完成后</td>
+<td>session 消息条目</td>
+</tr>
+<tr>
+<td>模型切换记录</td>
+<td>用户切换模型时</td>
+<td>session 配置变更条目</td>
+</tr>
+<tr>
+<td>推理级别变更记录</td>
+<td>用户调整推理级别时</td>
+<td>session 配置变更条目</td>
+</tr>
+<tr>
+<td>工具开关记录</td>
+<td>用户切换工具集&#x2F;活跃工具时</td>
+<td>session 配置变更条目（active_tools_change）</td>
+</tr>
+</tbody></table>
+<p><strong>分支能力</strong>：会话以树形结构组织，支持从任意节点分叉出独立分支，每次读取时从当前叶子回溯到根。</p>
+<p><strong>数据安全保障</strong>：异常时 finally 块兜底刷出，保证排队中的写入不会丢失。</p>
+<hr>
+<h3 id="3-2-Agent（有状态封装层）"><a href="#3-2-Agent（有状态封装层）" class="headerlink" title="3.2 Agent（有状态封装层）"></a>3.2 Agent（有状态封装层）</h3><p>有状态封装层（Agent）是 <code>runAgentLoop</code> 的一个轻量封装，为不需要编排层（AgentHarness）全套基础设施的场景提供独立的入口。它的作用只有三个：</p>
+<ol>
+<li><strong>管并发</strong> — 保证同一时刻只有一个 run 在执行，支持 abort</li>
+<li><strong>存消息</strong> — 维护当前 transcript（messages），事件驱动更新</li>
+<li><strong>收投消息</strong> — 提供 steer&#x2F;followUp 队列，支持在 run 进行中注入消息</li>
+</ol>
+<p>Agent 不决定何时停止、不管理配置、不持久化会话。需要这些能力的场景应直接用 AgentHarness（它跳过 Agent 层，直接调用 <code>runAgentLoop</code>）。</p>
+<h4 id="管理的五大内部结构"><a href="#管理的五大内部结构" class="headerlink" title="管理的五大内部结构"></a>管理的五大内部结构</h4><table>
+<thead>
+<tr>
+<th>结构</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>MutableAgentState</strong></td>
+<td>运行时可变状态：messages &#x2F; tools &#x2F; systemPrompt &#x2F; model &#x2F; thinkingLevel &#x2F; isStreaming &#x2F; pendingToolCalls</td>
+</tr>
+<tr>
+<td><strong>PendingMessageQueue</strong></td>
+<td>steering 和 follow-up 消息队列，支持 <code>one-at-a-time</code> &#x2F; <code>all</code> 两种 drain 模式</td>
+</tr>
+<tr>
+<td><strong>ActiveRun</strong></td>
+<td>当前执行中的 run 句柄，含 <code>promise</code> &#x2F; <code>abortController</code>，保证同一时刻只有一个 run 执行</td>
+</tr>
+<tr>
+<td><strong>Listener 集合</strong></td>
+<td>外部 subscriber 注册的事件处理器，在 <code>processEvents</code> 中被顺序 await</td>
+</tr>
+<tr>
+<td><strong>公共回调字段</strong></td>
+<td>convertToLlm &#x2F; transformContext &#x2F; streamFn &#x2F; hook 函数（beforeToolCall &#x2F; afterToolCall 等），由构造时注入或直接公开赋值</td>
+</tr>
+</tbody></table>
+<h4 id="设计理念-1"><a href="#设计理念-1" class="headerlink" title="设计理念"></a>设计理念</h4><p><strong>Bridge 而非 Controller</strong></p>
+<p>Agent 不自已驱动循环，而是：</p>
+<ul>
+<li><strong>快照状态</strong> → <code>createContextSnapshot()</code> 对 <code>messages</code>&#x2F;<code>tools</code> 做浅拷贝，传递给无状态循环</li>
+<li><strong>装配配置</strong> → <code>createLoopConfig()</code> 将公共回调字段、队列 drain 函数、hook 组装为 <code>AgentLoopConfig</code></li>
+<li><strong>委托执行</strong> → 调用 <code>runAgentLoop()</code> 或 <code>runAgentLoopContinue()</code>，传入 snapshot + config + event handler</li>
+<li><strong>归约事件</strong> → <code>processEvents()</code> 将无状态循环发出的 AgentEvent 映射回内部状态变更</li>
+</ul>
+<p>好处：无状态循环保持纯函数特性（给定输入 → 输出事件流），Agent 层管理副作用的订阅和状态同步。循环逻辑的修改不影响状态管理 API，反之亦然。</p>
+<h4 id="流程全貌-1"><a href="#流程全貌-1" class="headerlink" title="流程全貌"></a>流程全貌</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">Agent.prompt(messages)</span><br><span class="line">       │</span><br><span class="line">       ├── [并发锁] 断言 activeRun === undefined    ← 防止并发</span><br><span class="line">       │</span><br><span class="line">       ├── normalizePromptInput()                   ← string → AgentMessage[]</span><br><span class="line">       │</span><br><span class="line">       └── runPromptMessages(messages)</span><br><span class="line">            │</span><br><span class="line">            ├── runWithLifecycle(executor)</span><br><span class="line">            │    ├── activeRun = &#123; promise, resolve, abortController &#125;</span><br><span class="line">            │    ├── isStreaming = true</span><br><span class="line">            │    ├── streamingMessage = undefined</span><br><span class="line">            │    ├── errorMessage = undefined</span><br><span class="line">            │    └── await executor(signal)</span><br><span class="line">            │         │</span><br><span class="line">            │         ├── createContextSnapshot()    ← 拷贝 messages/tools</span><br><span class="line">            │         ├── createLoopConfig()         ← 组装回调 + 队列 drain</span><br><span class="line">            │         │</span><br><span class="line">            │         └── runAgentLoop(</span><br><span class="line">            │               messages,          ← 本次 prompt 消息</span><br><span class="line">            │               context,           ← messages/tools 快照</span><br><span class="line">            │               config,            ← 回调 + 队列配置</span><br><span class="line">            │               emit,              ← processEvents</span><br><span class="line">            │               signal,            ← abortController.signal</span><br><span class="line">            │               streamFn           ← 委托给 pi-ai</span><br><span class="line">            │             )</span><br><span class="line">            │              │                    ← 委托给无状态循环</span><br><span class="line">            │              │</span><br><span class="line">            │              └── [事件回调] processEvents(event)</span><br><span class="line">            │                   ├── message_start  → state.streamingMessage =</span><br><span class="line">            │                   ├── message_update → state.streamingMessage =</span><br><span class="line">            │                   ├── message_end    → state.streamingMessage = undefined</span><br><span class="line">            │                   │                    state.messages.push(event.message)</span><br><span class="line">            │                   ├── tool_execution_start → pendingToolCalls.add(id)</span><br><span class="line">            │                   ├── tool_execution_end   → pendingToolCalls.delete(id)</span><br><span class="line">            │                   ├── turn_end       → 若有 errorMessage 则记录</span><br><span class="line">            │                   ├── agent_end      → state.streamingMessage = undefined</span><br><span class="line">            │                   │</span><br><span class="line">            │                   └── await 所有 subscriber(event, signal)</span><br><span class="line">            │</span><br><span class="line">            └── finishRun()</span><br><span class="line">                 ├── isStreaming = false</span><br><span class="line">                 ├── streamingMessage = undefined</span><br><span class="line">                 ├── pendingToolCalls = empty</span><br><span class="line">                 └── activeRun.resolve(); activeRun = undefined</span><br></pre></td></tr></table></figure>
+
+<h4 id="并发模型"><a href="#并发模型" class="headerlink" title="并发模型"></a>并发模型</h4><table>
+<thead>
+<tr>
+<th>机制</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>activeRun 哨兵</strong></td>
+<td><code>prompt()</code> &#x2F; <code>continue()</code> 入口检测 <code>this.activeRun</code>，非空则抛 <code>&quot;Agent is already processing&quot;</code></td>
+</tr>
+<tr>
+<td><strong>AbortController</strong></td>
+<td>每次 <code>runWithLifecycle</code> 创建新 <code>AbortController</code>，通过 <code>signal</code> 下传。<code>abort()</code> 方法供外部主动取消</td>
+</tr>
+<tr>
+<td><strong>waitForIdle</strong></td>
+<td>返回 <code>activeRun.promise</code>，在 <code>finishRun()</code> 中 resolve，调用方可 await 当前 run 结束</td>
+</tr>
+</tbody></table>
+<h4 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h4><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>队列</th>
+<th>drain 时机（由无状态循环消费）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>steer(message)</code></td>
+<td>steeringQueue</td>
+<td>每个 turn 完成后、下个 LLM 调用前</td>
+</tr>
+<tr>
+<td><code>followUp(message)</code></td>
+<td>followUpQueue</td>
+<td>agent 即将停止时（无 toolCall + 无 steering）</td>
+</tr>
+<tr>
+<td><code>clearSteeringQueue()</code> &#x2F; <code>clearFollowUpQueue()</code> &#x2F; <code>clearAllQueues()</code></td>
+<td>—</td>
+<td>外部主动清空</td>
+</tr>
+</tbody></table>
+<p>drain 模式通过 <code>steeringMode</code> &#x2F; <code>followUpMode</code> 属性在运行时切换，默认均为 <code>one-at-a-time</code>。</p>
+<h4 id="外部-API-清单"><a href="#外部-API-清单" class="headerlink" title="外部 API 清单"></a>外部 API 清单</h4><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>prompt(input, images?)</code></td>
+<td>启动新一轮对话或追加系统消息</td>
+</tr>
+<tr>
+<td><code>continue()</code></td>
+<td>从当前 transcript 继续（最后一条须为 user 或 toolResult）</td>
+</tr>
+<tr>
+<td><code>steer(message)</code></td>
+<td>插入干预消息，当前 turn 完成后生效</td>
+</tr>
+<tr>
+<td><code>followUp(message)</code></td>
+<td>插入延后消息，agent 即将停止时生效</td>
+</tr>
+<tr>
+<td><code>abort()</code></td>
+<td>中止当前 run</td>
+</tr>
+<tr>
+<td><code>reset()</code></td>
+<td>清空 transcript、队列和运行时状态</td>
+</tr>
+<tr>
+<td><code>subscribe(listener)</code></td>
+<td>注册事件监听器，返回取消函数</td>
+</tr>
+<tr>
+<td><code>waitForIdle()</code></td>
+<td>等待当前 run 及其所有 listener 结束</td>
+</tr>
+</tbody></table>
+<p>关键点：Agent 是 <code>runAgentLoop</code> 的轻量封装，维护可变 transcript 和 steer&#x2F;followUp 队列，提供可中断、可订阅的 API。需要会话持久化、配置管理和 Hook 系统的场景应使用 AgentHarness。</p>
+<hr>
+<h3 id="3-3-无状态循环核心（agent-loop）"><a href="#3-3-无状态循环核心（agent-loop）" class="headerlink" title="3.3 无状态循环核心（agent-loop）"></a>3.3 无状态循环核心（agent-loop）</h3><p>职责：管控 turn 生命周期、工具执行、消息队列 drain。</p>
+<p>入口 <code>runAgentLoop</code> &#x2F; <code>runAgentLoopContinue</code> 先发出起始事件，再进入 <code>runLoop</code> 的三层子循环：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">runAgentLoop(prompts, context, config, emit, signal, streamFn)</span><br><span class="line">       │</span><br><span class="line">       ├── emit(agent_start)</span><br><span class="line">       ├── emit(turn_start)</span><br><span class="line">       ├── emit(message_start/end for prompts)   ← 注入本次 prompt 消息</span><br><span class="line">       │</span><br><span class="line">       └── runLoop(initialContext, newMessages, initialConfig, signal, emit, streamFunction)</span><br><span class="line">            │</span><br><span class="line">            └── 外层循环: 处理 follow-up 消息</span><br><span class="line">                 │</span><br><span class="line">                 └── 内层循环: 处理 toolCalls + steering 消息</span><br><span class="line">                      │</span><br><span class="line">                      ├── emit(turn_start)        ← 非首轮才发</span><br><span class="line">                      ├── 注入 pending（steering）消息</span><br><span class="line">                      ├── streamAssistantResponse()</span><br><span class="line">                      ├── executeToolCalls()      ← 有则执行</span><br><span class="line">                      ├── emit(turn_end)</span><br><span class="line">                      ├── prepareNextTurn()</span><br><span class="line">                      ├── shouldStopAfterTurn()</span><br><span class="line">                      └── getSteeringMessages()   ← 有则继续内层</span><br><span class="line">                      │</span><br><span class="line">                      └── (无 toolCalls + 无 steering) → 返回外层</span><br><span class="line"></span><br><span class="line">            外层:</span><br><span class="line">              └── getFollowUpMessages()    ← 有则注入内层</span><br><span class="line">              └── (无 follow-up) → emit(agent_end)</span><br></pre></td></tr></table></figure>
+
+<p>每个 <code>streamAssistantResponse()</code> 是一次完整的 LLM 调用（含流式事件），每次 <code>executeToolCalls()</code> 是一批工具的顺序或并行执行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">streamAssistantResponse()                    ← 一次 LLM 调用</span><br><span class="line">       │</span><br><span class="line">       ├── [transformContext]               AgentMessage[] → AgentMessage[]</span><br><span class="line">       ├── [convertToLlm]                   AgentMessage[] → Message[]</span><br><span class="line">       ├── [getApiKey]</span><br><span class="line">       └── streamFn(model, context, options)  → EventStream</span><br><span class="line">            │</span><br><span class="line">            ├── start      → emit(message_start)</span><br><span class="line">            ├── text_delta → emit(message_update)</span><br><span class="line">            ├── toolcall_* → emit(message_update)</span><br><span class="line">            ├── done       → emit(message_end)</span><br><span class="line">            └── error      → emit(message_end)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-4-LLM-抽象层（pi-ai）"><a href="#3-4-LLM-抽象层（pi-ai）" class="headerlink" title="3.4 LLM 抽象层（pi-ai）"></a>3.4 LLM 抽象层（pi-ai）</h3><p>职责：统一多 provider 流式调用、消息格式转换。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">streamFn(model, context, options)</span><br><span class="line">       │</span><br><span class="line">       ├── model:       目标模型（含 provider/api/baseUrl）</span><br><span class="line">       ├── context:     &#123; systemPrompt, messages: Message[], tools &#125;</span><br><span class="line">       ├── options:     &#123; signal, apiKey, reasoning, ... &#125;</span><br><span class="line">       │</span><br><span class="line">       └── EventStream&lt;AssistantMessageEvent, AssistantMessage&gt;</span><br><span class="line">            ├── start</span><br><span class="line">            ├── text_start / text_delta / text_end</span><br><span class="line">            ├── thinking_start / thinking_delta / thinking_end</span><br><span class="line">            ├── toolcall_start / toolcall_delta / toolcall_end</span><br><span class="line">            └── done / error</span><br></pre></td></tr></table></figure>
+
+<p>pi-ai 内部根据 <code>model.api</code> 路由到对应 provider（Anthropic&#x2F;OpenAI&#x2F;Google&#x2F;Bedrock&#x2F;…），处理认证、重试、流式解析。</p>
+<hr>
+<h3 id="3-5-全貌调用链"><a href="#3-5-全貌调用链" class="headerlink" title="3.5 全貌调用链"></a>3.5 全貌调用链</h3><p>将四层串联：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">用户输入 &quot;修复这个bug&quot;</span><br><span class="line">       │</span><br><span class="line">       ▼  ── 编排层 ──────────────────────────────────────</span><br><span class="line">AgentHarness.prompt(&quot;修复这个bug&quot;)</span><br><span class="line">       │</span><br><span class="line">       ├── phase = &quot;turn&quot;</span><br><span class="line">       ├── createTurnState()</span><br><span class="line">       │   ├── session.buildContext()    (JSONL → AgentMessage[])</span><br><span class="line">       │   └── 快照 model/tools/thinking/streamOptions</span><br><span class="line">       │</span><br><span class="line">       ├── executeTurn(turnState, text)</span><br><span class="line">       │   ├── [Hook] before_agent_start       (可注入消息/覆盖 systemPrompt)</span><br><span class="line">       │   ├── createContext()                 (快照 messages + 绑定 activeTools 上下文)</span><br><span class="line">       │   ├── createLoopConfig()              (组装 hook + 队列 drain 回调)</span><br><span class="line">       │   ├── createStreamFn()                (内含 before_provider_request / before_provider_payload hook)</span><br><span class="line">       │   │</span><br><span class="line">       │   ▼  ── 无状态循环（AgentHarness 直接调用，不经 Agent 层）──</span><br><span class="line">       │   runAgentLoop(messages, context, config, emit=handleAgentEvent, signal, streamFn)</span><br><span class="line">       │    │</span><br><span class="line">       │    ├── emit(agent_start)</span><br><span class="line">       │    ├── emit(turn_start)</span><br><span class="line">       │    ├── emit(message_start/end for user_msg)</span><br><span class="line">       │    │</span><br><span class="line">       │    └── runLoop()  ── 内/外层子循环 ──</span><br><span class="line">       │         │</span><br><span class="line">       │         ├── 内层循环 ── 第 1 轮 ──</span><br><span class="line">       │         │    │</span><br><span class="line">       │         │    ├── streamAssistantResponse()</span><br><span class="line">       │         │    │    ├── transformContext(messages)</span><br><span class="line">       │         │    │    ├── convertToLlm(messages)    AgentMessage[] → Message[]</span><br><span class="line">       │         │    │    │</span><br><span class="line">       │         │    │    ▼  ── LLM 抽象层 ──────────────────</span><br><span class="line">       │         │    │    pi-ai streamFn(model, context, options)</span><br><span class="line">       │         │    │    │    ├── start</span><br><span class="line">       │         │    │    │    ├── text_delta &quot;我来分析这个bug...&quot;</span><br><span class="line">       │         │    │    │    ├── toolcall_start: read(&quot;src/bug.ts&quot;)</span><br><span class="line">       │         │    │    │    └── done</span><br><span class="line">       │         │    │    │</span><br><span class="line">       │         │    │    ▼  ── 回到无状态循环 ──────────────</span><br><span class="line">       │         │    │    emit(message_end)  → handleAgentEvent: session.appendMessage + emit</span><br><span class="line">       │         │    │</span><br><span class="line">       │         │    ├── executeToolCalls()</span><br><span class="line">       │         │    │    ├── read(&quot;src/bug.ts&quot;) → 文件内容</span><br><span class="line">       │         │    │    ├── emit(tool_execution_end)</span><br><span class="line">       │         │    │    └── emit(message_start/end for toolResult)</span><br><span class="line">       │         │    │</span><br><span class="line">       │         │    ├── emit(turn_end)  → handleAgentEvent: flushPendingSessionWrites + emit(save_point)</span><br><span class="line">       │         │    ├── prepareNextTurn → flushPendingSessionWrites + createTurnState 刷新快照</span><br><span class="line">       │         │    ├── shouldStopAfterTurn → false</span><br><span class="line">       │         │    └── getSteeringMessages → []</span><br><span class="line">       │         │</span><br><span class="line">       │         ├── 内层循环 ── 第 2 轮 ──</span><br><span class="line">       │         │    ├── streamAssistantResponse()</span><br><span class="line">       │         │    │    ├── toolcall_start: edit(&quot;src/bug.ts&quot;)</span><br><span class="line">       │         │    │    └── toolcall_start: bash(&quot;npm test&quot;)</span><br><span class="line">       │         │    ├── executeToolCalls()     ← 并行执行</span><br><span class="line">       │         │    │    ├── edit → done</span><br><span class="line">       │         │    │    └── bash → exit 0</span><br><span class="line">       │         │    ├── emit(turn_end)</span><br><span class="line">       │         │    └── getSteeringMessages → []</span><br><span class="line">       │         │</span><br><span class="line">       │         ├── 内层循环 ── 第 3 轮 ──</span><br><span class="line">       │         │    ├── streamAssistantResponse()</span><br><span class="line">       │         │    │    └── text &quot;已修复，测试通过&quot; → done</span><br><span class="line">       │         │    ├── executeToolCalls() → 无</span><br><span class="line">       │         │    ├── emit(turn_end)</span><br><span class="line">       │         │    ├── shouldStopAfterTurn → false</span><br><span class="line">       │         │    └── getSteeringMessages → []</span><br><span class="line">       │         │</span><br><span class="line">       │         └── 外层循环:</span><br><span class="line">       │              └── getFollowUpMessages → []  → emit(agent_end)</span><br><span class="line">       │                   └─ handleAgentEvent(agent_end): flushPendingSessionWrites + phase=&quot;idle&quot; + emit(settled)</span><br><span class="line">       │</span><br><span class="line">       ▼  ── 回到编排层（executeTurn finally 兜底）──</span><br><span class="line">       └── flushPendingSessionWrites()   ← 再刷一次，保证排队写入不丢失</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-6-数据变换管线"><a href="#3-6-数据变换管线" class="headerlink" title="3.6 数据变换管线"></a>3.6 数据变换管线</h3><p>每轮 LLM 调用经历以下变换：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">AgentMessage[]                    系统提示词 + 对话历史</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">[transformContext]                应用自定义：剪枝/注入上下文</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">AgentMessage[]                    可能已修改</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">[convertToLlm]                    将自定义角色消息转为标准消息</span><br><span class="line">       │   ├── bashExecution     → &#123; role: &quot;user&quot;, content: &quot;Ran `cmd`\n```\noutput\n```&quot; &#125;</span><br><span class="line">       │   ├── custom            → &#123; role: &quot;user&quot;, content &#125;</span><br><span class="line">       │   ├── branchSummary     → &#123; role: &quot;user&quot;, content: &quot;&lt;summary&gt;...&lt;/summary&gt;&quot; &#125;</span><br><span class="line">       │   ├── compactionSummary → &#123; role: &quot;user&quot;, content: &quot;&lt;summary&gt;...&lt;/summary&gt;&quot; &#125;</span><br><span class="line">       │   ├── user/assistant/toolResult → 透传</span><br><span class="line">       │   └── 其他角色          → 过滤</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">Message[]                        标准 LLM 消息格式</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">streamFn(model, context, options)   pi-ai 统一流式调用</span><br><span class="line">       │   ├── signal (取消信号)</span><br><span class="line">       │   ├── apiKey (动态解析)</span><br><span class="line">       │   ├── reasoning (thinking level)</span><br><span class="line">       │   └── onPayload / onResponse (回调)</span><br><span class="line">       │</span><br><span class="line">       ▼</span><br><span class="line">AssistantMessageEventStream       流式事件</span><br><span class="line">       ├── start / text_delta / text_end</span><br><span class="line">       ├── thinking_delta / thinking_end</span><br><span class="line">       ├── toolcall_start / toolcall_delta / toolcall_end</span><br><span class="line">       └── done / error</span><br></pre></td></tr></table></figure>
+</div><div class="article-licensing box"><div class="licensing-title"><p>pi agent的loop runtime</p><p><a href="https://blog.airchaoz.top/2026/07/30/pi-agent的loop-runtime/">https://blog.airchaoz.top/2026/07/30/pi-agent的loop-runtime/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>echo</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2026-07-30</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2026-07-30</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/06/24/C-20-Concepts%E7%94%A8%E6%B3%95/"><span class="level-item">C++20 Concepts用法</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://blog.airchaoz.top/2026/07/30/pi-agent%E7%9A%84loop-runtime/';
+            this.page.identifier = '2026/07/30/pi-agent的loop-runtime/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'echos-blog-2' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202401032048869.png" alt="echo"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">echo</p><p class="is-size-6 is-block">C++ Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>GuangDong, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">33</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">4</p></a></div></div></nav></div></div><!--!--><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">16</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux-%E7%B3%BB%E7%BB%9F/"><span class="tag">Linux/系统</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"><span class="tag">机器学习</span><span class="tag">3</span></a></div></div></div></div></div><div class="card widget" data-type="projects"><div class="card-content"><div class="menu"><h3 class="menu-label">我的项目</h3><div class="project-item mb-3"><a class="is-size-6 has-text-weight-semibold" href="https://watchbot.airchaoz.top" target="_blank" rel="noopener">watchbot</a><p class="is-size-7 has-text-grey mt-1">一个持续追踪软件更新的 bot</p></div><div class="project-item mb-3"><a class="is-size-6 has-text-weight-semibold" href="https://deep-dive-pi.airchaoz.top" target="_blank" rel="noopener">deep-dive-pi</a><p class="is-size-7 has-text-grey mt-1">深入探索 Pi Agent</p></div></div></div></div></div><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3 is-sticky"><!--!--></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">echo&#039;s blog</a><p class="is-size-7"><span>&copy; 2026 echo</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>

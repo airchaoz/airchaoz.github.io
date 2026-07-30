@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 636" role="img" aria-label="Runtime Loop 分层架构图"
+     font-family='-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif'>
+  <defs>
+    <linearGradient id="g-app"     x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/></linearGradient>
+    <linearGradient id="g-harness" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+    <linearGradient id="g-agent"   x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c084fc"/><stop offset="1" stop-color="#a855f7"/></linearGradient>
+    <linearGradient id="g-loop"    x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="#14b8a6"/></linearGradient>
+    <linearGradient id="g-ai"      x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#f59e0b"/></linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="135%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <!-- Layer 1 : coding-agent -->
+  <g filter="url(#shadow)">
+    <rect x="70" y="80" width="860" height="88" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M70 92 A12 12 0 0 1 82 80 L918 80 A12 12 0 0 1 930 92 L930 112 L70 112 Z" fill="url(#g-app)"/>
+    <text x="86" y="102" font-size="17" font-weight="700" fill="#ffffff">coding-agent</text>
+    <text x="914" y="101" text-anchor="end" font-size="12" fill="#ffffff" fill-opacity="0.92">应用层 / 消费者</text>
+    <text x="500" y="144" text-anchor="middle" font-size="14" fill="#334155">UI · 工具 · 扩展 · session 管理</text>
+  </g>
+
+  <!-- Layer 2 : AgentHarness + Agent -->
+  <g filter="url(#shadow)">
+    <rect x="70" y="216" width="415" height="116" rx="12" fill="#f5f3ff" stroke="#8b5cf6" stroke-width="1.5"/>
+    <path d="M70 228 A12 12 0 0 1 82 216 L473 216 A12 12 0 0 1 485 228 L485 248 L70 248 Z" fill="url(#g-harness)"/>
+    <text x="86" y="238" font-size="16" font-weight="700" fill="#ffffff">AgentHarness</text>
+    <text x="469" y="237" text-anchor="end" font-size="12" fill="#ffffff" fill-opacity="0.92">编排层</text>
+    <text x="277" y="278" text-anchor="middle" font-size="13" fill="#334155">会话持久化 · Hook 系统 · 操作锁定 · 资源配置</text>
+    <text x="277" y="300" text-anchor="middle" font-size="12" fill="#6b7280">委托 LLM 调用与 turn 循环给下层(不自行做事)</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="515" y="216" width="415" height="116" rx="12" fill="#faf5ff" stroke="#a855f7" stroke-width="1.5"/>
+    <path d="M515 228 A12 12 0 0 1 527 216 L918 216 A12 12 0 0 1 930 228 L930 248 L515 248 Z" fill="url(#g-agent)"/>
+    <text x="531" y="238" font-size="16" font-weight="700" fill="#ffffff">Agent (agent.ts)</text>
+    <text x="914" y="237" text-anchor="end" font-size="12" fill="#ffffff" fill-opacity="0.92">有状态封装层</text>
+    <text x="722" y="278" text-anchor="middle" font-size="13" fill="#334155">状态管理 · 消息队列 · 事件订阅</text>
+    <text x="722" y="300" text-anchor="middle" font-size="12" fill="#6b7280">轻量封装:管并发 / 存消息 / 收投消息</text>
+  </g>
+
+  <!-- Layer 3 : agent-loop -->
+  <g filter="url(#shadow)">
+    <rect x="70" y="378" width="860" height="88" rx="12" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M70 390 A12 12 0 0 1 82 378 L918 378 A12 12 0 0 1 930 390 L930 410 L70 410 Z" fill="url(#g-loop)"/>
+    <text x="86" y="400" font-size="17" font-weight="700" fill="#ffffff">agent-loop (agent-loop.ts)</text>
+    <text x="914" y="399" text-anchor="end" font-size="12" fill="#ffffff" fill-opacity="0.92">无状态循环核心</text>
+    <text x="500" y="442" text-anchor="middle" font-size="14" fill="#334155">turn 循环 · 工具执行 · steering · follow-up</text>
+  </g>
+
+  <!-- Layer 4 : pi-ai -->
+  <g filter="url(#shadow)">
+    <rect x="70" y="512" width="860" height="88" rx="12" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M70 524 A12 12 0 0 1 82 512 L918 512 A12 12 0 0 1 930 524 L930 544 L70 544 Z" fill="url(#g-ai)"/>
+    <text x="86" y="536" font-size="17" font-weight="700" fill="#ffffff">pi-ai (StreamFn)</text>
+    <text x="914" y="535" text-anchor="end" font-size="12" fill="#ffffff" fill-opacity="0.92">LLM 抽象层</text>
+    <text x="500" y="578" text-anchor="middle" font-size="14" fill="#334155">30+ provider · streaming · tool calling</text>
+  </g>
+
+  <!-- Arrows -->
+  <line x1="277" y1="168" x2="277" y2="214" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="722" y1="168" x2="722" y2="214" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="500" y="188" text-anchor="middle" font-size="12" fill="#64748b">调用</text>
+  <text x="500" y="208" text-anchor="middle" font-size="11" fill="#94a3b8" font-style="italic">封装层 · 两路并列 · 互不依赖 · 按需选其一</text>
+
+  <line x1="277" y1="332" x2="277" y2="376" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="722" y1="332" x2="722" y2="376" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="500" y="358" text-anchor="middle" font-size="12" fill="#64748b">委托 runAgentLoop</text>
+
+  <line x1="500" y1="466" x2="500" y2="510" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="516" y="493" text-anchor="start" font-size="12" fill="#64748b">委托 streamFn</text>
+</svg>
