@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh"><head><!-- hexo injector head_begin start --><style>
+@media (prefers-color-scheme: dark) {
+    html:not([data-theme]) { background-color: #0d1117; }
+}
+</style><script>
+(function(){try{var t=localStorage.getItem('theme');var d=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.setAttribute('data-theme',t||(d?'dark':'light'));}catch(e){document.documentElement.setAttribute('data-theme','light');}})();
+</script><!-- hexo injector head_begin end --><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>Pi Agent的Tool Call实现 - echo&#039;s blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="echo"><meta name="msapplication-TileImage" content="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202408101608074.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="echo"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="tool_call（工具调用）是 Agent 的必备能力，也是它区别于普通聊天机器人的核心分界。LLM 本身不产生任何外部副作用——它只能输出”工具名 + 参数”这样的调用意图；真正在文件系统、Shell、编辑器上生效的，是工具执行层。"><meta property="og:type" content="blog"><meta property="og:title" content="Pi Agent的Tool Call实现"><meta property="og:url" content="https://blog.airchaoz.top/2026/08/02/pi-agent%E7%9A%84Tool-Call%E5%AE%9E%E7%8E%B0/"><meta property="og:site_name" content="echo&#039;s blog"><meta property="og:description" content="tool_call（工具调用）是 Agent 的必备能力，也是它区别于普通聊天机器人的核心分界。LLM 本身不产生任何外部副作用——它只能输出”工具名 + 参数”这样的调用意图；真正在文件系统、Shell、编辑器上生效的，是工具执行层。"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://blog.airchaoz.top/img/og_image.png"><meta property="article:published_time" content="2026-08-02T04:37:11.000Z"><meta property="article:modified_time" content="2026-08-02T04:38:17.247Z"><meta property="article:author" content="echo"><meta property="article:tag" content="Agent"><meta property="twitter:card" content="summary"><meta property="twitter:image:src" content="https://blog.airchaoz.top/img/og_image.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.airchaoz.top/2026/08/02/pi-agent%E7%9A%84Tool-Call%E5%AE%9E%E7%8E%B0/"},"headline":"Pi Agent的Tool Call实现","image":["https://blog.airchaoz.top/img/og_image.png"],"datePublished":"2026-08-02T04:37:11.000Z","dateModified":"2026-08-02T04:38:17.247Z","author":{"@type":"Person","name":"echo"},"publisher":{"@type":"Organization","name":"echo's blog","logo":{"@type":"ImageObject","url":{"text":"echo's blog"}}},"description":"tool_call（工具调用）是 Agent 的必备能力，也是它区别于普通聊天机器人的核心分界。LLM 本身不产生任何外部副作用——它只能输出”工具名 + 参数”这样的调用意图；真正在文件系统、Shell、编辑器上生效的，是工具执行层。"}</script><link rel="canonical" href="https://blog.airchaoz.top/2026/08/02/pi-agent%E7%9A%84Tool-Call%E5%AE%9E%E7%8E%B0/"><link rel="icon" href="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202408101608074.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css"><link data-pjax rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/atom-one-dark.css"><link data-pjax rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-9N9JB3XQG1" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-9N9JB3XQG1');</script><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+
+          const id = '#' + CSS.escape(location.hash.substring(1));
+          const $tabMenu = document.querySelector(`.tabs a[href="${id}"]`);
+          if (!$tabMenu) {
+            return;
+          }
+
+          const $tabMenuContainer = $tabMenu.parentElement.parentElement;
+          Array.from($tabMenuContainer.children).forEach($menu => $menu.classList.remove('is-active'));
+          Array.from($tabMenuContainer.querySelectorAll('a'))
+              .map($menu => document.getElementById($menu.getAttribute("href").substring(1)))
+              .forEach($content => $content.classList.add('is-hidden'));
+
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+          const $activeTab = document.querySelector(id);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "efe973c702754d6dabb7f200f6f96a09"}'></script><link rel="stylesheet" href="/css/dark-mode.css"><link rel="stylesheet" href="/css/custom-layout.css"><script src="/js/theme-toggle.js" defer></script><script src="/js/toc-autoscroll.js" defer></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-web@1.522.0/style.min.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.1.0/400.css" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.1.0/700.css" crossorigin="anonymous" />
+<style>
+body, button, input, select, textarea {
+  font-family: 'LXGW WenKai GB Screen', '霞鹜文楷', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+}
+code, pre {
+  font-family: 'JetBrains Mono', 'Sarasa Mono SC', 'Noto Sans Mono CJK SC', 'Source Code Pro', Consolas, 'Microsoft YaHei', monospace;
+}
+</style><style>
+@media screen and (min-width: 1280px) {
+  .is-3-column .column-main {
+    flex: none;
+    width: 60%;
+  }
+  .is-3-column .column-left {
+    flex: none;
+    width: 20%;
+    padding-left: 0.375rem;
+    padding-right: 0.75rem;
+  }
+  .is-3-column .column-right {
+    flex: none;
+    width: 20%;
+    padding-left: 0.75rem;
+    padding-right: 0.375rem;
+  }
+  .is-2-column .column-left {
+    flex: none;
+    width: 25%;
+  }
+  .is-2-column .column-main {
+    flex: none;
+    width: 75%;
+  }
+}
+</style><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="echo's blog" type="application/atom+xml">
+</head><body class="is-3-column"><nav class="navbar navbar-main"><div class="container navbar-container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/">echo&#039;s blog</a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/changelog">ChangeLog</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub Page" href="https://github.com/airchaoz"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="Rss" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-6-widescreen"><div class="card"><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2026-08-02T04:37:11.000Z" title="8/2/2026, 12:37:11 PM">2026-08-02</time>发表</span><span class="level-item"><time dateTime="2026-08-02T04:38:17.247Z" title="8/2/2026, 12:38:17 PM">2026-08-02</time>更新</span><span class="level-item">19 分钟读完 (大约2829个字)</span></div></div><h1 class="title is-3 is-size-4-mobile">Pi Agent的Tool Call实现</h1><div class="content"><p>tool_call（工具调用）是 Agent 的必备能力，也是它区别于普通聊天机器人的核心分界。LLM 本身不产生任何外部副作用——它只能输出”工具名 + 参数”这样的调用意图；真正在文件系统、Shell、编辑器上生效的，是工具执行层。</p>
+<span id="more"></span>
+<h2 id="1-模块定位"><a href="#1-模块定位" class="headerlink" title="1. 模块定位"></a>1. 模块定位</h2><p>tool_call 指”模型决定调用工具”到”工具结果写回上下文”的完整代码路径。模型本身不产生副作用——它只输出调用意图，即 assistant 消息里的一段 <code>toolCall</code> 内容块：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span> type<span class="punctuation">:</span> <span class="string">&quot;toolCall&quot;</span><span class="punctuation">,</span> id<span class="punctuation">:</span> <span class="string">&quot;call_1&quot;</span><span class="punctuation">,</span> name<span class="punctuation">:</span> <span class="string">&quot;bash&quot;</span><span class="punctuation">,</span> arguments<span class="punctuation">:</span> <span class="punctuation">&#123;</span> command<span class="punctuation">:</span> <span class="string">&quot;ls&quot;</span> <span class="punctuation">&#125;</span> <span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>真实副作用（执行命令、读写文件）发生在工具执行层。因此这条路径本质上就是 agent-loop 里的几段顺序代码：<strong>找工具 → 校验参数 → 执行 → 生成结果消息</strong>。tool_call 模块做的，是在这几段代码中间插入两个可编程拦截点：</p>
+<ul>
+<li><code>beforeToolCall</code>：参数校验之后、真实执行之前。可以阻止执行（block）或改写参数；</li>
+<li><code>afterToolCall</code>：执行完成之后、结果写回上下文之前。可以按字段修补结果。</li>
+</ul>
+<p>拦截点由三个层次的代码协同实现：</p>
+<ol>
+<li><strong>packages&#x2F;agent（定义与执行）</strong>：agent-loop.ts 决定”何时调用拦截点、返回后怎么办”，types.ts 定义拦截点的输入输出契约；</li>
+<li><strong>packages&#x2F;agent 的 Agent &#x2F; AgentHarness（桥接）</strong>：自身不实现任何策略，只把拦截点转成 <code>tool_call</code> &#x2F; <code>tool_result</code> 事件广播给上层；</li>
+<li><strong>packages&#x2F;coding-agent（使用方）</strong>：订阅事件并把决定回传给拦截点——例如 permission-gate 扩展检查 bash 命令是否危险，危险则返回 block。</li>
+</ol>
+<p>这样分层的直接原因是<strong>策略不进核心</strong>：核心只保证”执行前一定有机会拦截、执行后一定有机会修补”，至于谁允许、参数要不要改、结果要不要脱敏，全部由上层按需叠加，互不侵入。</p>
+<h2 id="2-关键模块"><a href="#2-关键模块" class="headerlink" title="2. 关键模块"></a>2. 关键模块</h2><p>tool_call 由五个概念模块组成，从内到外是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────┐</span><br><span class="line">│ 策略（权限 / 审计 / 脱敏，扩展 handler）       │</span><br><span class="line">│              ↑ 事件订阅                      │</span><br><span class="line">│ 扩展事件层：tool_call / tool_result 分发      │</span><br><span class="line">│              ↑ 事件桥接                      │</span><br><span class="line">│ 策略宿主：Agent / AgentHarness               │</span><br><span class="line">│              ↑ hook 注入                     │</span><br><span class="line">│ 拦截点契约：beforeToolCall / afterToolCall   │</span><br><span class="line">│              ↑ 固定环节                      │</span><br><span class="line">│ 执行流水线：找工具→校验→执行→结果消息          │</span><br><span class="line">└─────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>执行流水线</strong>：唯一真正执行工具的地方。它把一次模型意图变成”找工具 → 参数兼容与校验 → 执行 → 结果消息”四步，并保证每步的失败都变成一条错误结果消息回流给模型。并行&#x2F;串行执行、截断兜底都属于它的职责。</li>
+<li><strong>拦截点契约</strong>：流水线两侧的两个固定插口，定义了策略”能做什么、不能做什么”。beforeToolCall 只拿到已校验参数，能阻止执行或改写参数；afterToolCall 只拿到原始执行结果，能按字段修补。流水线只认这个契约，不知道任何具体策略。</li>
+<li><strong>策略宿主</strong>：持有并注入 hook 的容器。它自身不实现策略，职责是把”代码回调”桥接成”事件广播”（tool_call &#x2F; tool_result），让策略以订阅者身份挂载，而不是改流水线代码。这也是测试与其他运行时复用同一套拦截语义的通道。</li>
+<li><strong>扩展事件层</strong>：策略的挂载点。扩展把 handler 注册到事件名上，触发时按注册顺序逐个调用；事件对象共享可变（handler 可原地改写参数），任一 handler 返回 block 即短路。权限、审计、结果脱敏都以 handler 形式存在于这层。</li>
+<li><strong>事件类型模型</strong>：事件按工具名做强类型区分（内置工具各自携带类型化参数，自定义工具走通用结构），配合类型守卫收窄，让策略代码免于字符串魔数。</li>
+</ul>
+<h3 id="当前内置工具"><a href="#当前内置工具" class="headerlink" title="当前内置工具"></a>当前内置工具</h3><p>事件类型模型覆盖七个内置工具，其中 read &#x2F; write &#x2F; edit &#x2F; bash 是跨包共用的基础能力（packages&#x2F;agent 以工厂函数提供，packages&#x2F;coding-agent 持有完整定义），grep &#x2F; find &#x2F; ls 由 coding-agent 自带：</p>
+<table>
+<thead>
+<tr>
+<th>工具</th>
+<th>能力</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>bash</td>
+<td>执行 shell 命令</td>
+<td>支持超时、中止、流式输出与尾部截断</td>
+</tr>
+<tr>
+<td>read</td>
+<td>读取文件</td>
+<td>支持 offset&#x2F;limit 分段、默认截断、图片识别</td>
+</tr>
+<tr>
+<td>write</td>
+<td>写入文件</td>
+<td>自动创建父目录，并发变更串行化</td>
+</tr>
+<tr>
+<td>edit</td>
+<td>精确替换文件内容</td>
+<td>基于唯一 oldText，支持模糊匹配与 diff 展示</td>
+</tr>
+<tr>
+<td>grep</td>
+<td>内容搜索</td>
+<td>正则搜索文件内容</td>
+</tr>
+<tr>
+<td>find</td>
+<td>文件查找</td>
+<td>按条件查找路径</td>
+</tr>
+<tr>
+<td>ls</td>
+<td>目录列举</td>
+<td>列出目录条目</td>
+</tr>
+</tbody></table>
+<p>除内置工具外，扩展可以通过 <code>registerTool()</code> 注册自定义工具，参数同样走”校验 → 拦截 → 执行 → 修补”流水线；事件模型中对它们以 <code>CustomToolCallEvent</code>（toolName 为任意字符串、input 为通用结构）兜底。</p>
+<h2 id="3-核心类型与接口"><a href="#3-核心类型与接口" class="headerlink" title="3. 核心类型与接口"></a>3. 核心类型与接口</h2><h3 id="3-1-核心层-hook（types-ts）"><a href="#3-1-核心层-hook（types-ts）" class="headerlink" title="3.1 核心层 hook（types.ts）"></a>3.1 核心层 hook（types.ts）</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">BeforeToolCallResult</span> &#123; block?: <span class="built_in">boolean</span>; reason?: <span class="built_in">string</span>; &#125;</span><br><span class="line"><span class="keyword">interface</span> <span class="title class_">AfterToolCallResult</span> &#123;</span><br><span class="line">  content?: (<span class="title class_">TextContent</span> | <span class="title class_">ImageContent</span>)[];</span><br><span class="line">  details?: <span class="built_in">unknown</span>;</span><br><span class="line">  isError?: <span class="built_in">boolean</span>;</span><br><span class="line">  usage?: <span class="title class_">Usage</span>;</span><br><span class="line">  terminate?: <span class="built_in">boolean</span>;   <span class="comment">// 整批工具全部 terminate 时提前停止</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>beforeToolCall(context, signal)</code>：输入为 assistant 消息、原始 toolCall 块、<strong>已校验的参数</strong>和当前 AgentContext；</li>
+<li><code>afterToolCall(context, signal)</code>：输入为执行后的原始结果和 isError，输出按字段合并（content &#x2F; details &#x2F; usage 为整体替换，无深层合并）。</li>
+</ul>
+<h3 id="3-2-扩展层事件（extensions-types-ts）"><a href="#3-2-扩展层事件（extensions-types-ts）" class="headerlink" title="3.2 扩展层事件（extensions&#x2F;types.ts）"></a>3.2 扩展层事件（extensions&#x2F;types.ts）</h3><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> <span class="title class_">ToolCallEventBase</span> &#123; <span class="attr">type</span>: <span class="string">&quot;tool_call&quot;</span>; <span class="attr">toolCallId</span>: <span class="built_in">string</span>; &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ToolCallEvent</code> 是按 <code>toolName</code> 区分的判别联合：bash &#x2F; read &#x2F; edit &#x2F; write &#x2F; grep &#x2F; find &#x2F; ls 七个内置工具各自持有强类型 <code>input</code>，其余一律落入 <code>CustomToolCallEvent</code>（<code>toolName: string</code>、<code>input: Record&lt;string, unknown&gt;</code>）。</p>
+<ul>
+<li>内置工具可直接用 <code>isToolCallEventType(&quot;bash&quot;, event)</code> 收窄；</li>
+<li>自定义工具需要显式类型参数：<code>isToolCallEventType&lt;&quot;my_tool&quot;, MyToolInput&gt;(&quot;my_tool&quot;, event)</code>；</li>
+<li>不能靠 <code>event.toolName === &quot;bash&quot;</code> 直接收窄，因为 <code>CustomToolCallEvent.toolName</code> 是 <code>string</code>，与所有字面量重叠。</li>
+</ul>
+<h2 id="4-关键业务逻辑"><a href="#4-关键业务逻辑" class="headerlink" title="4. 关键业务逻辑"></a>4. 关键业务逻辑</h2><h3 id="4-1-单次工具调用流水线（agent-loop-ts）"><a href="#4-1-单次工具调用流水线（agent-loop-ts）" class="headerlink" title="4.1 单次工具调用流水线（agent-loop.ts）"></a>4.1 单次工具调用流水线（agent-loop.ts）</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">assistant message (toolCall 块)</span><br><span class="line">  → 过滤出 toolCall 内容块</span><br><span class="line">  → prepareToolCall():</span><br><span class="line">      1. 查找工具（找不到 → 立即生成 &quot;Tool not found&quot; 错误结果）</span><br><span class="line">      2. prepareArguments() 兼容转换</span><br><span class="line">      3. validateToolArguments() schema 校验</span><br><span class="line">      4. beforeToolCall hook（可 block / 抛异常）</span><br><span class="line">      5. abort 检查</span><br><span class="line">  → executePreparedToolCall():</span><br><span class="line">      tool.execute(toolCallId, args, signal, onUpdate)</span><br><span class="line">      onUpdate 产生 tool_execution_update 事件</span><br><span class="line">  → finalizeExecutedToolCall():</span><br><span class="line">      afterToolCall hook 按字段修补 result</span><br><span class="line">  → emitToolExecutionEnd → tool_execution_end 事件</span><br><span class="line">  → createToolResultMessage() 归一化 content</span><br><span class="line">  → message_start / message_end 事件（toolResult 消息）</span><br><span class="line">  → 推入 currentContext 与 newMessages，参与下一轮模型调用</span><br></pre></td></tr></table></figure>
+
+<p>校验失败、hook 阻止、hook 抛异常、abort 都会走 “immediate” 分支：不执行工具，直接构造错误结果。工具执行中抛异常同样转为 <code>isError: true</code> 的结果，让模型自行决定是否重试。</p>
+<h3 id="4-2-block-语义"><a href="#4-2-block-语义" class="headerlink" title="4.2 block 语义"></a>4.2 block 语义</h3><p><code>beforeToolCall</code> 返回 <code>&#123; block: true, reason &#125;</code> 时：</p>
+<ul>
+<li>工具不执行；</li>
+<li>循环生成 <code>createErrorToolResult(reason || &quot;Tool execution was blocked&quot;)</code>；</li>
+<li>该错误结果作为普通 toolResult 消息写回上下文并返回给模型，模型能看到被拒原因并自我修正，而非中断整个循环。</li>
+</ul>
+<h3 id="4-3-执行模式"><a href="#4-3-执行模式" class="headerlink" title="4.3 执行模式"></a>4.3 执行模式</h3><ul>
+<li>默认 <code>parallel</code>：先顺序完成全部调用的准备与预检（每个调用的 beforeToolCall 都会执行），再并发执行；</li>
+<li>全局 <code>toolExecution: &quot;sequential&quot;</code> 或批次中<strong>任意一个</strong>工具的 <code>executionMode: &quot;sequential&quot;</code> 都会使整批串行（逐个准备 → 执行 → 结束）；</li>
+<li>并行模式下完成事件按实际完成顺序发出，但写回上下文的 toolResult 消息仍按 assistant 原始调用顺序排列；</li>
+<li>批次终止判定 <code>shouldTerminateToolBatch()</code>：只有<strong>每一个</strong>最终结果的 <code>terminate === true</code> 时才停止循环。</li>
+</ul>
+<h3 id="4-4-截断兜底"><a href="#4-4-截断兜底" class="headerlink" title="4.4 截断兜底"></a>4.4 截断兜底</h3><p><code>stopReason === &quot;length&quot;</code>（输出被 token 上限截断）时，流式参数可能被 JSON 抢救解析出看似合法但不完整的调用。此时 <code>failToolCallsFromTruncatedMessage()</code> 对<strong>所有</strong> tool call 一律生成错误结果，要求模型重新发出完整调用，不执行任何疑似残缺的工具。</p>
+<h3 id="4-5-错误策略差异（fail-closed-vs-fail-open）"><a href="#4-5-错误策略差异（fail-closed-vs-fail-open）" class="headerlink" title="4.5 错误策略差异（fail-closed vs fail-open）"></a>4.5 错误策略差异（fail-closed vs fail-open）</h3><ul>
+<li><strong>core &#x2F; harness &#x2F; coding-agent 的 tool_call 处理</strong>：handler 异常向上传播。coding-agent 的 agent-session 会包装成 “Extension failed, blocking execution” 并阻断该工具执行，默认 fail-closed，保证安全敏感的工具不会被静默放行；</li>
+<li><strong>coding-agent 的 tool_result 处理</strong>（<code>emitToolResult</code>）：handler 异常被捕获、经 <code>emitError</code> 上报后继续下一个 handler，默认 fail-open，因为结果修补失败不应破坏主流程。</li>
+</ul>
+<h2 id="5-关键流程"><a href="#5-关键流程" class="headerlink" title="5. 关键流程"></a>5. 关键流程</h2><h3 id="5-1-扩展层事件分发（coding-agent-runner-ts-927-948）"><a href="#5-1-扩展层事件分发（coding-agent-runner-ts-927-948）" class="headerlink" title="5.1 扩展层事件分发（coding-agent runner.ts:927-948）"></a>5.1 扩展层事件分发（coding-agent runner.ts:927-948）</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">agent-session.beforeToolCall hook 触发</span><br><span class="line">  → runner.emitToolCall(&#123;type:&quot;tool_call&quot;, toolName, toolCallId, input&#125;)</span><br><span class="line">  → 按扩展注册顺序遍历所有 handler</span><br><span class="line">      → 每个 handler 收到同一个可变 event 对象</span><br><span class="line">      → handler 可原地改 event.input 修补参数（不重新校验）</span><br><span class="line">      → 返回 &#123;block:true&#125; 立即短路，剩余 handler 不再执行</span><br><span class="line">  → 结果映射为 BeforeToolCallResult 返回给核心 loop</span><br></pre></td></tr></table></figure>
+
+<p><code>emitToolResult</code>（runner.ts:872-925）对称地遍历 <code>tool_result</code> handlers，按字段把修改后的 content &#x2F; details &#x2F; isError &#x2F; usage 合并返回，无修改时返回 <code>undefined</code>。</p>
+<h3 id="5-2-接线与-reload（agent-session-ts-468-518）"><a href="#5-2-接线与-reload（agent-session-ts-468-518）" class="headerlink" title="5.2 接线与 reload（agent-session.ts:468-518）"></a>5.2 接线与 reload（agent-session.ts:468-518）</h3><p><code>_installAgentToolHooks()</code> 只在 Agent 实例上安装一次 hook，回调<strong>执行时</strong>才读取 <code>this._extensionRunner</code>：</p>
+<ul>
+<li>扩展 reload 换入新 runner 无需重装 hook；</li>
+<li><code>hasHandlers(&quot;tool_call&quot;)</code> 为 false 时直接返回 undefined，零 handler 时无事件分发开销；</li>
+<li>事件中的 <code>input</code> 即核心层校验后的 <code>args</code>，保证扩展看到的是有效参数。</li>
+</ul>
+<h3 id="5-3-完整时序（一次工具调用）"><a href="#5-3-完整时序（一次工具调用）" class="headerlink" title="5.3 完整时序（一次工具调用）"></a>5.3 完整时序（一次工具调用）</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">模型流式输出 toolcall_delta</span><br><span class="line">  → message_update 事件</span><br><span class="line">  → message_end（assistant 消息落定）</span><br><span class="line">  → tool_execution_start 事件</span><br><span class="line">  → prepareToolCallArguments / validateToolArguments</span><br><span class="line">  → beforeToolCall hook</span><br><span class="line">      → [coding-agent] emitToolCall → 扩展 handlers（可改参数 / block）</span><br><span class="line">  → 执行 tool.execute()（onUpdate → tool_execution_update 事件）</span><br><span class="line">  → afterToolCall hook</span><br><span class="line">      → [coding-agent] emitToolResult → 扩展 handlers（可改结果）</span><br><span class="line">  → tool_execution_end 事件</span><br><span class="line">  → toolResult 消息 message_start / message_end</span><br><span class="line">  → turn_end / 下一轮模型调用（或 agent_end）</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-4-双桥接"><a href="#5-4-双桥接" class="headerlink" title="5.4 双桥接"></a>5.4 双桥接</h3><p>Agent（轻量）与 AgentHarness（应用编排）各自把核心 hook 桥接为事件：harness 在 <code>createLoopConfig()</code>（agent-harness.ts:455-484）中直接转发 <code>tool_call</code> &#x2F; <code>tool_result</code>，携带 <code>toolCallId</code>、<code>toolName</code>、<code>input</code>、<code>content</code>、<code>details</code>、<code>isError</code>、<code>usage</code>，并把返回结果还原为 <code>BeforeToolCallResult</code> &#x2F; <code>AfterToolCallResult</code>。测试和第三方运行时可以复用同一套拦截语义。</p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>Pi Agent的Tool Call实现</p><p><a href="https://blog.airchaoz.top/2026/08/02/pi-agent的Tool-Call实现/">https://blog.airchaoz.top/2026/08/02/pi-agent的Tool-Call实现/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>echo</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2026-08-02</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2026-08-02</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/Agent/">Agent</a></div><!--!--></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2026/08/01/pi-agent%E7%9A%84%E4%BC%9A%E8%AF%9D%E5%8E%8B%E7%BC%A9%E6%9C%BA%E5%88%B6/"><span class="level-item">pi-agent的会话压缩机制</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card" id="comments"><div class="card-content"><h3 class="title is-5">评论</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://blog.airchaoz.top/2026/08/02/pi-agent%E7%9A%84Tool-Call%E5%AE%9E%E7%8E%B0/';
+            this.page.identifier = '2026/08/02/pi-agent的Tool-Call实现/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'echos-blog-2' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-3-widescreen  order-1 is-sticky"><div class="card widget" data-type="profile"><div class="card-content"><nav class="level"><div class="level-item has-text-centered flex-shrink-1"><div><figure class="image is-128x128 mx-auto mb-2"><img class="avatar is-rounded" src="https://blog-512.oss-cn-shenzhen.aliyuncs.com/202401032048869.png" alt="echo"></figure><p class="title is-size-4 is-block" style="line-height:inherit;">echo</p><p class="is-size-6 is-block">C++ Developer</p><p class="is-size-6 is-flex justify-content-center"><i class="fas fa-map-marker-alt mr-1"></i><span>GuangDong, China</span></p></div></div></nav><nav class="level is-mobile"><div class="level-item has-text-centered is-marginless"><div><p class="heading">文章</p><a href="/archives/"><p class="title">35</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">分类</p><a href="/categories/"><p class="title">0</p></a></div></div><div class="level-item has-text-centered is-marginless"><div><p class="heading">标签</p><a href="/tags/"><p class="title">5</p></a></div></div></nav></div></div><!--!--><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">标签</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Agent/"><span class="tag">Agent</span><span class="tag">3</span></a></div><div class="control"><a class="tags has-addons" href="/tags/C/"><span class="tag">C++</span><span class="tag">16</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Linux-%E7%B3%BB%E7%BB%9F/"><span class="tag">Linux/系统</span><span class="tag">6</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/"><span class="tag">开发工具</span><span class="tag">7</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"><span class="tag">机器学习</span><span class="tag">3</span></a></div></div></div></div></div><div class="card widget" data-type="projects"><div class="card-content"><div class="menu"><h3 class="menu-label">我的项目</h3><div class="project-item mb-3"><a class="is-size-6 has-text-weight-semibold" href="https://watchbot.airchaoz.top" target="_blank" rel="noopener">watchbot</a><p class="is-size-7 has-text-grey mt-1">一个持续追踪软件更新的 bot</p></div><div class="project-item mb-3"><a class="is-size-6 has-text-weight-semibold" href="https://deep-dive-pi.airchaoz.top" target="_blank" rel="noopener">deep-dive-pi</a><p class="is-size-7 has-text-grey mt-1">深入探索 Pi Agent</p></div></div></div></div><div class="column-right-shadow is-hidden-widescreen is-sticky"></div></div><div class="column column-right is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only order-3 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#1-模块定位"><span class="level-left"><span class="level-item">1. 模块定位</span></span></a></li><li><a class="level is-mobile" href="#2-关键模块"><span class="level-left"><span class="level-item">2. 关键模块</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#当前内置工具"><span class="level-left"><span class="level-item">当前内置工具</span></span></a></li></ul></li><li><a class="level is-mobile" href="#3-核心类型与接口"><span class="level-left"><span class="level-item">3. 核心类型与接口</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#3-1-核心层-hook（types-ts）"><span class="level-left"><span class="level-item">3.1 核心层 hook（types.ts）</span></span></a></li><li><a class="level is-mobile" href="#3-2-扩展层事件（extensions-types-ts）"><span class="level-left"><span class="level-item">3.2 扩展层事件（extensions/types.ts）</span></span></a></li></ul></li><li><a class="level is-mobile" href="#4-关键业务逻辑"><span class="level-left"><span class="level-item">4. 关键业务逻辑</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#4-1-单次工具调用流水线（agent-loop-ts）"><span class="level-left"><span class="level-item">4.1 单次工具调用流水线（agent-loop.ts）</span></span></a></li><li><a class="level is-mobile" href="#4-2-block-语义"><span class="level-left"><span class="level-item">4.2 block 语义</span></span></a></li><li><a class="level is-mobile" href="#4-3-执行模式"><span class="level-left"><span class="level-item">4.3 执行模式</span></span></a></li><li><a class="level is-mobile" href="#4-4-截断兜底"><span class="level-left"><span class="level-item">4.4 截断兜底</span></span></a></li><li><a class="level is-mobile" href="#4-5-错误策略差异（fail-closed-vs-fail-open）"><span class="level-left"><span class="level-item">4.5 错误策略差异（fail-closed vs fail-open）</span></span></a></li></ul></li><li><a class="level is-mobile" href="#5-关键流程"><span class="level-left"><span class="level-item">5. 关键流程</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#5-1-扩展层事件分发（coding-agent-runner-ts-927-948）"><span class="level-left"><span class="level-item">5.1 扩展层事件分发（coding-agent runner.ts:927-948）</span></span></a></li><li><a class="level is-mobile" href="#5-2-接线与-reload（agent-session-ts-468-518）"><span class="level-left"><span class="level-item">5.2 接线与 reload（agent-session.ts:468-518）</span></span></a></li><li><a class="level is-mobile" href="#5-3-完整时序（一次工具调用）"><span class="level-left"><span class="level-item">5.3 完整时序（一次工具调用）</span></span></a></li><li><a class="level is-mobile" href="#5-4-双桥接"><span class="level-left"><span class="level-item">5.4 双桥接</span></span></a></li></ul></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/">echo&#039;s blog</a><p class="is-size-7"><span>&copy; 2026 echo</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-cn");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script data-pjax src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script data-pjax src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/javascript" id="MathJax-script" async>MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        matchFontHeight: false
+      }
+    };</script><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script src="/js/pjax.js"></script><!--!--><!--!--><!--!--><script data-pjax src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script data-pjax src="/js/insight.js" defer></script><script data-pjax>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script><!-- hexo injector body_end start --><script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+(function () {
+    'use strict';
+    function getTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+    }
+    function initMermaid() {
+        mermaid.initialize({ startOnLoad: true, theme: getTheme() });
+    }
+    initMermaid();
+
+    // Re-render on dark/light theme toggle
+    var observer = new MutationObserver(function (ms) {
+        ms.forEach(function (m) {
+            if (m.attributeName === 'data-theme') {
+                mermaid.initialize({ theme: getTheme() });
+                mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+            }
+        });
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    // PJAX: Icarus replaces page content; re-run mermaid
+    window.addEventListener('pjax:complete', function () {
+        mermaid.run({ nodes: document.querySelectorAll('.mermaid') });
+    });
+})();
+</script><!-- hexo injector body_end end --></body></html>
