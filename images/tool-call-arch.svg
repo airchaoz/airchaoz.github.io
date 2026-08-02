@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 760" role="img" aria-label="tool_call 关键模块分层架构图"
+     font-family='-apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif'>
+  <defs>
+    <linearGradient id="g-strategy" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fb7185"/><stop offset="1" stop-color="#f43f5e"/></linearGradient>
+    <linearGradient id="g-event"    x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset="1" stop-color="#f59e0b"/></linearGradient>
+    <linearGradient id="g-host"     x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+    <linearGradient id="g-hook"     x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2dd4bf"/><stop offset="1" stop-color="#14b8a6"/></linearGradient>
+    <linearGradient id="g-pipeline" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/></linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="135%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.10"/>
+    </filter>
+  </defs>
+
+  <!-- Layer 5 : 执行流水线（最内层） -->
+  <g filter="url(#shadow)">
+    <rect x="70" y="616" width="860" height="110" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+    <path d="M70 628 A12 12 0 0 1 82 616 L918 616 A12 12 0 0 1 930 628 L930 648 L70 648 Z" fill="url(#g-pipeline)"/>
+    <text x="86" y="638" font-size="16" font-weight="700" fill="#ffffff">执行流水线</text>
+    <text x="914" y="637" text-anchor="end" font-size="12" fill="#ffffff" fill-opacity="0.92">唯一真正执行工具的地方</text>
+    <text x="500" y="682" text-anchor="middle" font-size="14" fill="#334155">找工具 → 参数校验 → 执行 → 结果消息</text>
+    <text x="500" y="705" text-anchor="middle" font-size="12" fill="#6b7280">每步失败都转成错误结果消息回流给模型 · 并行/串行与截断兜底亦属此层</text>
+  </g>
+
+  <!-- Layer 4 : 拦截点契约 -->
+  <line x1="500" y1="586" x2="500" y2="612" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="535" y="603" text-anchor="start" font-size="12" fill="#64748b">固定环节</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="472" width="860" height="110" rx="12" fill="#f0fdfa" stroke="#14b8a6" stroke-width="1.5"/>
+    <path d="M70 484 A12 12 0 0 1 82 472 L918 472 A12 12 0 0 1 930 484 L930 504 L70 504 Z" fill="url(#g-hook)"/>
+    <text x="86" y="494" font-size="16" font-weight="700" fill="#ffffff">拦截点契约</text>
+    <text x="914" y="493" text-anchor="end" font-size="12" fill="#ffffff" fill-opacity="0.92">beforeToolCall / afterToolCall</text>
+    <text x="500" y="538" text-anchor="middle" font-size="14" fill="#334155">流水线两侧的两个固定插口，定义策略「能做什么、不能做什么」</text>
+    <text x="500" y="561" text-anchor="middle" font-size="12" fill="#6b7280">before 只拿到已校验参数，可 block / 改写参数；after 只拿到原始结果，可按字段修补</text>
+  </g>
+
+  <!-- Layer 3 : 策略宿主 -->
+  <line x1="500" y1="434" x2="500" y2="470" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="535" y="456" text-anchor="start" font-size="12" fill="#64748b">hook 注入</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="328" width="860" height="110" rx="12" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1.5"/>
+    <path d="M70 340 A12 12 0 0 1 82 328 L918 328 A12 12 0 0 1 930 340 L930 360 L70 360 Z" fill="url(#g-host)"/>
+    <text x="86" y="350" font-size="16" font-weight="700" fill="#ffffff">策略宿主：Agent / AgentHarness</text>
+    <text x="914" y="349" text-anchor="end" font-size="12" fill="#ffffff" fill-opacity="0.92">桥接层</text>
+    <text x="500" y="394" text-anchor="middle" font-size="14" fill="#334155">持有并注入 hook 的容器，自身不实现任何策略</text>
+    <text x="500" y="417" text-anchor="middle" font-size="12" fill="#6b7280">把「代码回调」桥接成「事件广播」，让测试与第三方运行时复用同一套拦截语义</text>
+  </g>
+
+  <!-- Layer 2 : 扩展事件层 -->
+  <line x1="500" y1="294" x2="500" y2="326" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="535" y="313" text-anchor="start" font-size="12" fill="#64748b">事件桥接</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="184" width="860" height="110" rx="12" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M70 196 A12 12 0 0 1 82 184 L918 184 A12 12 0 0 1 930 196 L930 216 L70 216 Z" fill="url(#g-event)"/>
+    <text x="86" y="206" font-size="16" font-weight="700" fill="#ffffff">扩展事件层</text>
+    <text x="914" y="205" text-anchor="end" font-size="12" fill="#ffffff" fill-opacity="0.92">tool_call / tool_result 分发</text>
+    <text x="500" y="250" text-anchor="middle" font-size="14" fill="#334155">策略的挂载点：handler 注册到事件名，触发时按注册顺序逐个调用</text>
+    <text x="500" y="273" text-anchor="middle" font-size="12" fill="#6b7280">事件对象共享可变 · 任一 handler 返回 block 即短路 · 权限/审计/脱敏均在此层</text>
+  </g>
+
+  <!-- Layer 1 : 策略 -->
+  <line x1="500" y1="152" x2="500" y2="182" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="535" y="168" text-anchor="start" font-size="12" fill="#64748b">事件订阅</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="40" width="860" height="110" rx="12" fill="#fff1f2" stroke="#f43f5e" stroke-width="1.5"/>
+    <path d="M70 52 A12 12 0 0 1 82 40 L918 40 A12 12 0 0 1 930 52 L930 72 L70 72 Z" fill="url(#g-strategy)"/>
+    <text x="86" y="62" font-size="16" font-weight="700" fill="#ffffff">策略</text>
+    <text x="914" y="61" text-anchor="end" font-size="12" fill="#ffffff" fill-opacity="0.92">扩展 handler · 外层</text>
+    <text x="500" y="106" text-anchor="middle" font-size="14" fill="#334155">权限 · 审计 · 结果脱敏</text>
+    <text x="500" y="129" text-anchor="middle" font-size="12" fill="#6b7280">谁允许、参数要不要改、结果要不要脱敏，全部由上层按需叠加，互不侵入</text>
+  </g>
+</svg>

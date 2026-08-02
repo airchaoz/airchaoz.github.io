@@ -6,7 +6,7 @@
   <link href="https://blog.airchaoz.top/atom.xml" rel="self"/>
   
   <link href="https://blog.airchaoz.top/"/>
-  <updated>2026-08-02T04:38:17.247Z</updated>
+  <updated>2026-08-02T04:55:50.651Z</updated>
   <id>https://blog.airchaoz.top/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>Pi Agent的Tool Call实现</title>
-    <link href="https://blog.airchaoz.top/2026/08/02/pi-agent%E7%9A%84Tool-Call%E5%AE%9E%E7%8E%B0/"/>
-    <id>https://blog.airchaoz.top/2026/08/02/pi-agent%E7%9A%84Tool-Call%E5%AE%9E%E7%8E%B0/</id>
+    <title>pi-agent的tool call实现</title>
+    <link href="https://blog.airchaoz.top/2026/08/02/pi-agent%E7%9A%84tool-call%E5%AE%9E%E7%8E%B0/"/>
+    <id>https://blog.airchaoz.top/2026/08/02/pi-agent%E7%9A%84tool-call%E5%AE%9E%E7%8E%B0/</id>
     <published>2026-08-02T04:37:11.000Z</published>
-    <updated>2026-08-02T04:38:17.247Z</updated>
+    <updated>2026-08-02T04:55:50.651Z</updated>
     
     
     <summary type="html">&lt;p&gt;tool_call（工具调用）是 Agent 的必备能力，也是它区别于普通聊天机器人的核心分界。LLM 本身不产生任何外部副作用——它只能输出”工具名 + 参数”这样的调用意图；真正在文件系统、Shell、编辑器上生效的，是工具执行层。&lt;/p&gt;</summary>
