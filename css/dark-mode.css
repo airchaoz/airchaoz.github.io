@@ -49,10 +49,13 @@ html[data-theme="dark"] body {
     color-scheme: dark;
 }
 
-/* ---- Global strong/b override (Bulma sets color: #363636) ---- */
+/* ---- Global strong/b override (Bulma sets color: #363636) ----
+ * Dark mode: emphasize with blue instead of bold weight
+ * ------------------------------------------------------------ */
 html[data-theme="dark"] strong,
 html[data-theme="dark"] b {
-    color: #f0f6fc;
+    color: #4493f8;
+    font-weight: normal;
 }
 
 /* ---- Links ---- */
@@ -146,7 +149,8 @@ html[data-theme="dark"] .article .content h6 {
 }
 html[data-theme="dark"] .article .content strong,
 html[data-theme="dark"] .article .content b {
-    color: var(--gh-fg-default);
+    color: #4493f8;
+    font-weight: normal;
 }
 html[data-theme="dark"] .article .content blockquote {
     background-color: transparent;
@@ -316,8 +320,12 @@ html[data-theme="dark"] .menu-list a:hover {
     color: var(--gh-accent-fg);
 }
 html[data-theme="dark"] .menu-list a.is-active {
-    background-color: var(--gh-accent-emphasis);
+    background-color: #4493f8;
     color: #ffffff;
+}
+html[data-theme="dark"] .menu-list li > a.is-active:has(+ ul.menu-list a.is-active) {
+    color: var(--gh-fg-default);
+    background-color: transparent;
 }
 html[data-theme="dark"] .menu-label {
     color: var(--gh-fg-muted);
