@@ -6,7 +6,7 @@
   <link href="https://blog.airchaoz.top/atom.xml" rel="self"/>
   
   <link href="https://blog.airchaoz.top/"/>
-  <updated>2026-08-03T14:51:03.985Z</updated>
+  <updated>2026-08-03T23:22:53.502Z</updated>
   <id>https://blog.airchaoz.top/</id>
   
   <author>
@@ -21,16 +21,10 @@
     <link href="https://blog.airchaoz.top/2026/08/03/pi-agent%E7%9A%84%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86/"/>
     <id>https://blog.airchaoz.top/2026/08/03/pi-agent%E7%9A%84%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86/</id>
     <published>2026-08-03T14:48:18.000Z</published>
-    <updated>2026-08-03T14:51:03.985Z</updated>
+    <updated>2026-08-03T23:22:53.502Z</updated>
     
     
-      
-      
-        
-        
-    <summary type="html">&lt;h1 id=&quot;会话管理模块介绍&quot;&gt;&lt;a href=&quot;#会话管理模块介绍&quot; class=&quot;headerlink&quot; title=&quot;会话管理模块介绍&quot;&gt;&lt;/a&gt;会话管理模块介绍&lt;/h1&gt;&lt;p&gt;本文档介绍 pi-agent-core</summary>
-        
-      
+    <summary type="html">&lt;p&gt;本章介绍 pi-agent-core 的会话管理模块——会话的数据模型、存储实现、上下文构建、压缩与分支导航等核心业务，以及背后的关键技术设计。&lt;/p&gt;</summary>
     
     
     
