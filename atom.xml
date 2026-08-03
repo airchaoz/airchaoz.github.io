@@ -6,7 +6,7 @@
   <link href="https://blog.airchaoz.top/atom.xml" rel="self"/>
   
   <link href="https://blog.airchaoz.top/"/>
-  <updated>2026-08-02T04:55:50.651Z</updated>
+  <updated>2026-08-03T14:51:03.985Z</updated>
   <id>https://blog.airchaoz.top/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>pi-agent的会话管理</title>
+    <link href="https://blog.airchaoz.top/2026/08/03/pi-agent%E7%9A%84%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86/"/>
+    <id>https://blog.airchaoz.top/2026/08/03/pi-agent%E7%9A%84%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86/</id>
+    <published>2026-08-03T14:48:18.000Z</published>
+    <updated>2026-08-03T14:51:03.985Z</updated>
+    
+    
+      
+      
+        
+        
+    <summary type="html">&lt;h1 id=&quot;会话管理模块介绍&quot;&gt;&lt;a href=&quot;#会话管理模块介绍&quot; class=&quot;headerlink&quot; title=&quot;会话管理模块介绍&quot;&gt;&lt;/a&gt;会话管理模块介绍&lt;/h1&gt;&lt;p&gt;本文档介绍 pi-agent-core</summary>
+        
+      
+    
+    
+    
+    
+    <category term="Agent" scheme="https://blog.airchaoz.top/tags/Agent/"/>
+    
+  </entry>
   
   <entry>
     <title>pi-agent的tool call实现</title>
@@ -338,23 +361,6 @@
     
     
     <summary type="html">&lt;p&gt;重排序总的来说有四种类型&lt;/p&gt;</summary>
-    
-    
-    
-    
-    <category term="C++" scheme="https://blog.airchaoz.top/tags/C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>多线程内存模型(1)：指令重排序</title>
-    <link href="https://blog.airchaoz.top/2024/07/28/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B-1-%EF%BC%9A%E6%8C%87%E4%BB%A4%E9%87%8D%E6%8E%92%E5%BA%8F/"/>
-    <id>https://blog.airchaoz.top/2024/07/28/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B-1-%EF%BC%9A%E6%8C%87%E4%BB%A4%E9%87%8D%E6%8E%92%E5%BA%8F/</id>
-    <published>2024-07-28T09:28:22.000Z</published>
-    <updated>2026-07-26T05:57:16.922Z</updated>
-    
-    
-    <summary type="html">&lt;p&gt;内存模型是多线程编程中非常复杂的概念，在了解这些内容之前需要了解一下前置知识&lt;/p&gt;</summary>
     
     
     

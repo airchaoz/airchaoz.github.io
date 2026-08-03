@@ -219,6 +219,15 @@ html[data-theme="dark"] .tag:hover {
     background-color: #30363d;
 }
 
+/* ---- Breadcrumb (tag/category top) ---- */
+html[data-theme="dark"] .breadcrumb li.is-active a,
+html[data-theme="dark"] .breadcrumb li.is-active {
+    color: var(--gh-fg-default);
+}
+html[data-theme="dark"] .breadcrumb li + li::before {
+    color: var(--gh-fg-muted);
+}
+
 /* ---- Footer ---- */
 html[data-theme="dark"] .footer {
     background-color: var(--gh-bg-subtle);
